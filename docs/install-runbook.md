@@ -87,6 +87,14 @@ sudo -u claude chmod 600 /home/claude/.ssh/config
 ```
 - Create the GitHub **bot account**, upload claude's SSH (auth) + GPG keys, add it
   as a repo collaborator.
+- Authenticate claude's `gh` as the bot (for the PR workflow — see
+  `working-with-claude.md`). Signed in as the bot, make a classic PAT with scopes
+  `repo` + `read:org`, then, as claude:
+  ```sh
+  read -rs GH_TOKEN     # paste the token (hidden)
+  printf '%s' "$GH_TOKEN" | gh auth login --hostname github.com --git-protocol ssh --with-token
+  unset GH_TOKEN; gh api user --jq .login   # expect: dimitrios-claude
+  ```
 - Install Claude Code as claude and log in (headless device-code):
   `sudo -iu claude bash -c 'curl -fsSL https://claude.ai/install.sh | bash'` then
   `sudo -iu claude` → `claude`.

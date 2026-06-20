@@ -38,6 +38,44 @@ This is slower than co-editing one copy — by design. The friction *is* the
 feature: version control, review-before-merge, and a clean audit trail of who did
 what.
 
+## The PR loop (how a change actually lands)
+
+Branches sync the two clones; **pull requests are where review and attribution
+become durable.** A bare pushed branch *could* be merged locally, but the PR is
+the point — it records that the bot proposed a change, you reviewed it, and you
+merged it (the audit trail this whole setup exists for). The loop:
+
+1. **claude** — works on a topic branch, commits (signed as the bot), then:
+   ```sh
+   git push -u origin <branch>
+   gh pr create --base main --fill      # PR authored by dimitrios-claude
+   ```
+2. **you** — review the diff on GitHub, or pull it down to actually run it:
+   ```sh
+   gh pr checkout <n>                    # in ~/Development/estia
+   ```
+   Need changes? claude pushes more commits to the same branch; the PR updates.
+3. **you** — merge with a **merge commit** (the strategy that keeps claude's
+   individual GPG-signed commits intact — squash and rebase both re-write the
+   commits and drop the signatures). claude **never** merges its own PR — that is
+   the review gate.
+4. **you** — make it live:
+   ```sh
+   git checkout main && git pull         # in ~/Development/estia
+   ```
+   For **estia** this pull *is the deployment* — it repoints the live symlinked
+   configs. Other repos have no deploy step.
+5. delete the merged branch (local + remote).
+
+`main` is **branch-protected** so changes go through a reviewed PR. The protection
+gates the *agent*: claude (non-admin collaborator) is forced through PRs, while
+you (admin) keep direct-push for your own live dotfile edits in
+`~/Development/estia`.
+
+claude's `gh` is authenticated as the bot via a classic PAT (`repo` + `read:org`)
+in `~claude/.config/gh/` — distinct from the SSH push key `id_claude`: the token
+drives the API (opening PRs), SSH carries the git transport.
+
 ## The dotfiles repo specifically
 
 `estia` is the one repo whose working copy is **live**: its files are

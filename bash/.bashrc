@@ -143,11 +143,11 @@ gpg-unlock() {
 }
 
 # claude-shell: drop into the dedicated `claude` agent user's context (login
-# shell, starting in the neutral shared tree /srv/dev). Claude Code, run there,
+# shell, starting in the neutral shared tree /srv/devshare). Claude Code, run there,
 # operates as claude — own ssh/git/gpg identity, kernel-isolated from this
 # account's secrets. See docs/claude-user-design.md.
 claude-shell() {
-    sudo -iu claude bash -c 'cd /srv/dev 2>/dev/null; exec bash -l'
+    sudo -iu claude bash -c 'cd /srv/devshare 2>/dev/null; exec bash -l'
 }
 
 # SSH: point at the Debian socket-activated ssh-agent user service (ssh-agent.socket).

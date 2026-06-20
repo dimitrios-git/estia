@@ -111,7 +111,7 @@ SFTP share is itself being replaced by Samba-over-Tailscale + ACLs — see
 permission model under `/srv`.
 
 **Decided layout:**
-- **Shared dev tree: `/srv/dev`** (matches the existing `/srv` convention),
+- **Shared dev tree: `/srv/devshare`** (matches the existing `/srv` convention),
   owned `:devshare`, **setgid** (`chmod 2775`) so new files inherit the group,
   plus **default ACLs** (`setfacl -d -m g:devshare:rwx`). New collaborative repos
   live here directly — both users access via the group, no bind mount needed.
@@ -121,7 +121,7 @@ permission model under `/srv`.
   `Development/`, giving search but **not** read/listing) and `rwX` on the repo
   itself. This punches a single, named hole through the new `750` home without
   opening it. (Alternative, consistent with the prior-art pattern: bind-mount the
-  repo into `/srv/dev` to keep home perms pristine — noted, not chosen.)
+  repo into `/srv/devshare` to keep home perms pristine — noted, not chosen.)
 - **Git multi-user sharp edges** (must be handled or git breaks):
   - `safe.directory` entry for the shared repos in each user's git config
     (git refuses "dubious ownership" otherwise).
@@ -182,7 +182,7 @@ claude's minimal dotfiles; tighten `/home/dimitrios` perms.
 
 1. **Identity** — git author + GPG UID = `Claude (dimitrios's agent) <claude@thetower>`. ✅
 2. **GitHub** — dedicated **bot account** (collaborator on the repos it works on). ✅
-3. **Shared-tree path** — **`/srv/dev`**, modelled on the existing `/srv` SFTP
+3. **Shared-tree path** — **`/srv/devshare`**, modelled on the existing `/srv` SFTP
    convention (§4.3). ✅
 4. **`estia`** — **targeted ACL**, left in place (traverse-only into the
    home chain + `rwX` on the repo). ✅
@@ -214,7 +214,7 @@ Executed in phases, each verified before the next.
 *Verified:* `sudo -u claude cat ~dimitrios/.bash_secrets` → **Permission denied**
 (the kernel-enforced boundary, the whole point).
 
-**Phase 2 — `/srv/dev` shared tree.** `mkdir`, `chgrp devshare`, `chmod 2770`,
+**Phase 2 — `/srv/devshare` shared tree.** `mkdir`, `chgrp devshare`, `chmod 2770`,
 `setfacl -m` + `-d -m g:devshare:rwx`. *Verified:* a file claude creates there
 comes out group `devshare`, rw — bidirectional sharing, no ownership tangles.
 
@@ -237,7 +237,7 @@ pushed as the bot, shows **Verified** on GitHub.
 native installer (self-contained, no Node) into claude's home; authenticated via
 the **headless device-code flow** (no browser on claude — copy-paste the code,
 exactly the no-GUI principle). `claude-shell` (a `bash/.bashrc` function) drops
-dimitrios into claude's context (`sudo -iu claude`, starting in `/srv/dev`).
+dimitrios into claude's context (`sudo -iu claude`, starting in `/srv/devshare`).
 
 ### Deviations from the plan (worth the article)
 - **Email `claude@charalampidis.pro`**, not the placeholder `claude@thetower` —

@@ -24,8 +24,8 @@ bootstrap/
   roles/
     packages/           # apt install (become)
     dotfiles/           # symlink the manifest into $HOME (no root)
-    samba/              # Samba share: /etc/samba/smb.conf + /srv/share (become)
-    claude_user/        # dedicated `claude` agent user + /srv/dev + repo ACLs (become)
+    samba/              # Samba share: /etc/samba/smb.conf + /srv/smbshare (become)
+    claude_user/        # dedicated `claude` agent user + /srv/devshare + repo ACLs (become)
     credentials/        # login auto-unlock: gnome-keyring launcher-untangle (become)
   gen-symlink-table.py  # regenerate CLAUDE.md's symlink table from the manifest
   setup-claude-identity.sh   # Phase 4 of the claude-user setup (to become a role)

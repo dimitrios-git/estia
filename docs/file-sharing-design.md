@@ -34,7 +34,7 @@ ACLs** as the permission model.
   **direct peer-to-peer** path between the two nodes (not relayed), so near-LAN
   speed.
 - Honours **POSIX ACLs** → one uniform permission model shared with the
-  `claude` `/srv/dev` tree (see `claude-user-design.md` §4.3). No bind mounts:
+  `claude` `/srv/devshare` tree (see `claude-user-design.md` §4.3). No bind mounts:
   the SFTP chroot that *forced* bind mounts in the old setup is gone.
 
 ### 3.2 Security — LAN + Tailscale, confined at the SMB layer
@@ -59,14 +59,14 @@ only` binds loopback only, point-to-point `/32`, no broadcast). So:
   `nologin` account, scoped to the share path.
 
 ### 3.3 Permission model (ACLs — no bind mount, no force-user)
-- Share path **`/srv/share`** (the existing `/srv` convention), owned by group
+- Share path **`/srv/smbshare`** (the existing `/srv` convention), owned by group
   **`smbshare`**, **setgid** (`2770`), with **default ACLs**
   (`setfacl -d -m g:smbshare:rwx`) so new files inherit group + rw.
 - **Both principals share via the group:** `dimitrios` is added to `smbshare`
   (needs a re-login / `newgrp` to take effect) and the Samba user *is* `smbshare`.
   Files from either side inherit group `smbshare` + rwx, so each can read/write
   the other's files — bidirectional, with **no bind mount and no `force user`**.
-- **`~/Public` continuity:** `~/Public` is a **symlink to `/srv/share`** — the
+- **`~/Public` continuity:** `~/Public` is a **symlink to `/srv/smbshare`** — the
   ACL-era replacement for the old bind mount (a lightweight pointer, not a kernel
   mount). The familiar XDG public folder still works while the share path stays
   neutral and outside the now-`750` home.
@@ -100,9 +100,9 @@ gigabit at home, Tailscale for remote.**
 
 ## 6. Reproducibility / bootstrap & an open question
 Bootstrap steps: `apt install samba`; create the `smbshare` user/group + add
-`dimitrios` to it; `mkdir /srv/share` + setgid + default ACLs; `smbpasswd` the
+`dimitrios` to it; `mkdir /srv/smbshare` + setgid + default ACLs; `smbpasswd` the
 user; copy `smb.conf` to `/etc`; `systemctl restart smbd` and **disable** the
-unneeded `samba-ad-dc` + `nmbd`; symlink `~/Public → /srv/share`. Step-by-step:
+unneeded `samba-ad-dc` + `nmbd`; symlink `~/Public → /srv/smbshare`. Step-by-step:
 `system/samba/README.md`.
 
 **Open point — tracking `/etc` configs.** `smb.conf` (and, when we touch it,

@@ -33,7 +33,7 @@
     append: true
   become: true
 
-# --- Shared collaboration tree /srv/dev (root:devshare, setgid, default ACL) ----
+# --- Shared collaboration tree /srv/devshare (root:devshare, setgid, default ACL) ----
 - name: Create the shared dev tree
   ansible.builtin.file:
     path: "{{ claude_shared_tree }}"
@@ -56,7 +56,7 @@
     label: "{{ 'default' if item else 'access' }} ACL"
   become: true
 
-# Collaboration is clone-based (claude clones into /srv/dev, syncs via git), so
+# Collaboration is clone-based (claude clones into /srv/devshare, syncs via git), so
 # this role deliberately does NOT touch the human's home — no traverse ACLs, no
 # in-place repo sharing, no shared-working-copy git hygiene. The home stays 0750
 # private. (Ad-hoc co-editing of a home path is the `claude-access` tool's job.)

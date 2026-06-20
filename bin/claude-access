@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # claude-access — grant / revoke the dedicated `claude` agent user access to a
-# path OUTSIDE the auto-shared /srv/dev tree (e.g. a project in your home), and
+# path OUTSIDE the auto-shared /srv/devshare tree (e.g. a project in your home), and
 # keep a registry so grants aren't forgotten. See docs/working-with-claude.md.
 #
 # Mechanism (same as the claude_user role / Case B, automated):
@@ -28,7 +28,7 @@ Usage: claude-access <grant|revoke|list> [PATH]
                 parent dirs are left — they grant no read/list — and may be shared).
   list          Show the paths claude currently has access to.
 
-Note: /srv/dev is auto-shared and needs NO grant — put collaborative projects
+Note: /srv/devshare is auto-shared and needs NO grant — put collaborative projects
 there instead. This is for paths elsewhere. May prompt for sudo (mixed ownership
 once claude has created files, and claude's git safe.directory).
 EOF
@@ -107,7 +107,7 @@ list() {
         echo "claude currently has granted access to:"
         sort -k2 "$ACTIVE" | awk -F'\t' '{printf "  %s  (granted %s)\n", $2, $1}'
     else
-        echo "claude has no extra grants (only the auto-shared /srv/dev)."
+        echo "claude has no extra grants (only the auto-shared /srv/devshare)."
     fi
 }
 

@@ -13,7 +13,7 @@ unprivileged `claude` Linux user (the trust-boundary setup in
 ## Entering claude's context
 
 ```sh
-claude-shell        # = sudo -iu claude, starting in /srv/dev
+claude-shell        # = sudo -iu claude, starting in /srv/devshare
 ```
 A login shell **as** `claude`. Run `claude` there and Claude Code operates as the
 agent — committing and signing as itself, **unable to read your home** (`~` is
@@ -21,11 +21,11 @@ agent — committing and signing as itself, **unable to read your home** (`~` is
 
 ## The collaboration model: two clones, sync via git
 
-- **`claude`** clones a project into **`/srv/dev`** (its workspace; you can read it
+- **`claude`** clones a project into **`/srv/devshare`** (its workspace; you can read it
   for inspection, but you don't co-edit it):
   ```sh
   claude-shell
-  cd /srv/dev && git clone git@github.com:dimitrios-git/<project>.git
+  cd /srv/devshare && git clone git@github.com:dimitrios-git/<project>.git
   ```
 - **You** keep your **own** clone wherever you normally work (e.g.
   `~/Development/<project>`).
@@ -44,16 +44,16 @@ what.
 symlinked into `~`/`~/.config`, so **your clone at `~/Development/estia` is the
 deployment source** — editing it changes your running system.
 
-So: claude works in its **own** clone under `/srv/dev/estia`, pushes changes,
+So: claude works in its **own** clone under `/srv/devshare/estia`, pushes changes,
 and they reach your live system only when **you pull** (i.e. after review). 
 
 > **Keep straight:** the symlinks point at `~/Development/estia` and must stay
-> that way. Never make `/srv/dev/estia` (claude's clone) the deployment
+> that way. Never make `/srv/devshare/estia` (claude's clone) the deployment
 > source.
 
 ## Isolation (what claude can and can't touch)
 
-- ✅ `/srv/dev` and its own home — its workspace.
+- ✅ `/srv/devshare` and its own home — its workspace.
 - ✅ GitHub, as the bot — push/pull/PR.
 - ❌ Your home (`~`), your `~/.ssh`, `~/.gnupg`, `~/.bash_secrets` — fully walled
   off (different UID, `0750` home, no ACLs). Confirm any time:
@@ -79,7 +79,7 @@ Prefer the clone model; reach for this only when in-place editing is truly neede
 | Want to… | Do |
 |---|---|
 | Enter claude's context | `claude-shell`, then `claude` |
-| Give claude a project | it clones into `/srv/dev`; you sync via git |
+| Give claude a project | it clones into `/srv/devshare`; you sync via git |
 | Get claude's work | review its pushed branch/PR, merge, `git pull` |
 | Update your live dotfiles | pull into `~/Development/estia` (the symlink source) |
 | Co-edit a home path (rare) | `claude-access grant <path>` |

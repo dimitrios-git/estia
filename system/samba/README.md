@@ -13,7 +13,7 @@ symlinked). The steps below are the manual precursor to the planned Ansible role
 ## Facts (this host)
 
 - `thetower` Tailscale IP: **`100.91.148.26`**, interface **`tailscale0`**.
-- Share path: **`/srv/share`**; dedicated principal: user+group **`smbshare`**.
+- Share path: **`/srv/smbshare`**; dedicated principal: user+group **`smbshare`**.
 - Windows mounts: **`\\thetower\share`** (MagicDNS) or **`\\100.91.148.26\share`**
   (by IP — use this if MagicDNS is flaky; see the resolv.conf health note).
 
@@ -35,11 +35,11 @@ sudo usermod -aG smbshare dimitrios          # local access for you (re-login to
 ## 3. Share directory with setgid + default ACLs
 
 ```sh
-sudo mkdir -p /srv/share
-sudo chown smbshare:smbshare /srv/share
-sudo chmod 2770 /srv/share                   # setgid: new files inherit the group
-sudo setfacl    -m g:smbshare:rwx /srv/share # current
-sudo setfacl -d -m g:smbshare:rwx /srv/share # default (inherited by new files)
+sudo mkdir -p /srv/smbshare
+sudo chown smbshare:smbshare /srv/smbshare
+sudo chmod 2770 /srv/smbshare                   # setgid: new files inherit the group
+sudo setfacl    -m g:smbshare:rwx /srv/smbshare # current
+sudo setfacl -d -m g:smbshare:rwx /srv/smbshare # default (inherited by new files)
 ```
 
 ## 4. Samba password for the share user (interactive)
@@ -133,5 +133,5 @@ this is only the file-transfer path.)
 ```sh
 sudo systemctl disable --now smbd
 sudo mv /etc/samba/smb.conf.orig /etc/samba/smb.conf   # if you want the distro default back
-# remove /srv/share, the smbshare user/group, and the Tailscale ACL grant as desired
+# remove /srv/smbshare, the smbshare user/group, and the Tailscale ACL grant as desired
 ```

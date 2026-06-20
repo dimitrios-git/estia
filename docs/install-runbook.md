@@ -92,7 +92,7 @@ sudo -u claude chmod 600 /home/claude/.ssh/config
   `sudo -iu claude` → `claude`.
 
 **`[relogin]`** — log out/in so your account picks up the new `devshare` group
-(needed to access claude's clones under `/srv/dev`).
+(needed to access claude's clones under `/srv/devshare`).
 
 ## 7. Credential auto-unlock — `[ansible]` + `[manual]` + `[reboot]`
 

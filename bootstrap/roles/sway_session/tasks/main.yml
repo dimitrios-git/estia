@@ -1,0 +1,16 @@
+---
+# Deploy the Sway session launcher to /usr/local/bin (root-owned, on PATH for the
+# session user that greetd starts). Mirrors the samba role's copy-a-system-file
+# pattern. Idempotent: copies only when the tracked script changes.
+#
+# NOT managed here: /etc/greetd/config.toml (the `tuigreet … --cmd start-sway` line)
+# stays a manual step — see system/sway-session/README.md.
+
+- name: Install the Sway session launcher (start-sway)
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/system/sway-session/start-sway"
+    dest: /usr/local/bin/start-sway
+    owner: root
+    group: root
+    mode: "0755"
+  become: true

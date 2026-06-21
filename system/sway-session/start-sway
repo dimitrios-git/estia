@@ -1,0 +1,34 @@
+#!/bin/bash
+# start-sway — the Sway session launcher. greetd runs this via
+# `tuigreet … --cmd start-sway` (see /etc/greetd/config.toml, which is still a manual
+# step). It sets the Wayland session environment, then execs sway.
+#
+# The NVIDIA-specific workarounds are applied ONLY when an NVIDIA GPU is actually
+# live (its kernel module is loaded / device node exists). That keeps this one script
+# correct on AMD/Intel machines too — where GBM_BACKEND=nvidia-drm and
+# __GLX_VENDOR_LIBRARY_NAME=nvidia would otherwise break rendering.
+#
+# Tracked at system/sway-session/start-sway; deployed to /usr/local/bin/start-sway by
+# the `sway_session` bootstrap role. Edit the tracked copy + re-run the role to apply.
+
+# --- generic Wayland session env (every GPU) ----------------------------------
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=sway
+export XDG_CURRENT_DESKTOP=sway
+export MOZ_ENABLE_WAYLAND=1
+export GTK_THEME=Adwaita:dark
+
+# --- NVIDIA-only workarounds (applied only when an NVIDIA GPU is in use) -------
+sway_args=()
+if [ -e /dev/nvidia0 ] || grep -qE '^nvidia ' /proc/modules 2>/dev/null; then
+    export NVIDIA_DRIVER_CAPABILITIES=all
+    export GBM_BACKEND=nvidia-drm
+    export __GLX_VENDOR_LIBRARY_NAME=nvidia
+    export WLR_NO_HARDWARE_CURSORS=1
+    # Escape hatches if a release misbehaves on NVIDIA (uncomment as needed):
+    #export SWAY_IGNORE_NVIDIA=1
+    #export XWAYLAND_NO_GLAMOR=1
+    sway_args+=(--unsupported-gpu)
+fi
+
+exec sway "${sway_args[@]}"

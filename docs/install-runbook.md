@@ -21,6 +21,11 @@ Assumed already installed (out of scope for this repo):
 - Debian (trixie) with the **Sway** session reachable via **greetd + tuigreet**.
 - A working network; `git`, `sudo`, and your user account.
 
+> The Sway **launcher** `/usr/local/bin/start-sway` *is* reproduced — the
+> `sway_session` role deploys it (NVIDIA env applied only when an NVIDIA GPU is live).
+> Only the greetd `config.toml` line that calls it (`tuigreet … --cmd start-sway`)
+> stays manual; see `../system/sway-session/README.md`.
+
 ```sh
 sudo apt update && sudo apt install -y git ansible
 git clone git@github.com:dimitrios-git/estia.git ~/Development/estia

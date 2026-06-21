@@ -1,8 +1,8 @@
 #!/bin/sh
-# Waybar custom/usb — mounted USB / removable storage. The bar shows how many removable
-# filesystems are mounted; the tooltip lists each one (device, size, label, mountpoint).
-# Prints NOTHING when no removable device is attached, so Waybar hides the module
-# (self-hiding, portable). `show` opens a live lsblk view in a floatterm (the on-click).
+# Waybar custom/usb — mounted USB / removable storage. The bar always shows the USB
+# icon; its text is the count of mounted removable filesystems (empty when nothing is
+# attached). The tooltip lists each one (device, size, label, mountpoint), or says none
+# are attached. `show` opens a live lsblk view in a floatterm (the on-click).
 #
 # Detection is via lsblk: a whole disk counts as removable if it's hotplug / rm / USB.
 # Display-only — mount/unmount would need udisks2 (not installed); see the on-click view.
@@ -39,7 +39,9 @@ for disk in data.get("blockdevices", []):
         collect(disk, parts)
 
 if not parts:
-    sys.exit(0)  # nothing removable -> hide the module
+    # No removable device — keep the icon visible, just no count.
+    print(json.dumps({"text": "", "tooltip": "No removable storage attached"}))
+    sys.exit(0)
 
 mounted = [p for p in parts if p[3]]
 lines = [f"{n}  {s}  {lbl}  →  {mp if mp else '(not mounted)'}" for n, s, lbl, mp in parts]

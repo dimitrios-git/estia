@@ -20,8 +20,13 @@ HERE=$(cd -- "$(dirname -- "$0")" && pwd)      # bootstrap/
 HOSTVARS="$HERE/host_vars/localhost.yml"        # gitignored; this host's answers
 
 # --- helpers ------------------------------------------------------------------
-# cur KEY -> the current value of a flat `key: value` (or `key: "value"`) line
-cur() { [ -f "$HOSTVARS" ] && sed -n "s/^$1: *\"\\?\\([^\"]*\\)\"\\?\$/\\1/p" "$HOSTVARS" | head -1; }
+# cur KEY -> the current value of a flat `key: value` (or `key: "value"`) line.
+# Always returns 0 (empty if the file/key is absent) so `set -e` doesn't abort the
+# first run on a fresh machine where host_vars doesn't exist yet.
+cur() {
+    [ -f "$HOSTVARS" ] || return 0
+    sed -n "s/^$1: *\"\\?\\([^\"]*\\)\"\\?\$/\\1/p" "$HOSTVARS" | head -1
+}
 
 # ask VAR "Prompt" "default"  -> sets global $VAR (Enter accepts the default)
 ask() {
@@ -48,9 +53,14 @@ fi
 # --- 2. Gather answers (existing value -> detected -> hardcoded fallback) ------
 echo "==> Configure this host (press Enter to accept each [default]):"
 
-# LAN subnet: the link-scope route IS the LAN network in CIDR (e.g. 192.168.0.0/24)
+# LAN subnet: the link-scope route on the DEFAULT-route interface — so we pick the
+# real NIC, not docker0/bridges/veth/tailscale (whose routes often sort first).
+# Fall back to the first non-virtual link route, then a generic default.
+det_if=$(ip -o -4 route show default 2>/dev/null | awk '{print $5; exit}')
 det_lan=$(ip -o -4 route show scope link 2>/dev/null \
-            | awk '$1 ~ /\// && $1 !~ /^169\.254/ {print $1; exit}')
+            | awk -v ifc="$det_if" '$1 ~ /\// && index($0, " dev " ifc " ") {print $1; exit}')
+[ -n "$det_lan" ] || det_lan=$(ip -o -4 route show scope link 2>/dev/null \
+            | awk '$1 ~ /\// && $0 !~ /docker|veth|br-|virbr|tailscale|169\.254/ {print $1; exit}')
 def_lan=$(cur samba_lan_subnet);     def_lan=${def_lan:-${det_lan:-192.168.1.0/24}}
 def_music=$(cur cmus_music_dir);     def_music=${def_music:-$HOME/Music}
 def_samba=$(cur enable_samba);       def_samba=${def_samba:-true}
@@ -67,7 +77,19 @@ askyn enable_claude_user "Create the dedicated 'claude' agent user?" "$def_claud
 askyn enable_credentials "Enable login auto-unlock of SSH + GPG?"    "$def_creds"
 ask   cmus_music_dir     "Music library directory (cmus)"           "$def_music"
 
-# --- 3. Write the answers file (gitignored) -----------------------------------
+# --- 3. Confirm before writing/applying (catch a bad auto-detect here) ---------
+cat <<EOF
+
+  Answers to write + apply:
+    enable_samba       = $enable_samba$( [ "$enable_samba" = true ] && echo "   (LAN: $samba_lan_subnet)" )
+    enable_claude_user = $enable_claude_user
+    enable_credentials = $enable_credentials
+    cmus_music_dir     = $cmus_music_dir
+EOF
+askyn _proceed "Proceed?" true
+[ "$_proceed" = true ] || { echo "Aborted — nothing written or changed."; exit 0; }
+
+# --- 4. Write the answers file (gitignored) -----------------------------------
 mkdir -p "$HERE/host_vars"
 cat > "$HOSTVARS" <<EOF
 ---
@@ -80,7 +102,7 @@ cmus_music_dir: "$cmus_music_dir"
 EOF
 echo "==> Wrote $HOSTVARS"
 
-# --- 4. Run the playbook ------------------------------------------------------
+# --- 5. Run the playbook ------------------------------------------------------
 echo "==> Running the bootstrap (sudo for package installs / system roles)…"
 ansible-playbook "$HERE/site.yml" --ask-become-pass "$@"
 

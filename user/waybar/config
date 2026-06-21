@@ -76,13 +76,15 @@
         "format": "<span size='xx-large' rise='-3072'>󰻠</span> {}",
         "return-type": "json",
         "interval": 2,
-        "exec": "$HOME/.config/waybar/scripts/cpu.sh"
+        "exec": "$HOME/.config/waybar/scripts/cpu.sh",
+        "on-click": "pgrep -x htop >/dev/null && pkill -x htop || kitty --class floatterm -e htop"
     },
 
     "memory": {
         "format": "<span size='xx-large' rise='-3072'>󰍛</span> {used:0.1f}G",
         "interval": 2,
-        "tooltip-format": "RAM  {used:0.1f} / {total:0.1f} GiB ({percentage}%)\nfree {avail:0.1f} GiB · swap {swapUsed:0.1f} / {swapTotal:0.1f} GiB"
+        "tooltip-format": "RAM  {used:0.1f} / {total:0.1f} GiB ({percentage}%)\nfree {avail:0.1f} GiB · swap {swapUsed:0.1f} / {swapTotal:0.1f} GiB",
+        "on-click": "pgrep -x htop >/dev/null && pkill -x htop || kitty --class floatterm -e htop"
     },
 
     "pulseaudio": {

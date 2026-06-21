@@ -49,6 +49,7 @@ Legend: ✅ themed · 🟡 partial · ⬜ not yet.
 | sway | `$bg/$surface/…` vars | ✅ | window borders, urgent |
 | waybar | GTK CSS | ✅ | bar + tooltips |
 | swaylock | key=value config | ✅ | `user/swaylock/config`; all indicator states |
+| swaynag | key=value + `[type]` | ✅ | `user/swaynag/config`; exit/warning/error dialogs |
 | mako | key=value config | ✅ | notifications, urgent variant |
 | wofi | GTK CSS | ✅ | launcher |
 | cava | gradient config | ✅ | 8-stop accent gradient |

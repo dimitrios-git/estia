@@ -194,12 +194,19 @@ bindsym $mod+r mode "resize"
 # startup (a relogin re-runs it); see also ~/.config/xdg-desktop-portal/.
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
-# Dark appearance for GTK / portal-aware apps (Firefox, libadwaita): the Settings
-# portal exposes `org.freedesktop.appearance color-scheme` from this gsettings key,
-# so without prefer-dark those apps default to light. Setting it at login makes dark
-# reproducible (was a manual step). dconf persists it; needs gsettings-desktop-schemas.
-# The accent recolour + GTK theme live in ~/.config/gtk-3.0 / gtk-4.0 (see user/gtk/).
+# Dark appearance for GTK / portal-aware apps (Firefox, libadwaita). Two gsettings
+# keys, because portal-mediated apps — notably the GTK file chooser — read gsettings,
+# NOT ~/.config/gtk-3.0/settings.ini:
+#   color-scheme prefer-dark : the Settings-portal value Firefox/libadwaita read for
+#                              dark mode (else they default to light).
+#   gtk-theme Adwaita-dark    : the portal GTK file chooser / GTK3 chrome theme
+#                              (settings.ini alone leaves the portal picker on light).
+# dconf persists both; needs gsettings-desktop-schemas. The accent recolour lives in
+# ~/.config/gtk-3.0 / gtk-4.0 gtk.css (see user/gtk/). NOTE: the accent can't reach
+# Firefox via the portal — Debian's xdg-desktop-portal-gtk (1.15.3) doesn't export
+# accent-color — so Firefox's accent stays its default until a Firefox userChrome pass.
 exec gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+exec gsettings set org.gnome.desktop.interface gtk-theme Adwaita-dark
 
 ### Credentials — auto-unlock SSH + GPG from the login keyring
 # pam_gnome_keyring unlocks the gnome-keyring Secret Service at login; this hook

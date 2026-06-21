@@ -1,12 +1,13 @@
 # swaynag — wildcharm-themed warning/error dialogs (e.g. the $mod+Shift+e "exit sway?"
 # confirm). Colours come from themes/wildcharm/palette.yml, given as bare RRGGBB (no '#').
 #
-# The global options below are the defaults for every dialog; the [warning]/[error]
-# sections override just the accent bottom-border per message type (swaynag's two built-in
-# types — the sway exit binding passes `-t warning`). swaynag auto-reads this file from
-# ~/.config/swaynag/config, so the binding itself needs no flags. Keep annotations on their
-# own lines (no trailing inline comments).
+# GOTCHA: swaynag's built-in `warning` and `error` types ship hardcoded colours (warning =
+# yellow background). The global options below are NOT applied on top of a built-in type —
+# only keys set INSIDE that type's [section] override its presets. So the warning/error
+# colours must be restated in full per section (otherwise e.g. the warning bar stays yellow).
+# Global options still cover any dialog launched with no -t. Keep annotations on own lines.
 
+# --- global / default (dialogs with no -t) ---
 font=Lilex Nerd Font Mono 11
 background=0a0a0a
 border=1e1e1e
@@ -17,10 +18,24 @@ button-background=111111
 button-text=e0e0e0
 details-background=111111
 
-# warning — the sway exit confirm (-t warning): yellow accent line
+# --- warning (the sway exit confirm passes -t warning): yellow accent line ---
 [warning]
+background=0a0a0a
+border=1e1e1e
 border-bottom=ffaf00
+border-bottom-size=2
+text=e0e0e0
+button-background=111111
+button-text=e0e0e0
+details-background=111111
 
-# error — bright-red accent line
+# --- error: bright-red accent line ---
 [error]
+background=0a0a0a
+border=1e1e1e
 border-bottom=ff5f87
+border-bottom-size=2
+text=e0e0e0
+button-background=111111
+button-text=e0e0e0
+details-background=111111

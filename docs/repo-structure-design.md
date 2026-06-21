@@ -44,20 +44,18 @@ where wanted.
 
 ## 3. Proposed tree
 
+Originally sketched as `system/` + `defaults/` + `users/<name>/`. **As built** it's
+simpler — `defaults/` and the per-username level were dropped once parameterisation
+replaced the file-layer split (see §7):
+
 ```
-system/                 # (a) /etc — copied as root by bootstrap
-  samba/smb.conf
-  ssh/sshd_config
-  systemd/…
-defaults/               # (b) base — DEFERRED until a non-dimitrios consumer exists (§7)
-users/
-  dimitrios/            # (c) — today's app dirs move here verbatim
-    vim/ bash/ git/ sway/ waybar/ …
-  claude/               # (d) — minimal agent config (lands with the user)
-themes/                 # palette + assets (wildcharm); eventual templated
-                        #   theming system (§9.3) is deferred
-docs/                   # design docs (already here)
-bootstrap/              # the installer (see §4) + the symlink/path manifest
+user/                   # the human's home-deployed configs (flat — not users/<name>/)
+  vim/ bash/ git/ gnupg/ sway/ waybar/ glow/ cmus/ … bin/
+system/                 # (a) /etc — copied/templated as root by bootstrap
+  samba/smb.conf.j2
+docs/                   # design docs
+bootstrap/              # the installer + the manifest (group_vars/all.yml)
+# themes/ — palette/templated-theming idea (§9.3), still deferred
 ```
 
 ## 4. Deployment & tooling
@@ -89,9 +87,9 @@ the doc-vs-reality drift we keep hand-patching.
 ## 5. Path generalisation
 
 Hardcoded absolutes to fix (all currently `/home/dimitrios` or fixed mounts):
-cmus music dir, `gitconfig` `excludesfile`, `waybar/gpu.sh` path, the
-`gpg.program` wrapper path, glow's style path, and `sway/config`'s two `exec`
-paths (`gnupg/credential-unlock.sh`, `sway/start-waybar.sh`) — the last found by a
+cmus music dir, `gitconfig` `excludesfile`, `user/waybar/gpu.sh` path, the
+`gpg.program` wrapper path, glow's style path, and `user/sway/config`'s two `exec`
+paths (`user/gnupg/credential-unlock.sh`, `user/sway/start-waybar.sh`) — the last found by a
 `grep` sweep, not this list, so treat this inventory as a starting point.
 
 **Mechanism, in priority order:**
@@ -115,11 +113,11 @@ from a var at deploy time:
 | Item | Mechanism | How |
 |---|---|---|
 | Samba LAN subnet | 2 (host_vars) | `system/samba/smb.conf.j2` ← `samba_lan_subnet` |
-| glow style path | 2 (`target_home`) | `glow/glow.yml.j2`, rendered |
-| git `gpg.program` | 2 (`repo_root`) | `git/.gitconfig.j2` (a path *inside the clone*) |
+| glow style path | 2 (`target_home`) | `user/glow/glow.yml.j2`, rendered |
+| git `gpg.program` | 2 (`repo_root`) | `user/git/.gitconfig.j2` (a path *inside the clone*) |
 | git `excludesfile` | 1 (native `~`) | git tilde-expands its pathname configs |
 | waybar `gpu.sh` exec | 1 (`$HOME`) | script symlinked into `~`; waybar runs `exec` via `sh -c` |
-| cmus music dir | 2 (host_vars) | `cmus/rc.j2` ← `cmus_music_dir` (default `~/Music`) |
+| cmus music dir | 2 (host_vars) | `user/cmus/rc.j2` ← `cmus_music_dir` (default `~/Music`) |
 | sway `exec` scripts | 1 (`$HOME`) | `credential-unlock.sh` + `start-waybar.sh` symlinked into `~`; sway runs `exec` via `sh -c` |
 
 Two lessons worth keeping:
@@ -163,7 +161,7 @@ Three layers, each building on what already exists:
    no unattended re-run) and a TUI (more to maintain) — it extends the host_vars
    pattern already in use and stays diffable. Inputs: the toggles, `samba_lan_subnet`,
    `cmus_music_dir`, and **identity** — `git_user_name`/`git_user_email`/
-   `git_signingkey`, `gpg_keygrip`, `ssh_key_file` (rendered into `git/.gitconfig.j2`
+   `git_signingkey`, `gpg_keygrip`, `ssh_key_file` (rendered into `user/git/.gitconfig.j2`
    and the two credential scripts; setup.sh auto-detects them from existing git
    config, the first GPG secret key + its keygrip, and `~/.ssh/id_*`). With identity
    parameterised, **no personal literals remain in the repo** — the de-personalisation
@@ -184,17 +182,28 @@ Each phase is tied to a **concrete need** — we don't create layers before
 something fills them.
 
 - **Phase 0 — done:** `docs/` exists.
-- **Phase 1 — system/ (next real need):** add `system/` for the imminent
-  `smb.conf` + `sshd_config` from the file-sharing work. Introduce the
-  manifest + a re-link script. **No mass move yet.**
-- **Phase 2 — users/dimitrios/:** `git mv` the current app dirs under
-  `users/dimitrios/`, re-link from the manifest in one **verified** pass, rewrite
-  CLAUDE.md's layout/table (or generate it). This is the disruptive step —
-  isolate it.
-- **Phase 3 — users/claude/:** lands with the dedicated-user setup.
-- **Phase 4 — defaults/ + full templating:** only when the spin actually ships
-  to a **non-`dimitrios`** target. Until then `users/dimitrios/` *is* the de
-  facto default; a separate `defaults/` would be empty ceremony (**YAGNI**).
+- **Phase 1 — system/ — done:** `system/` holds the layer-(a) `/etc` configs
+  (Samba); the manifest drives symlinks + renders. **No mass move yet.**
+- **Phase 2 — `user/` (flat) — DONE, but revised.** Originally "`git mv` the app
+  dirs under **`users/dimitrios/`**". By the time we got here, §5+§6 had already
+  done this phase's *real* jobs — **de-personalisation** and **defaults-vs-overrides**
+  — via *parameterisation* (host_vars / templating / `setup.sh`), not a file-layer
+  split. So the per-username level (`users/dimitrios/`) lost its purpose: with no
+  personal values baked into files, a `users/<name>/` namespace would be a
+  single-occupant path level. We moved the app dirs into a **flat `user/`** instead
+  — the organisational clarity (human's home configs vs `system/`/`bootstrap/`/`docs/`)
+  without the username ceremony. Manifest `src` paths gained the `user/` prefix;
+  the CLAUDE.md table regenerated; dests unchanged.
+- **Phase 3 — `users/claude/` — dropped (YAGNI).** `claude` is headless: it
+  deploys no desktop dotfiles, and its git identity is generated by
+  `setup-claude-identity.sh` (not tracked). The layer would be empty.
+- **Phase 4 — `defaults/` — dropped (YAGNI).** Overrides are host_vars, and the
+  `user/` configs *are* the installable base — a separate `defaults/` is ceremony.
+
+**Net:** the four-layer (system/defaults/users-per-name) model collapsed to
+**`user/` + `system/`** once parameterisation replaced the file-layer split. The
+layered *reasoning* (§2) still holds; the *implementation* is simpler than first
+sketched because §6 absorbed most of it.
 
 ## 8. Migration mechanics & safety
 

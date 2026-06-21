@@ -54,7 +54,7 @@ Symlinks the plain configs and **renders** the path-generalised ones
 > `…/localhost.yml.example`); otherwise the defaults render. host_vars > group_vars,
 > so your override always wins.
 
-> **Git ignore model** (the `git/.gitignore_global` this step just symlinked is
+> **Git ignore model** (the `user/git/.gitignore_global` this step just symlinked is
 > layer 1 of three — know which layer a new ignore belongs in):
 > 1. **`~/.gitignore_global`** (`core.excludesfile`) — only *never-commit-anywhere*
 >    noise: OS/editor cruft + `.claude/settings.local.json`. It applies on **this
@@ -83,7 +83,7 @@ Generate/import your **own** keys (the repo carries none). Then:
 - Note your **GPG key id** and **keygrip** (`gpg --list-secret-keys --with-keygrip`).
 - **No file edits needed** — `setup.sh` collects your identity (git name/email,
   `git_signingkey`, `gpg_keygrip`, `ssh_key_file`) into host_vars and renders it
-  into `git/.gitconfig` + the credential-unlock scripts. It auto-detects most of it
+  into `user/git/.gitconfig` + the credential-unlock scripts. It auto-detects most of it
   (existing git config, your first GPG secret key + keygrip, your `~/.ssh/id_*`),
   so usually you just confirm. (Re-run `setup.sh` after generating keys.)
 

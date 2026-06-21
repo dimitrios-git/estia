@@ -170,11 +170,11 @@ claude's minimal dotfiles; tighten `/home/dimitrios` perms.
 
 ## 7. What this changes in the *current* repo
 
-- The `git/gpg-wrapper.sh` + `pinentry-tty` + cache machinery we built **stays
+- The `user/git/gpg-wrapper.sh` + `pinentry-tty` + cache machinery we built **stays
   for dimitrios's interactive commits**, but is **irrelevant for the agent**
   (claude's passwordless key needs no pinentry/cache). Worth stating plainly so
   it isn't mistaken for dead code later.
-- Hard-coded `/home/dimitrios` paths (gitconfig `excludesfile`, `waybar/gpu.sh`,
+- Hard-coded `/home/dimitrios` paths (gitconfig `excludesfile`, `user/waybar/gpu.sh`,
   `gpg.program`, the `gpg-agent.conf` symlink target) surface as needing
   parameterisation — the *same* work the bootstrap script already needs.
 
@@ -236,7 +236,7 @@ pushed as the bot, shows **Verified** on GitHub.
 **Phase 5 — running as claude.** `loginctl enable-linger claude`; Claude Code
 native installer (self-contained, no Node) into claude's home; authenticated via
 the **headless device-code flow** (no browser on claude — copy-paste the code,
-exactly the no-GUI principle). `claude-shell` (a `bash/.bashrc` function) drops
+exactly the no-GUI principle). `claude-shell` (a `user/bash/.bashrc` function) drops
 dimitrios into claude's context (`sudo -iu claude`, starting in `/srv/devshare`).
 
 ### Deviations from the plan (worth the article)

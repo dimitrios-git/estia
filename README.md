@@ -28,23 +28,23 @@ to `/etc` by the bootstrap (copied/templated, not symlinked).
 
 | Directory | Tool | Deployed to |
 |---|---|---|
-| `vim/` | Vim (vim-plug, CoC, Copilot) | `~/.vimrc` |
-| `nvim/` | Neovim (shares the Vim config) | `~/.config/nvim/` |
-| `bash/` | Bash (prompt, aliases, vi mode) | `~/.bashrc` |
-| `git/` | Git | `~/.gitconfig`, `~/.gitignore_global` |
-| `gnupg/` | GPG agent + credential auto-unlock hook | `~/.gnupg/gpg-agent.conf` |
-| `sway/` | Sway compositor | `~/.config/sway/config` |
-| `waybar/` | Waybar status bar (+ `scripts/`) | `~/.config/waybar/` |
-| `mako/` | Mako notifications | `~/.config/mako/config` |
-| `wofi/` | Wofi launcher | `~/.config/wofi/` |
-| `kitty/` | Kitty terminal (+ music session) | `~/.config/kitty/` |
-| `cmus/` | cmus music player | `~/.config/cmus/rc` |
-| `cava/` | cava audio visualiser | `~/.config/cava/config` |
-| `vifm/` | Vifm file manager | `~/.config/vifm/` |
-| `imv/` | imv image viewer | `~/.config/imv/config` |
-| `glow/` | Glow markdown renderer + theme | `~/.config/glow/` |
-| `xdg-desktop-portal/` | Screen-sharing portal routing | `~/.config/xdg-desktop-portal/` |
-| `bin/` | Helper scripts (e.g. `claude-access`) | `~/.local/bin/` |
+| `user/vim/` | Vim (vim-plug, CoC, Copilot) | `~/.vimrc` |
+| `user/nvim/` | Neovim (shares the Vim config) | `~/.config/nvim/` |
+| `user/bash/` | Bash (prompt, aliases, vi mode) | `~/.bashrc` |
+| `user/git/` | Git | `~/.gitconfig`, `~/.gitignore_global` |
+| `user/gnupg/` | GPG agent + credential auto-unlock hook | `~/.gnupg/gpg-agent.conf` |
+| `user/sway/` | Sway compositor | `~/.config/sway/config` |
+| `user/waybar/` | Waybar status bar (+ `scripts/`) | `~/.config/waybar/` |
+| `user/mako/` | Mako notifications | `~/.config/mako/config` |
+| `user/wofi/` | Wofi launcher | `~/.config/wofi/` |
+| `user/kitty/` | Kitty terminal (+ music session) | `~/.config/kitty/` |
+| `user/cmus/` | cmus music player | `~/.config/cmus/rc` |
+| `user/cava/` | cava audio visualiser | `~/.config/cava/config` |
+| `user/vifm/` | Vifm file manager | `~/.config/vifm/` |
+| `user/imv/` | imv image viewer | `~/.config/imv/config` |
+| `user/glow/` | Glow markdown renderer + theme | `~/.config/glow/` |
+| `user/xdg-desktop-portal/` | Screen-sharing portal routing | `~/.config/xdg-desktop-portal/` |
+| `user/bin/` | Helper scripts (e.g. `claude-access`) | `~/.local/bin/` |
 | `system/` | System configs (e.g. Samba) | `/etc/` (root, not symlinked) |
 | `bootstrap/` | The Ansible installer + manifest | — |
 | `docs/` | Design docs + the install runbook | — |
@@ -83,7 +83,7 @@ See [CLAUDE.md](CLAUDE.md) for detailed per-tool notes and external dependencies
 
 Commits are **GPG-signed**, and SSH + GPG **auto-unlock at login** (headless, no
 GUI): `pam_gnome_keyring` unlocks the login keyring, and a Sway hook
-(`gnupg/credential-unlock.sh`) loads the SSH key and warms gpg-agent — so **no
+(`user/gnupg/credential-unlock.sh`) loads the SSH key and warms gpg-agent — so **no
 per-boot `ssh-add` or `gpg-unlock`**. The GPG cache is session-length; the
 security boundary is the unlocked session + screen lock. Full mechanism:
 [`docs/credential-autounlock-design.md`](docs/credential-autounlock-design.md).

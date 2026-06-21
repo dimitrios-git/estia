@@ -83,7 +83,7 @@
     "clock": {
         "format": "<span size='xx-large' rise='-3072'></span> {:%a %d, %H:%M:%S}",
         "interval": 1,
-        "tooltip-format": "{:%A, %d %B %Y}\n<tt><small>{calendar}</small></tt>",
+        "tooltip-format": "<small>{:%A, %d %B %Y  %Z}</small>\n<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",
             "format": {

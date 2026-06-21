@@ -100,9 +100,13 @@ window#waybar {
    The bar (the `*` rule above) stays BigBlueTerm. */
 tooltip {
     font-family: "Lilex Nerd Font Mono";
-    font-size: 14px;
+    font-size: 17px;
+    background-color: #0a0a0a;
+    border: 1px solid #ce0056;
+    padding: 6px 10px;
 }
 
 tooltip label {
     font-family: "Lilex Nerd Font Mono";
+    color: #e0e0e0;
 }

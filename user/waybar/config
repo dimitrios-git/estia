@@ -95,8 +95,8 @@
     },
 
     "clock": {
-        "format": "<span size='xx-large' rise='-3072'></span> {:%Y-%m-%d %H:%M %Z}",
-        "interval": 60,
+        "format": "<span size='xx-large' rise='-3072'></span> {:%Y-%m-%d %H:%M:%S %Z}",
+        "interval": 1,
         "tooltip-format": "{:%A, %d %B %Y}\n<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",

@@ -20,14 +20,14 @@ bootstrap/
   site.yml              # top-level playbook
   ansible.cfg           # inventory + roles_path
   inventory.ini         # localhost, local connection
-  group_vars/all.yml    # THE MANIFEST — packages + dotfile symlinks + paths
+  group_vars/all.yml    # THE MANIFEST — packages + dotfile symlinks + templated configs + paths
   roles/
     packages/           # apt install (become)
-    dotfiles/           # symlink the manifest into $HOME (no root)
+    dotfiles/           # symlink plain configs + render templated_configs into $HOME (no root)
     samba/              # Samba share: /etc/samba/smb.conf + /srv/smbshare (become)
     claude_user/        # dedicated `claude` agent user + /srv/devshare + repo ACLs (become)
     credentials/        # login auto-unlock: gnome-keyring launcher-untangle (become)
-  gen-symlink-table.py  # regenerate CLAUDE.md's symlink table from the manifest
+  gen-symlink-table.py  # regenerate CLAUDE.md's symlink + rendered-template tables from the manifest
   setup-claude-identity.sh   # Phase 4 of the claude-user setup (to become a role)
 ```
 
@@ -51,8 +51,8 @@ On an already-configured machine, `--tags dotfiles` should report **no changes**
 (every link already correct) — that's the validation that the manifest matches
 reality.
 
-After editing `dotfile_links`, regenerate CLAUDE.md's symlink table so the docs
-can't drift from the manifest:
+After editing `dotfile_links` or `templated_configs`, regenerate CLAUDE.md's
+symlink + rendered-template tables so the docs can't drift from the manifest:
 
 ```sh
 python3 gen-symlink-table.py

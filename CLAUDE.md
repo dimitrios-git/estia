@@ -14,7 +14,7 @@ The configs are converging on one unified theme: near-black background `#0a0a0a`
 
 Claude Code runs here as a dedicated, unprivileged **`claude`** Linux user (own `0700` home `/home/claude`, member of the **`devshare`** group, **not** in sudo) — a kernel-enforced trust boundary, not a behavioural one. Full design: `docs/claude-user-design.md` (implemented 2026-06-20); day-to-day workflow: `docs/working-with-claude.md`. What matters when working in this repo:
 
-- **This checkout (`/srv/devshare/estia`) is claude's own clone** in the shared `/srv/devshare` tree — claude's *workspace*, **not** the live system. The dotfiles are symlinked from **dimitrios's** clone at **`~/Development/estia`**, which is the deployment source. Edits made here reach the running system only when **dimitrios pulls** after reviewing a pushed branch — so an edit here is **not** live. Never treat `/srv/devshare/estia` as the deployment source. (This is why the hardcoded `/home/dimitrios/...` absolute paths in `git/.gitconfig` and `glow/glow.yml` are correct — they target dimitrios's deployment clone, not this one.)
+- **This checkout (`/srv/devshare/estia`) is claude's own clone** in the shared `/srv/devshare` tree — claude's *workspace*, **not** the live system. The dotfiles are symlinked from **dimitrios's** clone at **`~/Development/estia`**, which is the deployment source. Edits made here reach the running system only when **dimitrios pulls** after reviewing a pushed branch — so an edit here is **not** live. Never treat `/srv/devshare/estia` as the deployment source. (This is why the hardcoded `/home/dimitrios/...` absolute paths still in `git/.gitconfig` are correct — they target dimitrios's deployment clone, not this one.)
 - **Collaboration is git-mediated, two principals.** claude commits and signs as **itself**, pushes a topic branch, and opens a **pull request** as the GitHub bot **`dimitrios-claude`** (`gh pr create`; commits show **Verified**); dimitrios reviews, **merge-commits** (preserves the signed commits; via `gh pr merge --admin`), and pulls to deploy. claude **never** self-merges — and *cannot*: a `main` ruleset (*Restrict updates*, admin-only bypass) blocks the agent from pushing to or merging `main` server-side, so its only route is opening a PR. The concrete loop (and the `gh`/PAT auth) is in `docs/working-with-claude.md`.
 - **claude's identity:** own SSH key `~/.ssh/id_claude`, own **passwordless** GPG key `4AA9DD310356AD0E`, git author `Claude (dimitrios's agent) <claude@charalampidis.pro>`.
 - **Signing is frictionless for claude** — the passwordless key needs **no pinentry, no agent cache, no `gpg-unlock`, and not `gpg-wrapper.sh`**. All that machinery in *Secrets & commit signing* below is **dimitrios's**; it does not apply when running as claude.
@@ -35,7 +35,7 @@ Two `/srv` trees live outside the repo but are part of the setup: **`/srv/devsha
 
 ### Active symlinks
 
-_Generated from the bootstrap manifest (`bootstrap/group_vars/all.yml`) — **do not edit by hand**; run `bootstrap/gen-symlink-table.py` after changing `dotfile_links`._
+_Generated from the bootstrap manifest (`bootstrap/group_vars/all.yml`) — **do not edit by hand**; run `bootstrap/gen-symlink-table.py` after changing `dotfile_links` or `templated_configs` (it regenerates both this table and the rendered-templates one below)._
 
 <!-- BEGIN active-symlinks (generated from bootstrap/group_vars/all.yml by bootstrap/gen-symlink-table.py — do not edit by hand) -->
 | Repo file | Symlinked to |
@@ -60,11 +60,20 @@ _Generated from the bootstrap manifest (`bootstrap/group_vars/all.yml`) — **do
 | `imv/config` | `~/.config/imv/config` |
 | `vifm/vifmrc` | `~/.config/vifm/vifmrc` |
 | `vifm/colors/wildcharm.vifm` | `~/.config/vifm/colors/wildcharm.vifm` |
-| `glow/glow.yml` | `~/.config/glow/glow.yml` |
 | `glow/wildcharm.json` | `~/.config/glow/wildcharm.json` |
 | `xdg-desktop-portal/sway-portals.conf` | `~/.config/xdg-desktop-portal/sway-portals.conf` |
 | `bin/claude-access` | `~/.local/bin/claude-access` |
 <!-- END active-symlinks -->
+
+### Rendered (templated) configs
+
+_Path-generalised configs (`docs/repo-structure-design.md` §5): rendered from a `.j2` by the `dotfiles` role instead of symlinked, so no `/home/<user>` literal is baked in (direct-edit is lost for these — keep the set small). Generated from the manifest's `templated_configs` — **do not edit by hand**; run `bootstrap/gen-symlink-table.py`._
+
+<!-- BEGIN rendered-templates (generated from bootstrap/group_vars/all.yml by bootstrap/gen-symlink-table.py — do not edit by hand) -->
+| Repo template | Rendered to |
+|---|---|
+| `glow/glow.yml.j2` | `~/.config/glow/glow.yml` |
+<!-- END rendered-templates -->
 
 `git/.gitconfig` points the global excludes file at `~/.gitignore_global`.
 
@@ -90,7 +99,7 @@ A fresh machine is reproduced by an **Ansible** playbook (engine decision: `docs
 
 ## TODO / planned work
 
-- **Repo → distributable spin roadmap.** The whole arc — path generalisation (the remaining hardcoded absolutes: `glow.yml` style, `gitconfig` `excludesfile`/`gpg.program`, `waybar/gpu.sh`, cmus music dir), role feature-flags + a configurable installer, and the layered `users/`/`defaults/` migration — is tracked in **`docs/repo-structure-design.md` §5–§7** (the single source; don't re-list it here). Phased on purpose — don't big-bang the structural move. First step done: the Samba LAN subnet is host_vars-templated.
+- **Repo → distributable spin roadmap.** The whole arc — path generalisation (remaining hardcoded absolutes: `gitconfig` `excludesfile`/`gpg.program`, `waybar/gpu.sh`, cmus music dir), role feature-flags + a configurable installer, and the layered `users/`/`defaults/` migration — is tracked in **`docs/repo-structure-design.md` §5–§7** (the single source; don't re-list it here). Phased on purpose — don't big-bang the structural move. Done so far: the Samba LAN subnet (host_vars) and **glow's style path** (`glow/glow.yml.j2`, rendered from `target_home` via the manifest's `templated_configs`).
 - **Version-control systemd user services.** Other user services worth reproducing on a fresh install live only in `~/.config/systemd/user/` and aren't tracked here yet. Bring them into the repo under a `systemd/` dir, symlinked into `~/.config/systemd/user/`, and add them to the bootstrap manifest (`bootstrap/group_vars/all.yml` → `dotfile_links`; the Active symlinks table regenerates from it). (`ssh-agent` is **not** one of these — it uses Debian's shipped socket-activated unit, nothing custom; see the Bash section.)
 
 ## Tool configurations
@@ -131,9 +140,9 @@ Wayland-first file manager. Images → `imv-wayland`, video → `mpv`, PDFs → 
 
 The markdown **preview-pane** call passes `-s ~/.config/glow/wildcharm.json` explicitly: glow drops colour when its output is piped (notty mode), so the style must be forced through the pipe. The full-screen **open** action (`glow -p`) runs in a real TTY and picks up the default style from `glow.yml`.
 
-### Glow (`glow/glow.yml`, `glow/wildcharm.json`)
+### Glow (`glow/glow.yml.j2`, `glow/wildcharm.json`)
 Terminal Markdown renderer (apt: `glow`). Used by Vim (`:Glow`/`<leader>md`) and vifm (open + preview).
-- `glow.yml` (config) sets the default `style:` to **`wildcharm.json` by absolute path** — glow does **not** expand `~`, so the path is hardcoded `/home/dimitrios/.config/glow/...` (mirrors the waybar `gpu.sh` absolute-path convention; update if the repo/home moves).
+- `glow.yml` sets the default `style:` to `wildcharm.json` **by absolute path** — glow can't expand `~`/`$VARS` there. So it's **path-generalised** (not symlinked): the repo carries `glow/glow.yml.j2`, and the `dotfiles` role renders it to `~/.config/glow/glow.yml` with the path templated from `{{ target_home }}` (`docs/repo-structure-design.md` §5; edit the `.j2` + re-run the role to apply). `waybar/gpu.sh`'s absolute path is the same kind of hardcode, still pending the same treatment.
 - `wildcharm.json` is a **glamour** style file on the unified theme: H1 is a white-on-`#ce0056` banner, H2 accent red, H3–H6 lighter pink `#f06ba0`, `hr`/links/code accent-tinted, code blocks on `#1a1a1a` with a saturated chroma syntax palette.
 - **notty caveat:** glow renders **without colour when piped** (e.g. vifm's preview pane), so consumers that pipe must pass `-s <style>` explicitly to force it; a real TTY (the floatterm, full-screen vifm open) uses the `glow.yml` default automatically.
 

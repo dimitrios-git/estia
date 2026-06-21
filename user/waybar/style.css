@@ -67,7 +67,9 @@ window#waybar {
 
 #network,
 #bluetooth,
-#custom-gpu,
+#custom-gpu0,
+#custom-gpu1,
+#custom-gpu2,
 #power-profiles-daemon,
 #cpu,
 #memory,

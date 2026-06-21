@@ -70,7 +70,7 @@ record_for() {
 emit_one() {
     oldifs=$IFS; IFS='|'; set -- $1; IFS=$oldifs
     util=$1; temp=$2; vu=$3; vt=$4; name=$5
-    if [ "$util" = "n/a" ] || [ -z "$util" ]; then text="GPU"; uline="util n/a"; else text="${util}%"; uline="${util}%"; fi
+    if [ "$util" = "n/a" ] || [ -z "$util" ]; then text="GPU"; uline="util n/a"; else text="$(printf '%3d%%' "$util")"; uline="${util}%"; fi
     tip="$name\\n$uline"
     [ -n "$temp" ] && tip="$tip · ${temp}°C"
     [ -n "$vu" ] && [ -n "$vt" ] && tip="$tip · ${vu} / ${vt} MiB"
@@ -100,7 +100,7 @@ if [ "$n" -gt "$merge_threshold" ]; then
         tip="$tip$line\\n"
     done
     IFS=$oldifs
-    printf '{"text":"%s%%","tooltip":"%s GPUs\\n%s"}\n' "$maxutil" "$n" "$tip"
+    printf '{"text":"%3d%%","tooltip":"%s GPUs\\n%s"}\n' "$maxutil" "$n" "$tip"
 else
     # One GPU per slot. Empty slot → print nothing (Waybar hides the module).
     [ "$slot" -lt "$n" ] || exit 0

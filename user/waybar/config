@@ -53,7 +53,7 @@
     },
 
     "network": {
-        "format-wifi": "<span size='xx-large' rise='-3072'>󰖩</span> {signalStrength}%",
+        "format-wifi": "<span size='xx-large' rise='-3072'>󰖩</span> {signalStrength:>3}%",
         "format-ethernet": "<span size='xx-large' rise='-3072'>󰈀</span>",
         "format-disconnected": "<span size='xx-large' rise='-3072'>󰖪</span>",
         "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
@@ -81,14 +81,14 @@
     },
 
     "memory": {
-        "format": "<span size='xx-large' rise='-3072'>󰍛</span> {used:0.1f}G",
+        "format": "<span size='xx-large' rise='-3072'>󰍛</span> {used:>4.1f}G",
         "interval": 2,
         "tooltip-format": "RAM  {used:0.1f} / {total:0.1f} GiB ({percentage}%)\nfree {avail:0.1f} GiB · swap {swapUsed:0.1f} / {swapTotal:0.1f} GiB",
         "on-click": "pgrep -x htop >/dev/null && pkill -x htop || kitty --class floatterm -e htop"
     },
 
     "pulseaudio": {
-        "format": "<span size='xx-large' rise='-3072'>󰕾</span> {volume}%",
+        "format": "<span size='xx-large' rise='-3072'>󰕾</span> {volume:>3}%",
         "format-muted": "<span size='xx-large' rise='-3072'>󰖁</span> muted",
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "on-click-right": "pgrep -x pulsemixer >/dev/null && pkill -x pulsemixer || kitty --class floatterm -e pulsemixer"

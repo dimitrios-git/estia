@@ -79,18 +79,31 @@
 
     "memory": {
         "format": "<span size='xx-large' rise='-3072'>󰍛</span> {used:0.1f}G",
-        "interval": 2
+        "interval": 2,
+        "tooltip-format": "RAM  {used:0.1f} / {total:0.1f} GiB ({percentage}%)\nfree {avail:0.1f} GiB · swap {swapUsed:0.1f} / {swapTotal:0.1f} GiB"
     },
 
     "pulseaudio": {
         "format": "<span size='xx-large' rise='-3072'>󰕾</span> {volume}%",
         "format-muted": "<span size='xx-large' rise='-3072'>󰖁</span> muted",
-        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-click-right": "pgrep -x pulsemixer >/dev/null && pkill -x pulsemixer || kitty --class floatterm -e pulsemixer"
     },
 
     "clock": {
         "format": "<span size='xx-large' rise='-3072'></span> {:%Y-%m-%d %H:%M %Z}",
-        "interval": 60
+        "interval": 60,
+        "tooltip-format": "<big>{:%A, %d %B %Y}</big>\n<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "format": {
+                "today": "<span color='#ce0056'><b>{}</b></span>"
+            }
+        },
+        "actions": {
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
     },
 
     "custom/debian": {

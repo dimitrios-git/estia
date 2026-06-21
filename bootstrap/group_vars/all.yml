@@ -120,7 +120,7 @@ localbin_binaries:
 apt_packages:
   wayland:   [sway, swayidle, swaylock, waybar, mako-notifier, wofi, grim, slurp, wl-clipboard, brightnessctl, playerctl, xwayland]
   portals:   [xdg-desktop-portal, xdg-desktop-portal-wlr, xdg-desktop-portal-gtk, pipewire, pipewire-pulse, wireplumber]
-  terminal:  [kitty, vifm, cmus, cava, glow, imv, zathura, mpv, chafa, poppler-utils, mediainfo, 7zip, unzip]
+  terminal:  [kitty, vifm, cmus, cava, glow, imv, zathura, mpv, chafa, poppler-utils, mediainfo, 7zip, unzip, pulsemixer]
   editors:   [vim, neovim, build-essential]   # build-essential: nvim treesitter compiles parsers on first run
   vcs_gpg:   [git, gnupg, pinentry-tty]
   net_bt:    [network-manager, bluez, rfkill]   # rfkill: waybar bluetooth right-click toggle

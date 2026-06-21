@@ -12,8 +12,9 @@ manifest), `fonts` (Nerd Fonts → `~/.local/share/fonts`), `localbin` (pinned p
 release binaries → `~/.local/bin`, e.g. bluetuith), `samba` (the layer-(a)
 Samba-over-Tailscale share), `claude_user`
 (the dedicated agent user + shared trees + repo ACLs — the *plumbing* of
-docs/claude-user-design.md; identity is a manual step, below), and `credentials`
-(the gnome-keyring launcher-untangle for login auto-unlock of SSH + GPG).
+docs/claude-user-design.md; identity is a manual step, below), `credentials`
+(the gnome-keyring launcher-untangle for login auto-unlock of SSH + GPG), and the
+opt-in `nvidia` (proprietary driver from non-free — default off, needs a reboot).
 
 ## Layout
 
@@ -34,6 +35,7 @@ bootstrap/
     samba/              # Samba share: /etc/samba/smb.conf + /srv/smbshare (become)
     claude_user/        # dedicated `claude` agent user + /srv/devshare + repo ACLs (become)
     credentials/        # login auto-unlock: gnome-keyring launcher-untangle (become)
+    nvidia/             # opt-in proprietary NVIDIA driver from non-free (become; default off)
   gen-symlink-table.py  # regenerate CLAUDE.md's symlink + rendered-template tables from the manifest
   setup-claude-identity.sh   # Phase 4 of the claude-user setup (to become a role)
 ```
@@ -114,6 +116,7 @@ installer (`../docs/repo-structure-design.md` §6):
 | `enable_claude_user` | `claude_user` | — | dedicated `claude` agent user + shared tree + ACLs |
 | `enable_credentials` | `credentials` | `credentials: [gnome-keyring, libsecret-tools]` | login auto-unlock of SSH + GPG |
 | `enable_libreoffice` | *(none — package-only)* | `office: [libreoffice]` | LibreOffice for vifm's office-doc opener (**default off** — heavy) |
+| `enable_nvidia` | `nvidia` | — | proprietary NVIDIA driver from non-free (**default off** — host-specific, needs a reboot; setup.sh detects a card) |
 
 Disabling a feature also **skips its apt packages** (via `package_group_features`
 in the manifest) — so `enable_samba=false` installs no `samba`. (`acl` stays in the
@@ -153,7 +156,8 @@ python3 gen-symlink-table.py
 
 ## NOT handled by Ansible (manual / out of scope — documented in CLAUDE.md)
 
-- **NVIDIA driver** (`nvidia-smi`) — vendor driver, host-specific.
+- (NVIDIA driver — now the opt-in `nvidia` role / `enable_nvidia`; only the **reboot**
+  after it stays manual.)
 - **NVM + Node** — installed per-user, not from apt.
 - **vim-plug** + `:PlugInstall`; **Claude Code** native installer.
 - (bluetuith and the Nerd Fonts used to be here — now the `localbin` and `fonts` roles.)

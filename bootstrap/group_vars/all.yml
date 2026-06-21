@@ -17,6 +17,9 @@ target_home: "{{ lookup('env', 'HOME') }}"
 enable_samba: true          # Samba-over-Tailscale share (samba role → /etc, /srv/smbshare)
 enable_claude_user: true    # dedicated `claude` agent user + shared tree + ACLs (claude_user role)
 enable_credentials: true    # login auto-unlock of SSH + GPG (credentials role)
+# Default OFF — host-specific (needs an NVIDIA card), pulls non-free, builds a kernel
+# module, and requires a reboot. setup.sh detects a card and asks. (nvidia role.)
+enable_nvidia: false        # proprietary NVIDIA driver (Debian non-free)
 # Package-only toggle (no role): gates the `office` apt group below via
 # package_group_features. Default OFF — libreoffice is heavy (~hundreds of MB) and
 # only vifm's office-doc opener needs it; turn on per host if you want it.

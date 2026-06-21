@@ -31,6 +31,9 @@
     - role: credentials  # login auto-unlock launcher-untangle (SSH + GPG)
       tags: [credentials]
       when: enable_credentials | default(true) | bool
+    - role: nvidia     # proprietary NVIDIA driver (non-free) — opt-in, needs reboot
+      tags: [nvidia]
+      when: enable_nvidia | default(false) | bool
 
 # Site-local customisations — the personalization seam (docs/personalizing.md).
 # Runs LAST, after the base system is in place. `bootstrap/local.yml` is an untracked

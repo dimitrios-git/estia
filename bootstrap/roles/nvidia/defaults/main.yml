@@ -1,0 +1,10 @@
+---
+# Overridable in host_vars if your mirror or component layout differs.
+nvidia_mirror_uri: "http://deb.debian.org/debian"
+# The driver lives in non-free; firmware deps in non-free-firmware; some helpers in
+# contrib. We add these via a dedicated .sources file rather than editing the distro's.
+nvidia_components: [contrib, non-free, non-free-firmware]
+# Debian's proprietary-driver metapackage + headers for the DKMS kernel-module build.
+nvidia_packages:
+  - nvidia-driver
+  - linux-headers-amd64

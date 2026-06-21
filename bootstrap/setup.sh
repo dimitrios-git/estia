@@ -116,6 +116,7 @@ enable_samba: $enable_samba
 enable_claude_user: $enable_claude_user
 enable_credentials: $enable_credentials
 enable_libreoffice: $enable_libreoffice
+enable_nvidia: $enable_nvidia
 samba_lan_subnet: "$samba_lan_subnet"
 cmus_music_dir: "$cmus_music_dir"
 git_user_name: "$git_user_name"
@@ -226,6 +227,11 @@ def_samba=$(cur enable_samba);       def_samba=${def_samba:-true}
 def_claude=$(cur enable_claude_user); def_claude=${def_claude:-true}
 def_creds=$(cur enable_credentials);  def_creds=${def_creds:-true}
 def_office=$(cur enable_libreoffice); def_office=${def_office:-false}
+# NVIDIA: detect a card via lspci (pciutils), else the PCI vendor id 0x10de in sysfs.
+det_nvidia=false
+if lspci 2>/dev/null | grep -qi 'nvidia'; then det_nvidia=true
+elif grep -qi 0x10de /sys/bus/pci/devices/*/vendor 2>/dev/null; then det_nvidia=true; fi
+def_nvidia=$(cur enable_nvidia); def_nvidia=${def_nvidia:-$det_nvidia}
 
 # Identity defaults: existing host_vars -> existing git config -> gpg/ssh detect.
 def_gname=$(cur git_user_name);   [ -n "$def_gname" ]  || def_gname=$(git config --global user.name 2>/dev/null || true)
@@ -253,6 +259,7 @@ fi
 askyn enable_claude_user "Create the dedicated 'claude' agent user?" "$def_claude"
 askyn enable_credentials "Enable login auto-unlock of SSH + GPG?"    "$def_creds"
 askyn enable_libreoffice "Install LibreOffice? (heavy — vifm opens office docs)" "$def_office"
+askyn enable_nvidia      "Install the NVIDIA proprietary driver? (non-free; needs reboot)" "$def_nvidia"
 ask   cmus_music_dir     "Music library directory (cmus)"           "$def_music"
 
 echo
@@ -276,6 +283,7 @@ cat <<EOF
     enable_claude_user = $enable_claude_user
     enable_credentials = $enable_credentials
     enable_libreoffice = $enable_libreoffice
+    enable_nvidia      = $enable_nvidia
     cmus_music_dir     = $cmus_music_dir
     git identity       = $git_user_name <$git_user_email>$( [ -n "$git_signingkey" ] && echo "   signing $git_signingkey" )
     ssh login key      = ~/.ssh/$ssh_key_file

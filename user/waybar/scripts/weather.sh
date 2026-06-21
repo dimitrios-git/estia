@@ -26,10 +26,10 @@ case "$data" in
         cond=$(printf '%s' "$1" | sed 's/ *$//')   # drop wttr.in's trailing space
         temp=$2; ctext=$3; feels=$4; hum=$5; wind=$6; loc=$7
         if [ -n "$temp" ]; then
-            # Keep the condition emoji at its natural size; drop only the temperature so
-            # it lines up with the other modules' text (the emoji's tall glyph otherwise
-            # rides the temp too high). `rise` is a hand-tuned offset — nudge if needed.
-            text="$(esc "$cond") <span rise='-2560'>$(esc "$temp")</span>"
+            # Drop the whole bar string (emoji + temp together) onto the other modules'
+            # text baseline — the emoji's tall glyph otherwise rides it too high. `rise`
+            # is a hand-tuned offset; nudge it if the row sits a touch high/low.
+            text="<span rise='-2560'>$(esc "$cond") $(esc "$temp")</span>"
             tip="$(esc "$loc")\\n$(esc "$ctext"), $(esc "$temp") (feels $(esc "$feels"))\\n$(esc "$hum") humidity · $(esc "$wind")"
             json=$(printf '{"text":"%s","tooltip":"%s"}' "$text" "$tip")
             printf '%s\n' "$json" > "$cache"

@@ -63,6 +63,7 @@ _Generated from the bootstrap manifest (`bootstrap/group_vars/all.yml`) — **do
 | `user/wofi/config` | `~/.config/wofi/config` |
 | `user/wofi/style.css` | `~/.config/wofi/style.css` |
 | `user/swaylock/config` | `~/.config/swaylock/config` |
+| `user/swaynag/config` | `~/.config/swaynag/config` |
 | `user/cava/config` | `~/.config/cava/config` |
 | `user/kitty/kitty.conf` | `~/.config/kitty/kitty.conf` |
 | `user/kitty/music.session` | `~/.config/kitty/music.session` |
@@ -187,6 +188,9 @@ Apply most config changes with `swaymsg reload`.
 
 ### Swaylock (lockscreen) (`user/swaylock/config`)
 The lockscreen, on the unified theme (the **first app themed through `docs/theming.md`** — colours from `themes/wildcharm/palette.yml`). Sway invokes it as plain `swaylock -f` (the `-c 000000` was **dropped** from all three call sites — the keybind, the swayidle `timeout 300`, and `before-sleep`), so `~/.config/swaylock/config` is the single source for the lock colours — its `color=0a0a0a` is the background (previously pure black). Every indicator state is mapped to the palette: idle ring `border`/inside `surface`/text `text`; typing `key-hl=accent` + `bs-hl=bright_red`; verifying ring `blue`; wrong ring `bright_red` on `accent_dark` inside; cleared ring `accent`; caps-lock ring/highlight `bright_yellow`. swaylock wants **bare `RRGGBB`** (no `#`), and `indicator-idle-visible` keeps the themed ring on screen even when idle (otherwise stock swaylock only draws it while typing). **Gotcha:** swaylock's config parser supports **whole-line `#` comments only** — it does *not* strip trailing/inline comments, so `color=0a0a0a  # bg` parses the value as `0a0a0a  # bg` and silently falls back to the default (white). Keep every annotation on its own line. Standard swaylock (no clock/blur) — swaylock-effects would be a later option. No reload needed; it's read at next lock.
+
+### Swaynag (dialogs) (`user/swaynag/config`)
+The warning/error popup sway uses for confirmations — notably the `$mod+Shift+e` "exit sway?" dialog. Themed through `docs/theming.md` (palette colours as **bare `RRGGBB`**, no `#`). The **global** options set the dark base — `background=0a0a0a`, `border=1e1e1e`, `text=e0e0e0`, `button-background=111111`, `details-background=111111`, and an `accent` (`ce0056`) bottom border. swaynag's two built-in message **types** get a per-type accent line via `[warning]`/`[error]` sections (which inherit the global dark base): `[warning]` → `bright_yellow` (`ffaf00`; the exit confirm passes `-t warning`), `[error]` → `bright_red` (`ff5f87`). swaynag **auto-reads** `~/.config/swaynag/config`, so the `swaynag …` invocation in the sway binding needs no flags (unlike swaylock's `-c`). Annotations on their own lines.
 
 ### Screen sharing / xdg-desktop-portal (`user/xdg-desktop-portal/sway-portals.conf`)
 Wayland screen sharing (Teams/Edge, OBS, etc.) goes through **PipeWire** + **xdg-desktop-portal**. On Sway the screencast backend is **`xdg-desktop-portal-wlr`** (wlroots); other portal interfaces (file picker, settings) fall to **`xdg-desktop-portal-gtk`**.

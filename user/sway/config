@@ -214,10 +214,13 @@ bindsym $mod+ctrl+l exec swaylock -f -c 000000
 # so the lock timers below pause until you leave fullscreen, then resume. Scoped
 # to media apps on purpose: a blanket rule would let a forgotten fullscreen
 # terminal skip the auto-lock (the security boundary). app_id is an unanchored
-# regex, so "firefox" also matches firefox-esr; add a browser = one more line.
+# regex, so "firefox" also matches firefox-esr, and "^FFPWA-" matches every
+# firefoxpwa web app (Netflix, YouTube, …) — each PWA gets its own FFPWA-<id>
+# app_id, so a prefix match is required to cover them all.
 for_window [app_id="firefox"]  inhibit_idle fullscreen
 for_window [app_id="chromium"] inhibit_idle fullscreen
 for_window [app_id="mpv"]      inhibit_idle fullscreen
+for_window [app_id="^FFPWA-"]  inhibit_idle fullscreen
 
 exec_always pkill swayidle; swayidle -w \
     timeout 270 'notify-send "Locking in 30 seconds"' \

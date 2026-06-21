@@ -8,7 +8,8 @@ start-to-finish narrative (which role when + the manual steps interleaved). This
 file is the per-role reference.
 
 **Status: growing.** Implemented: `packages` (apt), `dotfiles` (symlinks from the
-manifest), `samba` (the layer-(a) Samba-over-Tailscale share), `claude_user`
+manifest), `fonts` (Nerd Fonts → `~/.local/share/fonts`), `samba` (the layer-(a)
+Samba-over-Tailscale share), `claude_user`
 (the dedicated agent user + shared trees + repo ACLs — the *plumbing* of
 docs/claude-user-design.md; identity is a manual step, below), and `credentials`
 (the gnome-keyring launcher-untangle for login auto-unlock of SSH + GPG).
@@ -26,6 +27,7 @@ bootstrap/
   roles/
     packages/           # apt install (become)
     dotfiles/           # symlink plain configs + render templated_configs into $HOME (no root)
+    fonts/              # Nerd Fonts (Lilex, BigBlueTerm437) into ~/.local/share/fonts (no root)
     samba/              # Samba share: /etc/samba/smb.conf + /srv/smbshare (become)
     claude_user/        # dedicated `claude` agent user + /srv/devshare + repo ACLs (become)
     credentials/        # login auto-unlock: gnome-keyring launcher-untangle (become)
@@ -107,7 +109,7 @@ python3 gen-symlink-table.py
 - **NVIDIA driver** (`nvidia-smi`) — vendor driver, host-specific.
 - **NVM + Node** — installed per-user, not from apt.
 - **vim-plug** + `:PlugInstall`; **Claude Code** native installer.
-- **Nerd Fonts** (`~/.local/share/fonts` + `fc-cache`); **bluetuith** binary.
+- **bluetuith** binary (`~/.local/bin`, not in apt). (Nerd Fonts are now the `fonts` role.)
 - **Tailscale** (own apt repo) — the Samba share's remote reach; **libreoffice**
   (heavy, optional) — vifm's office-doc opener. (Full list: install-runbook §8.)
 - **System configs** under `../system/` — deployed by copy as root (see those

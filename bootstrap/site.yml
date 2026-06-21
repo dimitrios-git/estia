@@ -18,6 +18,8 @@
       tags: [packages]
     - role: dotfiles   # symlinks + rendered templates into $HOME (no root)
       tags: [dotfiles]
+    - role: fonts      # Nerd Fonts into ~/.local/share/fonts (no root)
+      tags: [fonts]
     - role: samba      # layer-(a) system config: Samba share to /etc (root)
       tags: [system, samba]
       when: enable_samba | default(true) | bool

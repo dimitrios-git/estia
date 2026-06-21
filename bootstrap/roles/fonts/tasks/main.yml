@@ -1,0 +1,21 @@
+---
+# Install the Nerd Fonts the desktop configs reference (kitty Lilex, waybar
+# BigBlueTerm437). User-level (no become), into ~/.local/share/fonts. Idempotent
+# via `creates:` (skips the download+extract entirely once installed). Needs
+# `unzip` (apt — installed by the packages role) to extract the .zip archives.
+
+- name: Ensure the user fonts directory exists
+  ansible.builtin.file:
+    path: "{{ target_home }}/.local/share/fonts"
+    state: directory
+
+- name: Install Nerd Fonts from the pinned nerd-fonts release
+  ansible.builtin.unarchive:
+    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/{{ nerd_fonts_version }}/{{ item.archive }}.zip"
+    dest: "{{ target_home }}/.local/share/fonts"
+    remote_src: true
+    creates: "{{ target_home }}/.local/share/fonts/{{ item.marker }}"
+  loop: "{{ nerd_fonts }}"
+  loop_control:
+    label: "{{ item.archive }} ({{ nerd_fonts_version }})"
+  notify: Rebuild font cache

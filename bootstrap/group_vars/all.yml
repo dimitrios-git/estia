@@ -21,6 +21,7 @@ dotfile_links:
   - { src: sway/config,                dest: "{{ target_home }}/.config/sway/config" }
   - { src: waybar/config,              dest: "{{ target_home }}/.config/waybar/config" }
   - { src: waybar/style.css,           dest: "{{ target_home }}/.config/waybar/style.css" }
+  - { src: waybar/scripts/gpu.sh,      dest: "{{ target_home }}/.config/waybar/scripts/gpu.sh" }
   - { src: mako/config,                dest: "{{ target_home }}/.config/mako/config" }
   - { src: wofi/config,                dest: "{{ target_home }}/.config/wofi/config" }
   - { src: wofi/style.css,             dest: "{{ target_home }}/.config/wofi/style.css" }

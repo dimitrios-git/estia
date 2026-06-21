@@ -36,7 +36,8 @@ cd ~/Development/estia/bootstrap
 ansible-playbook site.yml --tags packages --ask-become-pass
 ```
 Installs the apt set (Wayland stack, terminal tools, samba, gnome-keyring, …).
-**Not** apt: NVIDIA driver, NVM/Node, Nerd Fonts, bluetuith, Claude Code — see §8.
+**Not** apt: NVIDIA driver, NVM/Node, bluetuith, Claude Code — see §8. (Nerd Fonts
+are installed by the `fonts` role.)
 
 ## 2. Dotfiles (symlinks) — `[ansible]`
 
@@ -160,8 +161,6 @@ Not Ansible-managed (vendor, per-user, interactive, or deliberately heavy/option
 - **vim-plug**: `curl -fLo ~/.vim/autoload/plug.vim --create-dirs <url>`, then
   `:PlugInstall` in vim/nvim. (Treesitter parsers compile on first run — the
   needed compiler, `build-essential`, is now an apt dep, so no extra step.)
-- **Nerd Fonts** (BigBlueTerm437 → waybar, Lilex → kitty) into
-  `~/.local/share/fonts`, then `fc-cache -f`.
 - **Tailscale** — for the Samba share's remote (off-LAN) reach. Not apt-native:
   add its own apt repo (`pkgs.tailscale.com`) or run the install script, then
   `tailscale up`. (On-LAN Samba works without it.)

@@ -112,7 +112,7 @@
     },
 
     "custom/usb": {
-        "format": "<span size='xx-large' rise='-3072'>󰪒</span> {}",
+        "format": "<span size='xx-large' rise='-3072'>󱊛</span> {}",
         "return-type": "json",
         "interval": 5,
         "exec": "$HOME/.config/waybar/scripts/usb.sh",

@@ -60,7 +60,16 @@ if not chosen:
 
 action = "unmount" if chosen["mp"] else "mount"
 r = subprocess.run(["udisksctl", action, "-b", chosen["path"]], capture_output=True, text=True)
-notify((r.stdout or r.stderr).strip() or f"{action} {chosen['path']}")
+out = (r.stdout or "").strip()
+notify(out or (r.stderr or "").strip() or f"{action} {chosen['path']}")
+
+# On a successful mount, open vifm at the new mountpoint (udisksctl prints
+# "Mounted /dev/X at /path"). Launched detached so the click handler returns.
+if action == "mount" and r.returncode == 0 and " at " in out and shutil.which("vifm"):
+    mp = out.split(" at ", 1)[1].strip().rstrip(".")
+    if mp:
+        subprocess.Popen(["kitty", "-e", "vifm", mp], start_new_session=True,
+                         stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 PY
     exit 0
 fi

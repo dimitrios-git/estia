@@ -62,6 +62,7 @@ dotfile_links:
   - { src: user/mako/config,                dest: "{{ target_home }}/.config/mako/config" }
   - { src: user/wofi/config,                dest: "{{ target_home }}/.config/wofi/config" }
   - { src: user/wofi/style.css,             dest: "{{ target_home }}/.config/wofi/style.css" }
+  - { src: user/swaylock/config,            dest: "{{ target_home }}/.config/swaylock/config" }
   - { src: user/cava/config,                dest: "{{ target_home }}/.config/cava/config" }
   - { src: user/kitty/kitty.conf,           dest: "{{ target_home }}/.config/kitty/kitty.conf" }
   - { src: user/kitty/music.session,        dest: "{{ target_home }}/.config/kitty/music.session" }

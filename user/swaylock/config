@@ -1,0 +1,50 @@
+# swaylock — wildcharm-themed lockscreen. Colours come from themes/wildcharm/palette.yml
+# (swaylock wants bare RRGGBB, so the leading '#' is stripped). Sway invokes `swaylock -f`
+# with no -c flag, so the background below is the single source for the lock colour.
+#
+# Indicator states: idle (no input) / typing (key + backspace highlights) / verifying /
+# wrong / cleared / caps-lock. Each ring+inside+text is mapped to a palette role or ANSI
+# colour so the lock matches the rest of the desktop.
+
+# --- background + indicator geometry ---
+color=0a0a0a                       # role: bg
+font=Lilex Nerd Font Mono
+indicator-radius=110
+indicator-thickness=8
+show-failed-attempts
+
+# --- idle (no input) ---
+inside-color=111111                # role: surface
+ring-color=1e1e1e                  # role: border
+line-color=0a0a0a                  # role: bg (seam between ring + inside)
+separator-color=0a0a0a             # role: bg
+text-color=e0e0e0                  # role: text
+
+# --- typing (per-keystroke highlights) ---
+key-hl-color=ce0056                # role: accent (Debian red)
+bs-hl-color=ff5f87                 # ansi: bright_red (backspace)
+
+# --- verifying (checking the password) ---
+inside-ver-color=111111            # role: surface
+ring-ver-color=0087d7              # ansi: blue
+line-ver-color=0a0a0a              # role: bg
+text-ver-color=e0e0e0              # role: text
+
+# --- wrong password ---
+inside-wrong-color=9b0040          # role: accent_dark
+ring-wrong-color=ff5f87            # ansi: bright_red
+line-wrong-color=0a0a0a            # role: bg
+text-wrong-color=ffffff            # role: white
+
+# --- cleared (input wiped) ---
+inside-clear-color=111111          # role: surface
+ring-clear-color=ce0056            # role: accent
+line-clear-color=0a0a0a            # role: bg
+text-clear-color=e0e0e0            # role: text
+
+# --- caps lock on ---
+inside-caps-lock-color=111111      # role: surface
+ring-caps-lock-color=ffaf00        # ansi: bright_yellow (warning)
+caps-lock-key-hl-color=ffaf00      # ansi: bright_yellow
+caps-lock-bs-hl-color=ff5f87       # ansi: bright_red
+text-caps-lock-color=e0e0e0        # role: text

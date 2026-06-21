@@ -11,7 +11,7 @@
         "return-type": "json",
         "interval": 2,
         "exec": "$HOME/.config/waybar/scripts/gpu.sh",
-        "on-click": "pgrep -f 'watch.*nvidia-smi' >/dev/null && pkill -f 'watch.*nvidia-smi' || kitty --class floatterm -e watch -n 1 nvidia-smi"
+        "on-click": "pgrep -f gpu-watch.sh >/dev/null && pkill -f gpu-watch.sh || kitty --class floatterm -e $HOME/.config/waybar/scripts/gpu-watch.sh"
     },
 
     "power-profiles-daemon": {

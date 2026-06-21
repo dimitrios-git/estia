@@ -5,6 +5,7 @@ border-radius=0
 border-size=2
 default-timeout=5000
 max-visible=5
+max-history=100
 sort=-time
 margin=8
 padding=10,14

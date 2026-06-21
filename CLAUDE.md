@@ -233,4 +233,4 @@ Startup commands sourced after cmus restores its saved options. wildcharm-matche
 Spectrum visualiser. PipeWire input (monitor of the default sink). 8-stop accent gradient in the `#ce0056` family, fine bars (`bar_width 1` / `bar_spacing 0`), `noise_reduction = 88` (int 0–100 scale) + `monstercat` smoothing. A `method = sdl` GPU window (smooth pixel bars + GLSL shaders) is available — cava here is built with SDL2 — if a fancier visualiser is ever wanted.
 
 ### mako (`user/mako/config`) / wofi (`user/wofi/config`, `user/wofi/style.css`)
-Notification daemon and app launcher (`$mod+d`), both on the unified `#0a0a0a` / `#ce0056` theme. Reload mako with `makoctl reload`; wofi restyles on next launch.
+Notification daemon and app launcher (`$mod+d`), both on the unified `#0a0a0a` / `#ce0056` theme. Reload mako with `makoctl reload`; wofi restyles on next launch. `max-history=100` (up from mako's default 5) so the waybar notification widget (`custom/notifications` → `makoctl history`) has a deeper buffer — still in-memory only (lost on a mako restart/reboot; mako has no on-disk persistence).

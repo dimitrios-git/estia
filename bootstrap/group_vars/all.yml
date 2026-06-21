@@ -92,10 +92,21 @@ apt_packages:
   portals:   [xdg-desktop-portal, xdg-desktop-portal-wlr, xdg-desktop-portal-gtk, pipewire, pipewire-pulse, wireplumber]
   terminal:  [kitty, vifm, cmus, cava, glow, imv, zathura, mpv, chafa, poppler-utils, mediainfo]
   editors:   [vim, neovim]
-  vcs_gpg:   [git, gnupg, pinentry-tty, gnome-keyring, libsecret-tools]
+  vcs_gpg:   [git, gnupg, pinentry-tty]
   net_bt:    [network-manager, bluez]
   power:     [power-profiles-daemon]
   darkmode:  [dconf-cli, libglib2.0-bin, gsettings-desktop-schemas]
   fonts:     [fonts-noto-color-emoji]
-  sharing:   [samba, acl]
-  misc:      [curl, dbus-bin, fontconfig]
+  # acl is base, not in `sharing`: used by samba AND claude_user (shared-tree ACLs)
+  # AND the claude-access tool, so it must survive `enable_samba=false`.
+  misc:      [curl, dbus-bin, fontconfig, acl]
+  # --- feature-gated groups (installed only when their toggle is on, see below) ---
+  sharing:      [samba]                        # enable_samba
+  credentials:  [gnome-keyring, libsecret-tools]  # enable_credentials
+
+# Maps a feature-gated apt group -> its toggle. The `packages` role skips a group
+# whose toggle is false, so a disabled feature doesn't drag in its packages.
+# (Groups not listed here are core — always installed.)
+package_group_features:
+  sharing:     "{{ enable_samba | bool }}"
+  credentials: "{{ enable_credentials | bool }}"

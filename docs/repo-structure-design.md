@@ -148,8 +148,12 @@ Three layers, each building on what already exists:
    *"Include the Samba share?"* / *"Set up the `claude` agent user?"* are now config,
    not playbook edits. (`packages` + `dotfiles` are core, always run. Gotcha learned:
    `-e` passes **strings**, and ansible-core 2.19 rejects non-boolean conditionals —
-   hence the `| bool` coercion. Package-group gating, e.g. skipping the `samba` apt
-   group when `enable_samba=false`, is a small follow-up.)
+   hence the `| bool` coercion.) **Package-group gating ✅ DONE** too: feature-specific
+   apt groups (`sharing: [samba]`, `credentials: [gnome-keyring, libsecret-tools]`)
+   are mapped to their toggle in `package_group_features`, and the `packages` role
+   skips a group whose toggle is off — so a disabled feature drags in no packages.
+   (`acl` deliberately stays in base `misc`, not `sharing`: it's used by `claude_user`
+   + `claude-access` too, so it must survive `enable_samba=false`.)
 3. **An inputs front-end. ✅ DONE (`bootstrap/setup.sh`).** The chosen shape: a
    small **bash `setup.sh`** that is the *single entry point* — it installs Ansible,
    asks the questions (auto-detecting defaults: LAN subnet from `ip route`, music

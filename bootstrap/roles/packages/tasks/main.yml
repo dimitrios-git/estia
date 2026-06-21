@@ -1,11 +1,19 @@
 ---
 # Install apt packages from the manifest. Needs become (root). The apt_packages
-# dict is flattened to a single install call so apt resolves them together.
+# dict is flattened to a single install call so apt resolves them together —
+# minus any feature-gated group whose toggle is off (package_group_features),
+# so a disabled feature doesn't drag in its packages.
 
-- name: Install apt packages (all groups)
+- name: Install apt packages (feature-gated groups skipped when their toggle is off)
   ansible.builtin.apt:
-    name: "{{ apt_packages.values() | list | flatten }}"
+    name: "{{ apt_packages | dict2items
+              | rejectattr('key', 'in', disabled_pkg_groups)
+              | map(attribute='value') | flatten }}"
     state: present
     update_cache: true
     cache_valid_time: 3600
   become: true
+  vars:
+    # groups whose mapped toggle resolved to false
+    disabled_pkg_groups: "{{ package_group_features | dict2items
+                             | rejectattr('value') | map(attribute='key') | list }}"

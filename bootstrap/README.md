@@ -9,7 +9,9 @@ file is the per-role reference.
 
 **Status: growing.** Implemented: `packages` (apt), `dotfiles` (symlinks from the
 manifest), `fonts` (Nerd Fonts → `~/.local/share/fonts`), `localbin` (pinned prebuilt
-release binaries → `~/.local/bin`, e.g. bluetuith), `samba` (the layer-(a)
+release binaries → `~/.local/bin`, e.g. bluetuith), `sway_session` (the
+`/usr/local/bin/start-sway` launcher — NVIDIA flags applied only when an NVIDIA GPU is
+live), `samba` (the layer-(a)
 Samba-over-Tailscale share), `claude_user`
 (the dedicated agent user + shared trees + repo ACLs — the *plumbing* of
 docs/claude-user-design.md; identity is a manual step, below), `credentials`
@@ -32,6 +34,7 @@ bootstrap/
     dotfiles/           # symlink plain configs + render templated_configs into $HOME (no root)
     fonts/              # Nerd Fonts (Lilex, BigBlueTerm437) into ~/.local/share/fonts (no root)
     localbin/           # pinned GitHub-release binaries (bluetuith) into ~/.local/bin (no root)
+    sway_session/       # deploy system/sway-session/start-sway -> /usr/local/bin (become)
     samba/              # Samba share: /etc/samba/smb.conf + /srv/smbshare (become)
     claude_user/        # dedicated `claude` agent user + /srv/devshare + repo ACLs (become)
     credentials/        # login auto-unlock: gnome-keyring launcher-untangle (become)

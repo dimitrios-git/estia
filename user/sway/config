@@ -11,6 +11,7 @@ for_window [class=".*"] border pixel 1
 # matching rule's `resize set` wins).
 for_window [app_id="floatterm"] floating enable, resize set 800 600
 for_window [app_id="floatterm-weather"] resize set 1180 720
+for_window [app_id="floatterm-gpu"] resize set 1100 700
 
 # Home row direction keys, like vim
 set $left h

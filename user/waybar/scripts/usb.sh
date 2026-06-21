@@ -8,6 +8,9 @@
 # polkit lets the active session mount removable media). Needs udisks2 (apt manifest).
 
 if [ "$1" = menu ]; then
+    # Toggle: if the picker is already open, close it instead of stacking another wofi.
+    # (Its argv carries the unique prompt; pkill excludes its own pid, so no self-match.)
+    pkill -f 'wofi.*USB mount / unmount' 2>/dev/null && exit 0
     python3 - <<'PY'
 import json, subprocess, sys, shutil
 

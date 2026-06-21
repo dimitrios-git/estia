@@ -36,12 +36,14 @@ cd ~/Development/estia/bootstrap
 ansible-playbook site.yml --tags packages --ask-become-pass
 ```
 Installs the apt set (Wayland stack, terminal tools, samba, gnome-keyring, …).
-**Not** apt: NVIDIA driver, NVM/Node, Claude Code — see §8. (Nerd Fonts are installed
-by the `fonts` role; **bluetuith** by the `localbin` role — both core, no root.)
-Feature-gated groups are skipped when their
+**Not** apt: NVM/Node, Claude Code — see §8. (Nerd Fonts are installed by the `fonts`
+role; **bluetuith** by the `localbin` role — both core, no root.) Feature-gated groups
+are skipped when their
 toggle is off (`enable_samba`/`enable_credentials`); **`enable_libreoffice`**
-(default **off**, heavy) opts into LibreOffice for vifm's office-doc opener —
-`setup.sh` asks, or set it in host_vars.
+(default **off**, heavy) opts into LibreOffice for vifm's office-doc opener, and
+**`enable_nvidia`** (default **off**) opts into the proprietary NVIDIA driver (its own
+`nvidia` role — enables non-free, installs `nvidia-driver`, then needs a **reboot**).
+`setup.sh` detects a card and asks for both, or set them in host_vars.
 
 ## 2. Dotfiles (symlinks) — `[ansible]`
 
@@ -163,7 +165,9 @@ with no prompt.
 ## 8. Remaining manual / external bits — `[manual]`
 
 Not Ansible-managed (vendor, per-user, interactive, or deliberately heavy/optional):
-- **NVIDIA driver** (for `nvidia-smi` / the waybar GPU module) — host-specific.
+- **NVIDIA driver** — now the opt-in `nvidia` role (`enable_nvidia`, §1); only the
+  **reboot** afterwards is manual (`sudo reboot`, so the DKMS module + nouveau
+  blacklist take effect).
 - **NVM + Node** — per-user installer; needed by `markdown-preview.nvim`'s build.
 - **vim-plug**: `curl -fLo ~/.vim/autoload/plug.vim --create-dirs <url>`, then
   `:PlugInstall` in vim/nvim. (Treesitter parsers compile on first run — the

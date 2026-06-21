@@ -15,6 +15,10 @@
 # off by default — everything else works without it. Set true to opt in.
 enable_libreoffice: false
 
+# Install the proprietary NVIDIA driver (Debian non-free)? Off by default; host-
+# specific and needs a reboot. setup.sh detects a card and pre-answers this.
+enable_nvidia: false
+
 # Home LAN subnet allowed to reach the Samba share (smb.conf `hosts allow`).
 # Find it with: ip -o -4 addr show | awk '{print $4}'
 samba_lan_subnet: "192.0.2.0/24"    # e.g. 192.168.1.0/24

@@ -1,0 +1,40 @@
+---
+# Install the NVIDIA proprietary driver (Debian non-free). OPT-IN: gated by
+# `enable_nvidia` (default false) in site.yml — it's host-specific, pulls in non-free,
+# builds a kernel module (DKMS), and needs a REBOOT. setup.sh detects a card (lspci /
+# sysfs vendor 0x10de) and asks, default = detected.
+#
+# Idempotent: re-running with the driver already present and the repo already enabled
+# is changed=0. NOTE: the actual driver install + kernel module can't be auto-verified
+# here (needs root + a reboot) — review/test on a real NVIDIA host.
+
+- name: Detect the Debian release codename
+  ansible.builtin.shell: . /etc/os-release && printf '%s' "$VERSION_CODENAME"
+  register: _deb_codename
+  changed_when: false
+
+- name: Enable contrib + non-free + non-free-firmware for the driver
+  ansible.builtin.deb822_repository:
+    name: estia-nvidia
+    types: [deb]
+    uris: "{{ nvidia_mirror_uri }}"
+    suites: ["{{ _deb_codename.stdout }}"]
+    components: "{{ nvidia_components }}"
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    state: present
+  become: true
+
+- name: Install the NVIDIA driver + kernel headers
+  ansible.builtin.apt:
+    name: "{{ nvidia_packages }}"
+    state: present
+    update_cache: true
+  become: true
+  register: _nvidia_apt
+
+- name: A reboot is required before the driver loads
+  ansible.builtin.debug:
+    msg: >-
+      NVIDIA driver installed/updated — REBOOT before it loads (the nouveau blacklist
+      and the DKMS kernel module take effect on the next boot).
+  when: _nvidia_apt is changed

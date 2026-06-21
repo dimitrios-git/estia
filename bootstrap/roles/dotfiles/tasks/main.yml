@@ -1,7 +1,8 @@
 ---
-# Symlink every dotfile from the manifest into place. Idempotent: re-running is a
-# no-op when links already point correctly. Runs as the invoking user (no become)
-# — these live in $HOME. Replaces the manual `ln -s` steps in README/CLAUDE.md.
+# Deploy user configs from the manifest: symlink the plain ones, render the
+# path-generalised `templated_configs` (.j2 → no hardcoded /home/<user>).
+# Idempotent: re-running is a no-op when links/renders are already correct. Runs as
+# the invoking user (no become) — these live in $HOME. Replaces the manual `ln -s`.
 
 # ~/.gnupg must be 0700 or gpg refuses to use it. Set explicitly (and only here —
 # the generic parent-dir task below does NOT manage mode, so it never downgrades
@@ -20,7 +21,7 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-  loop: "{{ dotfile_links | map(attribute='dest') | map('dirname') | unique | list }}"
+  loop: "{{ (dotfile_links + templated_configs) | map(attribute='dest') | map('dirname') | unique | list }}"
   loop_control:
     label: "{{ item }}"
 
@@ -31,5 +32,18 @@
     state: link
     force: true            # replace a pre-existing plain file/wrong link
   loop: "{{ dotfile_links }}"
+  loop_control:
+    label: "{{ item.src }} -> {{ item.dest }}"
+
+# Path-generalised configs (docs/repo-structure-design.md §5): rendered from a .j2
+# so no /home/<user> literal is baked in. `force: true` replaces a pre-existing
+# symlink (e.g. an older deploy that symlinked glow.yml) with the rendered file.
+- name: Render templated configs from the manifest
+  ansible.builtin.template:
+    src: "{{ repo_root }}/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "0644"
+  loop: "{{ templated_configs }}"
   loop_control:
     label: "{{ item.src }} -> {{ item.dest }}"

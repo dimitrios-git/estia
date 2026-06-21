@@ -11,21 +11,21 @@
         "return-type": "json",
         "interval": 2,
         "exec": "$HOME/.config/waybar/scripts/gpu.sh 0",
-        "on-click": "swaymsg -t get_tree | grep -q floatterm-gpu && swaymsg '[app_id=\"^floatterm-gpu$\"] kill' || kitty --class floatterm-gpu -e $HOME/.config/waybar/scripts/gpu-watch.sh"
+        "on-click": "swaymsg -t get_tree | grep -q floatterm-gpu && swaymsg '[app_id=\"^floatterm-gpu$\"] kill' || kitty --class floatterm-gpu -o confirm_os_window_close=0 -e $HOME/.config/waybar/scripts/gpu-watch.sh"
     },
     "custom/gpu1": {
         "format": "<span size='xx-large' rise='-3072'>󰢮</span> {}",
         "return-type": "json",
         "interval": 2,
         "exec": "$HOME/.config/waybar/scripts/gpu.sh 1",
-        "on-click": "swaymsg -t get_tree | grep -q floatterm-gpu && swaymsg '[app_id=\"^floatterm-gpu$\"] kill' || kitty --class floatterm-gpu -e $HOME/.config/waybar/scripts/gpu-watch.sh"
+        "on-click": "swaymsg -t get_tree | grep -q floatterm-gpu && swaymsg '[app_id=\"^floatterm-gpu$\"] kill' || kitty --class floatterm-gpu -o confirm_os_window_close=0 -e $HOME/.config/waybar/scripts/gpu-watch.sh"
     },
     "custom/gpu2": {
         "format": "<span size='xx-large' rise='-3072'>󰢮</span> {}",
         "return-type": "json",
         "interval": 2,
         "exec": "$HOME/.config/waybar/scripts/gpu.sh 2",
-        "on-click": "swaymsg -t get_tree | grep -q floatterm-gpu && swaymsg '[app_id=\"^floatterm-gpu$\"] kill' || kitty --class floatterm-gpu -e $HOME/.config/waybar/scripts/gpu-watch.sh"
+        "on-click": "swaymsg -t get_tree | grep -q floatterm-gpu && swaymsg '[app_id=\"^floatterm-gpu$\"] kill' || kitty --class floatterm-gpu -o confirm_os_window_close=0 -e $HOME/.config/waybar/scripts/gpu-watch.sh"
     },
 
     "power-profiles-daemon": {
@@ -103,6 +103,7 @@
             }
         },
         "actions": {
+            "on-click": "shift_reset",
             "on-scroll-up": "shift_up",
             "on-scroll-down": "shift_down"
         }
@@ -113,7 +114,7 @@
         "return-type": "json",
         "interval": 1800,
         "exec": "$HOME/.config/waybar/scripts/weather.sh",
-        "on-click": "swaymsg -t get_tree | grep -q floatterm-weather && swaymsg '[app_id=\"^floatterm-weather$\"] kill' || kitty --class floatterm-weather -e $HOME/.config/waybar/scripts/weather.sh show"
+        "on-click": "swaymsg -t get_tree | grep -q floatterm-weather && swaymsg '[app_id=\"^floatterm-weather$\"] kill' || kitty --class floatterm-weather -o confirm_os_window_close=0 -e $HOME/.config/waybar/scripts/weather.sh show"
     },
 
     "custom/debian": {

@@ -12,7 +12,7 @@ cache="${XDG_RUNTIME_DIR:-/tmp}/waybar-weather.json"
 if [ "$1" = show ]; then
     # Full forecast in a pager. Guard the empty case (no network / rate-limited): pipe
     # less an empty stream and it exits instantly, flashing the floatterm shut.
-    exec sh -c 'f=$(curl -s --max-time 15 "wttr.in"); if [ -n "$f" ]; then printf "%s\n" "$f" | less -R; else printf "weather unavailable (network?)\n"; sleep 3; fi'
+    exec sh -c 'f=$(curl -s --max-time 15 "wttr.in"); if [ -n "$f" ]; then printf "%s\n" "$f" | less -RS; else printf "weather unavailable (network?)\n"; sleep 3; fi'
 fi
 
 esc() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }

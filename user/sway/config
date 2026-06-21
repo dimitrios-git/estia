@@ -206,7 +206,7 @@ exec $HOME/.config/sway/scripts/credential-unlock.sh
 exec_always $HOME/.config/sway/scripts/start-waybar.sh
 exec_always pkill mako; mako
 
-bindsym $mod+ctrl+l exec swaylock -f -c 000000
+bindsym $mod+ctrl+l exec swaylock -f
 
 # Idle inhibition — keep the screen from locking / DPMS-off while a media app is
 # *fullscreen* (movies, fullscreen YouTube), the modern "caffeine". sway raises a
@@ -224,10 +224,10 @@ for_window [app_id="^FFPWA-"]  inhibit_idle fullscreen
 
 exec_always pkill swayidle; swayidle -w \
     timeout 270 'notify-send "Locking in 30 seconds"' \
-    timeout 300 'swaylock -f -c 000000' \
+    timeout 300 'swaylock -f' \
     timeout 600 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' \
-    before-sleep 'swaylock -f -c 000000'
+    before-sleep 'swaylock -f'
 
 # XWayland
 xwayland enable

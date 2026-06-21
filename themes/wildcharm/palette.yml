@@ -1,0 +1,50 @@
+# themes/wildcharm/palette.yml — the single source of truth for estia's theme.
+#
+# A dark theme on near-black, with the official Debian red (#ce0056, PANTONE
+# Strong Red C) as the accent, and the saturated 16-colour ANSI set derived from
+# the `wildcharm` vim colorscheme. Every app config in this repo draws its colours
+# from the values below.
+#
+# This file is currently applied BY HAND — when theming an app you read the right
+# value here and write the literal hex into that app's config (see docs/theming.md
+# for the per-app process). The file is structured as plain data so a future
+# Ansible/Jinja2 render can consume it verbatim and stop the hand-copying
+# (docs/repo-structure-design.md §9.3, still deferred). Until then this is the
+# reference, not a deployed input.
+#
+# Edit a colour HERE first; then propagate it to the consuming configs. Hex values
+# carry a leading '#'; strip it for tools that want bare RRGGBB (e.g. swaylock).
+
+# Semantic roles — what a colour MEANS. Prefer these names when theming GUI apps
+# (sway already mirrors them as $bg/$surface/$border/$text/$dim/$accent).
+roles:
+  bg:          "#0a0a0a"   # window / canvas background (the near-black base)
+  surface:     "#111111"   # raised panels, inputs, the inside of indicators
+  surface_alt: "#1a1a1a"   # code blocks, hover rows (also ANSI black, color0)
+  border:      "#1e1e1e"   # separators, idle borders
+  text:        "#e0e0e0"   # primary foreground
+  dim:         "#555555"   # inactive / secondary text
+  muted:       "#888888"   # very-secondary text (e.g. unfocused workspaces)
+  accent:      "#ce0056"   # Debian red — focus, highlights, headings (== ANSI red)
+  accent_dark: "#9b0040"   # darker accent, for urgent borders / sunken red fills
+  white:       "#ffffff"   # max-contrast text on the accent
+
+# The 16-colour ANSI palette (wildcharm). Terminal apps map their colour slots to
+# these (kitty defines the canonical set; cmus/cava/vifm track it). Index in [].
+ansi:
+  black:          "#1a1a1a"   # [0]
+  red:            "#ce0056"   # [1]  the accent
+  green:          "#00af5f"   # [2]
+  yellow:         "#d78700"   # [3]
+  blue:           "#0087d7"   # [4]
+  magenta:        "#d787d7"   # [5]
+  cyan:           "#00afaf"   # [6]
+  white:          "#d0d0d0"   # [7]
+  bright_black:   "#767676"   # [8]
+  bright_red:     "#ff5f87"   # [9]
+  bright_green:   "#00d75f"   # [10]
+  bright_yellow:  "#ffaf00"   # [11]
+  bright_blue:    "#00afff"   # [12]
+  bright_magenta: "#ff87ff"   # [13]
+  bright_cyan:    "#00d7d7"   # [14]
+  bright_white:   "#ffffff"   # [15]

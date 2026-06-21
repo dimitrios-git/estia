@@ -1,0 +1,74 @@
+---
+# Install ONE prebuilt binary (the loop var `binary`) from its GitHub-release
+# tarball. Expects `_lb_uname` (uname -m) registered by main.yml.
+#
+# Each `binary` entry: name (the command in ~/.local/bin), version, url (a template
+# with {ver}/{arch} placeholders), member (the binary's path inside the tarball),
+# and optional checksums (sha256 of the tarball, keyed by arch token).
+
+- name: "{{ binary.name }}: install from its GitHub release"
+  vars:
+    _lb_arch: "{{ localbin_arch_map[_lb_uname.stdout] | default('') }}"
+    _lb_url: "{{ binary.url | replace('{ver}', binary.version) | replace('{arch}', _lb_arch) }}"
+    _lb_asset: "{{ _lb_url | basename }}"
+    _lb_sum: "{{ (binary.checksums | default({}))[_lb_arch] | default('') }}"
+    _lb_marker: "{{ target_home }}/.local/state/estia/localbin/{{ binary.name }}-{{ binary.version }}"
+  block:
+    - name: "{{ binary.name }}: unmapped CPU arch -> skip"
+      ansible.builtin.debug:
+        msg: "No release asset mapped for '{{ _lb_uname.stdout }}' — skipping {{ binary.name }}."
+      when: _lb_arch == ''
+
+    - name: "{{ binary.name }}: install when the arch is supported"
+      when: _lb_arch != ''
+      block:
+        # Re-install only if the binary is missing OR this version's marker is absent
+        # (a version bump changes the marker path). So a manual `rm` also re-installs.
+        - name: "{{ binary.name }}: is the binary + v{{ binary.version }} marker present?"
+          ansible.builtin.stat:
+            path: "{{ item }}"
+          loop:
+            - "{{ target_home }}/.local/bin/{{ binary.name }}"
+            - "{{ _lb_marker }}"
+          register: _lb_present
+
+        - name: "{{ binary.name }}: download, verify, place v{{ binary.version }}"
+          when: not (_lb_present.results | map(attribute='stat.exists') | min)
+          block:
+            - name: "{{ binary.name }}: temp workdir"
+              ansible.builtin.tempfile:
+                state: directory
+                suffix: estia-localbin
+              register: _lb_tmp
+
+            - name: "{{ binary.name }}: download the release tarball{{ ' (sha256-verified)' if _lb_sum else '' }}"
+              ansible.builtin.get_url:
+                url: "{{ _lb_url }}"
+                dest: "{{ _lb_tmp.path }}/{{ _lb_asset }}"
+                checksum: "{{ ('sha256:' + _lb_sum) if _lb_sum else omit }}"
+                mode: "0644"
+
+            - name: "{{ binary.name }}: extract the tarball"
+              ansible.builtin.unarchive:
+                src: "{{ _lb_tmp.path }}/{{ _lb_asset }}"
+                dest: "{{ _lb_tmp.path }}"
+                remote_src: true
+
+            - name: "{{ binary.name }}: install -> ~/.local/bin/{{ binary.name }}"
+              ansible.builtin.copy:
+                src: "{{ _lb_tmp.path }}/{{ binary.member }}"
+                dest: "{{ target_home }}/.local/bin/{{ binary.name }}"
+                mode: "0755"
+                remote_src: true
+
+            - name: "{{ binary.name }}: record v{{ binary.version }} (idempotency marker)"
+              ansible.builtin.file:
+                path: "{{ _lb_marker }}"
+                state: touch
+                mode: "0644"
+          always:
+            - name: "{{ binary.name }}: remove the temp workdir"
+              ansible.builtin.file:
+                path: "{{ _lb_tmp.path | default('') }}"
+                state: absent
+              when: _lb_tmp.path is defined

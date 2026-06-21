@@ -1,0 +1,7 @@
+---
+# Map the machine's `uname -m` to the arch token used in release asset filenames.
+# A binary whose releases use different tokens is handled by its own `url` template
+# in the manifest; extend this map if you add one for a new CPU arch.
+localbin_arch_map:
+  x86_64: x86_64
+  aarch64: arm64

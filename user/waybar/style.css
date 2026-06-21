@@ -95,3 +95,14 @@ window#waybar {
 #pulseaudio.muted {
     color: #666666;
 }
+
+/* Tooltips use Lilex (scalable) rather than the bar's bitmap BigBlueTerm font.
+   The bar (the `*` rule above) stays BigBlueTerm. */
+tooltip {
+    font-family: "Lilex Nerd Font Mono";
+    font-size: 14px;
+}
+
+tooltip label {
+    font-family: "Lilex Nerd Font Mono";
+}

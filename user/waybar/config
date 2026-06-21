@@ -107,7 +107,7 @@
 
     "custom/notifications": {
         "format": "<span size='xx-large' rise='-3072'>󰂜</span>",
-        "tooltip": "Notification history (click)",
+        "tooltip-format": "Notifications",
         "on-click": "swaymsg -t get_tree | grep -q floatterm-notify && swaymsg '[app_id=\"^floatterm-notify$\"] kill' || kitty --class floatterm-notify -o confirm_os_window_close=0 -e $HOME/.config/waybar/scripts/notifications.sh show"
     },
 

@@ -32,33 +32,33 @@ ssh_key_file: "id_ed25519"  # private key in ~/.ssh that the login hook loads
 # Mirrors CLAUDE.md's "Active symlinks" table; CLAUDE.md should be regenerated
 # from this list, not hand-maintained (kills doc-vs-reality drift).
 dotfile_links:
-  - { src: vim/.vimrc,                 dest: "{{ target_home }}/.vimrc" }
-  - { src: bash/.bashrc,               dest: "{{ target_home }}/.bashrc" }
-  - { src: git/.gitignore_global,      dest: "{{ target_home }}/.gitignore_global" }
-  - { src: gnupg/gpg-agent.conf,       dest: "{{ target_home }}/.gnupg/gpg-agent.conf" }
-  - { src: nvim/init.vim,              dest: "{{ target_home }}/.config/nvim/init.vim" }
-  - { src: nvim/lua/trees.lua,         dest: "{{ target_home }}/.config/nvim/lua/trees.lua" }
-  - { src: sway/config,                dest: "{{ target_home }}/.config/sway/config" }
-  # sway-launched session scripts — referenced via $HOME in sway/config `exec`
+  - { src: user/vim/.vimrc,                 dest: "{{ target_home }}/.vimrc" }
+  - { src: user/bash/.bashrc,               dest: "{{ target_home }}/.bashrc" }
+  - { src: user/git/.gitignore_global,      dest: "{{ target_home }}/.gitignore_global" }
+  - { src: user/gnupg/gpg-agent.conf,       dest: "{{ target_home }}/.gnupg/gpg-agent.conf" }
+  - { src: user/nvim/init.vim,              dest: "{{ target_home }}/.config/nvim/init.vim" }
+  - { src: user/nvim/lua/trees.lua,         dest: "{{ target_home }}/.config/nvim/lua/trees.lua" }
+  - { src: user/sway/config,                dest: "{{ target_home }}/.config/sway/config" }
+  # sway-launched session scripts — referenced via $HOME in user/sway/config `exec`
   # (sway runs exec through `sh -c`), so they need a stable ~ path.
   # (credential-unlock.sh + keyring-ssh-askpass.sh carry identity values, so
   # they're rendered — see templated_configs below — into the same dir.)
-  - { src: sway/start-waybar.sh,       dest: "{{ target_home }}/.config/sway/scripts/start-waybar.sh" }
-  - { src: waybar/config,              dest: "{{ target_home }}/.config/waybar/config" }
-  - { src: waybar/style.css,           dest: "{{ target_home }}/.config/waybar/style.css" }
-  - { src: waybar/scripts/gpu.sh,      dest: "{{ target_home }}/.config/waybar/scripts/gpu.sh" }
-  - { src: mako/config,                dest: "{{ target_home }}/.config/mako/config" }
-  - { src: wofi/config,                dest: "{{ target_home }}/.config/wofi/config" }
-  - { src: wofi/style.css,             dest: "{{ target_home }}/.config/wofi/style.css" }
-  - { src: cava/config,                dest: "{{ target_home }}/.config/cava/config" }
-  - { src: kitty/kitty.conf,           dest: "{{ target_home }}/.config/kitty/kitty.conf" }
-  - { src: kitty/music.session,        dest: "{{ target_home }}/.config/kitty/music.session" }
-  - { src: imv/config,                 dest: "{{ target_home }}/.config/imv/config" }
-  - { src: vifm/vifmrc,                dest: "{{ target_home }}/.config/vifm/vifmrc" }
-  - { src: vifm/colors/wildcharm.vifm, dest: "{{ target_home }}/.config/vifm/colors/wildcharm.vifm" }
-  - { src: glow/wildcharm.json,        dest: "{{ target_home }}/.config/glow/wildcharm.json" }
-  - { src: xdg-desktop-portal/sway-portals.conf, dest: "{{ target_home }}/.config/xdg-desktop-portal/sway-portals.conf" }
-  - { src: bin/claude-access,          dest: "{{ target_home }}/.local/bin/claude-access" }
+  - { src: user/sway/start-waybar.sh,       dest: "{{ target_home }}/.config/sway/scripts/start-waybar.sh" }
+  - { src: user/waybar/config,              dest: "{{ target_home }}/.config/waybar/config" }
+  - { src: user/waybar/style.css,           dest: "{{ target_home }}/.config/waybar/style.css" }
+  - { src: user/waybar/scripts/gpu.sh,      dest: "{{ target_home }}/.config/waybar/scripts/gpu.sh" }
+  - { src: user/mako/config,                dest: "{{ target_home }}/.config/mako/config" }
+  - { src: user/wofi/config,                dest: "{{ target_home }}/.config/wofi/config" }
+  - { src: user/wofi/style.css,             dest: "{{ target_home }}/.config/wofi/style.css" }
+  - { src: user/cava/config,                dest: "{{ target_home }}/.config/cava/config" }
+  - { src: user/kitty/kitty.conf,           dest: "{{ target_home }}/.config/kitty/kitty.conf" }
+  - { src: user/kitty/music.session,        dest: "{{ target_home }}/.config/kitty/music.session" }
+  - { src: user/imv/config,                 dest: "{{ target_home }}/.config/imv/config" }
+  - { src: user/vifm/vifmrc,                dest: "{{ target_home }}/.config/vifm/vifmrc" }
+  - { src: user/vifm/colors/wildcharm.vifm, dest: "{{ target_home }}/.config/vifm/colors/wildcharm.vifm" }
+  - { src: user/glow/wildcharm.json,        dest: "{{ target_home }}/.config/glow/wildcharm.json" }
+  - { src: user/xdg-desktop-portal/sway-portals.conf, dest: "{{ target_home }}/.config/xdg-desktop-portal/sway-portals.conf" }
+  - { src: user/bin/claude-access,          dest: "{{ target_home }}/.local/bin/claude-access" }
 
 # --- Rendered (templated) user configs ----------------------------------------
 # Path-generalisation (docs/repo-structure-design.md §5): configs that hardcode an
@@ -68,14 +68,14 @@ dotfile_links:
 # rendering loses direct-edit; symlink everything that doesn't truly need it.
 # Optional `mode:` per item (default 0644) — scripts that get executed need 0755.
 templated_configs:
-  - { src: git/.gitconfig.j2,          dest: "{{ target_home }}/.gitconfig" }
-  - { src: glow/glow.yml.j2,           dest: "{{ target_home }}/.config/glow/glow.yml" }
-  - { src: cmus/rc.j2,                 dest: "{{ target_home }}/.config/cmus/rc" }
+  - { src: user/git/.gitconfig.j2,          dest: "{{ target_home }}/.gitconfig" }
+  - { src: user/glow/glow.yml.j2,           dest: "{{ target_home }}/.config/glow/glow.yml" }
+  - { src: user/cmus/rc.j2,                 dest: "{{ target_home }}/.config/cmus/rc" }
   # credential scripts: carry identity values (ssh_key_file/keygrip/signingkey) and
   # are executed (sway exec + SSH_ASKPASS), so rendered + 0755, both into the same
   # dir so credential-unlock.sh finds its sibling via `readlink -f`.
-  - { src: gnupg/credential-unlock.sh.j2,   dest: "{{ target_home }}/.config/sway/scripts/credential-unlock.sh",   mode: "0755" }
-  - { src: gnupg/keyring-ssh-askpass.sh.j2, dest: "{{ target_home }}/.config/sway/scripts/keyring-ssh-askpass.sh", mode: "0755" }
+  - { src: user/gnupg/credential-unlock.sh.j2,   dest: "{{ target_home }}/.config/sway/scripts/credential-unlock.sh",   mode: "0755" }
+  - { src: user/gnupg/keyring-ssh-askpass.sh.j2, dest: "{{ target_home }}/.config/sway/scripts/keyring-ssh-askpass.sh", mode: "0755" }
 
 # --- Host-tunable defaults (override per host in bootstrap/host_vars/<host>.yml) -
 # Sensible defaults so a fresh checkout renders without host_vars; real machines

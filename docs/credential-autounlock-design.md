@@ -71,7 +71,7 @@ Net result at login: SSH key loaded + GPG cache warm, no prompts, no GUI.
 ## 5. What this changes / retires
 
 - **Per-boot `ssh-add` + `gpg-unlock`:** gone (automatic at login).
-- **`git/gpg-wrapper.sh`** (pinentry-mode error under `$CLAUDECODE`): kept, but
+- **`user/git/gpg-wrapper.sh`** (pinentry-mode error under `$CLAUDECODE`): kept, but
   becomes a rarely-hit safety net since the cache is pre-warmed.
 - **SSH agent:** Debian `ssh-agent.socket` → gnome-keyring's agent (for dimitrios).
 - **Secret Service** now exists → `~/.bash_secrets` tokens *could* migrate into it
@@ -103,9 +103,9 @@ The bootstrap offers two modes at account setup, both wired through greetd PAM:
 - **Packages:** `gnome-keyring`, `libpam-gnome-keyring`, `libsecret-tools`
   (`secret-tool`).
 - **`/etc/pam.d/greetd`** drop-in — tracked under `system/` (copied as root).
-- **`gnupg/gpg-agent.conf`:** add `allow-preset-passphrase`.
+- **`user/gnupg/gpg-agent.conf`:** add `allow-preset-passphrase`.
 - **Session-start GPG-preset hook** (small script + keygrip) — tracked.
-- **`SSH_AUTH_SOCK`** change in `bash/.bashrc` / session env.
+- **`SSH_AUTH_SOCK`** change in `user/bash/.bashrc` / session env.
 - All version-controlled; the bootstrap wires PAM + starts the daemon.
 
 ## 9. Open decisions
@@ -140,15 +140,15 @@ After that the daemon comes up as `gnome-keyring-daemon --daemonize --login`
 **Two places reality differed from the §4 plan:**
 1. **SSH — not gnome-keyring's agent** (its ssh component is gone). We keep the
    Debian ssh-agent and load the key from the keyring via an **SSH_ASKPASS** helper
-   (`gnupg/keyring-ssh-askpass.sh`). Simpler, version-proof.
+   (`user/gnupg/keyring-ssh-askpass.sh`). Simpler, version-proof.
 2. **GPG — not `gpg-preset-passphrase`** (it caches into a slot the *signing* path
    doesn't consult — sign failed "No pinentry" despite `keyinfo cached=1`). A
    **loopback sign of /dev/null** with the keyring passphrase warms the *normal*
    cache and signs cleanly (and validates the passphrase).
 
-**Tracked pieces:** `gnupg/credential-unlock.sh` (Sway-`exec` login hook),
-`gnupg/keyring-ssh-askpass.sh`, `gnupg/gpg-agent.conf`
-(`allow-loopback-pinentry` + long TTL), `sway/config` exec line. Passphrases
+**Tracked pieces:** `user/gnupg/credential-unlock.sh` (Sway-`exec` login hook),
+`user/gnupg/keyring-ssh-askpass.sh`, `user/gnupg/gpg-agent.conf`
+(`allow-loopback-pinentry` + long TTL), `user/sway/config` exec line. Passphrases
 stored once via `secret-tool store … autounlock ssh/gpg …`.
 
 **Cache TTL = ~session-length (`34560000`).** With auto-unlock the boundary is the

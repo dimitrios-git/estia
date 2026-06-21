@@ -1,0 +1,31 @@
+---
+# Install pinned prebuilt binaries from GitHub releases into ~/.local/bin (no root).
+# Generic + data-driven: the list lives in the manifest (group_vars/all.yml ->
+# localbin_binaries), seeded with bluetuith (not in apt). A user makes it theirs by
+# editing that list — add an entry, or set it to [] to install none — data, not
+# logic. Idempotent: a per-(name, version) marker makes a re-run a no-op, while a
+# version bump re-installs. Runs as the invoking user (no become) — these live in
+# $HOME, like the fonts role.
+
+- name: Ensure ~/.local/bin and the localbin state dir exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ target_home }}/.local/bin"
+    - "{{ target_home }}/.local/state/estia/localbin"
+
+# The play runs with gather_facts: false, so resolve the arch ourselves rather than
+# relying on ansible_architecture.
+- name: Detect CPU architecture
+  ansible.builtin.command: uname -m
+  register: _lb_uname
+  changed_when: false
+
+- name: Install each prebuilt binary
+  ansible.builtin.include_tasks: install.yml
+  loop: "{{ localbin_binaries | default([]) }}"
+  loop_control:
+    loop_var: binary
+    label: "{{ binary.name }} v{{ binary.version }}"

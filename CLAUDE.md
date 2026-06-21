@@ -54,6 +54,7 @@ _Generated from the bootstrap manifest (`bootstrap/group_vars/all.yml`) — **do
 | `user/waybar/config` | `~/.config/waybar/config` |
 | `user/waybar/style.css` | `~/.config/waybar/style.css` |
 | `user/waybar/scripts/gpu.sh` | `~/.config/waybar/scripts/gpu.sh` |
+| `user/waybar/scripts/gpu-watch.sh` | `~/.config/waybar/scripts/gpu-watch.sh` |
 | `user/mako/config` | `~/.config/mako/config` |
 | `user/wofi/config` | `~/.config/wofi/config` |
 | `user/wofi/style.css` | `~/.config/wofi/style.css` |
@@ -193,20 +194,20 @@ Top bar; files symlinked into `~/.config/waybar/`. Reload with `killall -SIGUSR2
 - **Font:** `BigBlueTerm437 Nerd Font Mono` at 16px (`style.css`). Bitmap-derived — keep sizes at integer pixel-grid values (16/24/32) for crispness.
 - **Icon alignment:** module icons are wrapped in inline Pango markup `<span size='xx-large' rise='-3072'>…</span>`. The `rise` is a hand-tuned vertical offset (Pango units, 1/1024 pt); re-tune if the font changes.
 - **PUA glyph caveat:** editing tools can silently strip Private-Use-Area (Nerd Font) glyphs, leaving an empty `<span></span>`. If an icon renders as blank space, insert the codepoint via a small Python write and verify, rather than re-typing it.
-- **Modules** (right side): `cpu`, `memory`, `custom/gpu`, `power-profiles-daemon`, `pulseaudio`, `user/sway/language`, `network`, `bluetooth`, `clock`, `custom/debian`. Right-side modules share styling via a grouped CSS selector — add new ones to that group.
+- **Modules** (right side): `cpu`, `memory`, `custom/gpu0`/`gpu1`/`gpu2` (one per GPU — see below), `power-profiles-daemon`, `pulseaudio`, `user/sway/language`, `network`, `bluetooth`, `clock`, `custom/debian`. Right-side modules share styling via a grouped CSS selector — add new ones to that group.
 - **Click handlers** open floating TUIs as toggles (`pgrep … && pkill … || kitty --class floatterm -e …`) so a second click closes the popup:
   - `network` → `nmtui`; ethernet shows the icon only (device name/IP in the tooltip).
   - `bluetooth` → `bluetuith`; right-click toggles the radio via `rfkill`.
   - `power-profiles-daemon` → left-click cycles profiles natively.
-  - `custom/gpu` → toggles `watch -n 1 nvidia-smi` in a floatterm.
-- **`custom/gpu`** is backed by `user/waybar/scripts/gpu.sh` (runs `nvidia-smi`, emits JSON): utilisation % + icon in the bar, card name / temp / VRAM in the tooltip. The script is **symlinked** into `~/.config/waybar/scripts/` (in the manifest) and `exec` references it via **`$HOME`** — waybar runs `exec`/`on-click` through `sh -c`, so the shell expands it (path generalisation, `docs/repo-structure-design.md` §5; no clone-absolute path, no manual edit on move). **NVIDIA-only and self-hiding:** the script guards on `command -v nvidia-smi` and prints nothing when it (or a card) is absent, so Waybar hides the whole module — icon included — on non-NVIDIA hosts, keeping the config portable. AMD/Intel aren't supported (different tooling: `amdgpu_top`/sysfs, `intel_gpu_top`); making the script vendor-agnostic under the same `custom/gpu` id is a possible future extension.
+  - `custom/gpu0`/`gpu1`/`gpu2` → each toggles a live GPU monitor (`gpu-watch.sh`) in a floatterm.
+- **`custom/gpu0`/`gpu1`/`gpu2`** are **one widget per GPU**, all backed by the same `user/waybar/scripts/gpu.sh` called with a slot index (`gpu.sh 0/1/2`); each emits JSON (util% + icon in the bar, card name / temp / VRAM in the tooltip). The script is **symlinked** into `~/.config/waybar/scripts/` (manifest) and `exec` references it via **`$HOME`** (waybar runs `exec`/`on-click` through `sh -c`, so the shell expands it — path generalisation, `docs/repo-structure-design.md` §5). **Per-GPU slots:** `gpu.sh` enumerates GPUs in a stable order (DRM card number); slot *i* renders the *i*-th GPU, and an empty slot **prints nothing** so Waybar hides that module — so a 1-GPU box shows one widget, a 2-GPU box two, etc. (three fixed slots). **More than 3 GPUs → merged:** slot 0 shows a combined summary (busiest util in the bar, every card in the tooltip) and the rest hide. **Multi-vendor** per card: **NVIDIA** (`nvidia-smi`, matched to the DRM card by PCI bus id), **AMD** (amdgpu **sysfs** — `gpu_busy_percent`/hwmon/`mem_info_vram_*`, no extra tool), **Intel** (sysfs, best-effort — i915 has no util counter, so name+temp only). The **`on-click`** runs the companion **`gpu-watch.sh`** (also symlinked), which picks the best live monitor available — `nvidia-smi`/`amdgpu_top`/`radeontop`/`intel_gpu_top`, falling back to a no-extra-tool sysfs poll — so the click works on any GPU; the toggle matches on the `gpu-watch.sh` path. To change the per-GPU-vs-merged cutoff, edit `merge_threshold` in `gpu.sh` and add/remove `custom/gpuN` slots in the waybar config + the CSS group.
 - **`custom/debian`** is a decorative Debian swirl pinned at the far right (accent red), non-interactive.
 
 **External dependencies** (install on a fresh system):
 - `network`: NetworkManager (`nmtui`, `nmcli`) — usually present.
 - `bluetooth`: `bluez` (apt) + `bluetuith` (not in apt; the **`localbin` role** fetches the pinned [bluetuith release](https://github.com/bluetuith-org/bluetuith/releases) binary into `~/.local/bin` — see *Bootstrap*). `systemctl enable --now bluetooth`.
 - `power-profiles-daemon`: apt package; `systemctl enable --now power-profiles-daemon`. Works with the `amd-pstate-epp` cpufreq driver (power-saver/balanced/performance). The module hides itself if the daemon's dbus name is absent.
-- `custom/gpu`: `nvidia-smi` (NVIDIA driver — installable via the opt-in `nvidia` role / `enable_nvidia`) + `watch` for the click handler.
+- `custom/gpu`: vendor-dependent — **NVIDIA** needs `nvidia-smi` (the opt-in `nvidia` role / `enable_nvidia`); **AMD** needs nothing (amdgpu sysfs); **Intel** shows name+temp from sysfs (full util needs `intel-gpu-tools`). The `on-click` monitor uses whatever live tool is present (`nvidia-smi`/`amdgpu_top`/`radeontop`/`intel_gpu_top`) or a sysfs poll, so no package is strictly required.
 - Fonts (`BigBlueTerm437` / `Lilex` Nerd Font) are installed by the **`fonts` role** into `~/.local/share/fonts/` (from the pinned nerd-fonts release; bump `nerd_fonts_version` in `bootstrap/roles/fonts/defaults/main.yml` to update). Adding a new Nerd Font = a new `nerd_fonts` entry (with its `marker` ttf) + `fc-cache` (the role's handler).
 
 ### Kitty (`user/kitty/kitty.conf`, `user/kitty/music.session`)

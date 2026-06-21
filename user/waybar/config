@@ -4,14 +4,28 @@
     "height": 32,
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["tray", "cpu", "memory", "custom/gpu", "power-profiles-daemon", "pulseaudio", "sway/language", "network", "bluetooth", "clock", "custom/debian"],
+    "modules-right": ["tray", "cpu", "memory", "custom/gpu0", "custom/gpu1", "custom/gpu2", "power-profiles-daemon", "pulseaudio", "sway/language", "network", "bluetooth", "clock", "custom/debian"],
 
-    "custom/gpu": {
+    "custom/gpu0": {
         "format": "<span size='xx-large' rise='-3072'>󰢮</span> {}",
         "return-type": "json",
         "interval": 2,
-        "exec": "$HOME/.config/waybar/scripts/gpu.sh",
-        "on-click": "pgrep -f 'watch.*nvidia-smi' >/dev/null && pkill -f 'watch.*nvidia-smi' || kitty --class floatterm -e watch -n 1 nvidia-smi"
+        "exec": "$HOME/.config/waybar/scripts/gpu.sh 0",
+        "on-click": "pgrep -f gpu-watch.sh >/dev/null && pkill -f gpu-watch.sh || kitty --class floatterm -e $HOME/.config/waybar/scripts/gpu-watch.sh"
+    },
+    "custom/gpu1": {
+        "format": "<span size='xx-large' rise='-3072'>󰢮</span> {}",
+        "return-type": "json",
+        "interval": 2,
+        "exec": "$HOME/.config/waybar/scripts/gpu.sh 1",
+        "on-click": "pgrep -f gpu-watch.sh >/dev/null && pkill -f gpu-watch.sh || kitty --class floatterm -e $HOME/.config/waybar/scripts/gpu-watch.sh"
+    },
+    "custom/gpu2": {
+        "format": "<span size='xx-large' rise='-3072'>󰢮</span> {}",
+        "return-type": "json",
+        "interval": 2,
+        "exec": "$HOME/.config/waybar/scripts/gpu.sh 2",
+        "on-click": "pgrep -f gpu-watch.sh >/dev/null && pkill -f gpu-watch.sh || kitty --class floatterm -e $HOME/.config/waybar/scripts/gpu-watch.sh"
     },
 
     "power-profiles-daemon": {

@@ -71,11 +71,15 @@ reality.
 the setup without editing the playbook — the first slice of the configurable
 installer (`../docs/repo-structure-design.md` §6):
 
-| Toggle | Role | What it sets up |
-|---|---|---|
-| `enable_samba` | `samba` | Samba-over-Tailscale share (`/etc`, `/srv/smbshare`) |
-| `enable_claude_user` | `claude_user` | dedicated `claude` agent user + shared tree + ACLs |
-| `enable_credentials` | `credentials` | login auto-unlock of SSH + GPG |
+| Toggle | Role | Apt group skipped when off | What it sets up |
+|---|---|---|---|
+| `enable_samba` | `samba` | `sharing: [samba]` | Samba-over-Tailscale share (`/etc`, `/srv/smbshare`) |
+| `enable_claude_user` | `claude_user` | — | dedicated `claude` agent user + shared tree + ACLs |
+| `enable_credentials` | `credentials` | `credentials: [gnome-keyring, libsecret-tools]` | login auto-unlock of SSH + GPG |
+
+Disabling a feature also **skips its apt packages** (via `package_group_features`
+in the manifest) — so `enable_samba=false` installs no `samba`. (`acl` stays in the
+base set; `claude_user`/`claude-access` need it regardless.)
 
 ```sh
 # skip a role for this run (string is coerced via `| bool`):

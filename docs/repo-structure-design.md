@@ -94,23 +94,28 @@ cmus music dir, `gitconfig` `excludesfile`, `waybar/gpu.sh` path, the
 path.
 
 **Mechanism, in priority order:**
-1. **Runtime `$HOME`/XDG** where the format allows it (bash, scripts) — no
-   templating, stays directly editable.
-2. **Bootstrap-time templating** for formats that can't expand variables (git's
-   `excludesfile`, absolute `exec` paths in waybar) — a `host-vars` file supplies
-   `HOME`, `REPO_PATH`, `MUSIC_DIR`, etc., and Ansible renders them.
+1. **Runtime `$HOME`/XDG/native expansion** where the format allows it — no
+   templating, stays directly editable. This is *wider* than first assumed: bash &
+   scripts, git's `excludesfile` (git tilde-expands its pathname configs), and even
+   waybar's `exec` (waybar runs it via `sh -c`, so `$HOME` expands).
+2. **Bootstrap-time templating** only for formats that expand *nothing* AND whose
+   value isn't simply `$HOME` — e.g. git's `gpg.program` (an absolute path *inside
+   the clone* → `{{ repo_root }}`) or a host-specific value like the Samba subnet
+   (a `host_vars` var). Ansible renders these from the manifest / host_vars.
 
 Principle: template only what *must* be machine-specific; everything else stays
 plain and symlinked.
 
 **Status:** started — the symlink *destinations* are already `$HOME`-based (the
-manifest's `target_home`). **Done** (all via the manifest's `templated_configs`,
-rendered by the `dotfiles` role): the Samba LAN subnet (host_vars →
-`system/samba/smb.conf.j2`); **glow's style path** (`glow/glow.yml.j2` ←
-`target_home`); and the **git config** (`git/.gitconfig.j2` — `gpg.program` ←
-`repo_root`, while `excludesfile` uses git-native `~`: both mechanisms in one
-file). **Remaining:** `waybar/gpu.sh`'s exec path, cmus music dir — same pattern
-(template only what can't expand `~`/`$VARS`).
+manifest's `target_home`). **Done:** the Samba LAN subnet (host_vars →
+`system/samba/smb.conf.j2`, rendered); **glow's style path** (`glow/glow.yml.j2` ←
+`target_home`, rendered); the **git config** (`git/.gitconfig.j2` — `gpg.program` ←
+`repo_root` rendered, while `excludesfile` uses git-native `~`); and **waybar's
+`gpu.sh` exec** (the script is now symlinked into `~` and the config references it
+via `$HOME` — mechanism 1, no templating). Notably the two cases first *assumed* to
+need templating (git `excludesfile`, waybar `exec`) both turned out to expand
+natively. **Remaining:** cmus's music dir — a fixed *mount* path, so likely a
+`host_vars` value (like the Samba subnet) rather than `$HOME`/`repo_root`.
 
 ## 6. The configurable installer (the end goal)
 

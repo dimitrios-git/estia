@@ -10,7 +10,7 @@
         "format": "<span size='xx-large' rise='-3072'>󰢮</span> {}",
         "return-type": "json",
         "interval": 2,
-        "exec": "/home/dimitrios/Development/estia/waybar/scripts/gpu.sh",
+        "exec": "$HOME/.config/waybar/scripts/gpu.sh",
         "on-click": "pgrep -f 'watch.*nvidia-smi' >/dev/null && pkill -f 'watch.*nvidia-smi' || kitty --class floatterm -e watch -n 1 nvidia-smi"
     },
 

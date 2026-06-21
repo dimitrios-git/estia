@@ -17,3 +17,16 @@
     # groups whose mapped toggle resolved to false
     disabled_pkg_groups: "{{ package_group_features | dict2items
                              | rejectattr('value') | map(attribute='key') | list }}"
+
+# iperf3 ships a systemd service that runs `iperf3 --server` — an open bandwidth-
+# test daemon listening on tcp/5201. We install iperf3 only as a client-side
+# diagnostic (it's how we chase samba/network throughput), so the server must NOT
+# come up by default. Keep the unit disabled + stopped; run an ad-hoc server with
+# `iperf3 -s` by hand (or `systemctl start iperf3`) only for the duration of a test.
+- name: Ensure the iperf3 server daemon is not enabled by default
+  ansible.builtin.systemd:
+    name: iperf3.service
+    enabled: false
+    state: stopped
+  become: true
+  when: "'iperf3' in apt_packages.misc"

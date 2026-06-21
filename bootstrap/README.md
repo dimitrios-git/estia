@@ -43,13 +43,17 @@ re-runnable, and passes extra args through to `ansible-playbook`):
 
 ```sh
 cd bootstrap && ./setup.sh
+./setup.sh --help                      # flags + usage
 ./setup.sh --check --diff              # true DRY-RUN: preview everything, change nothing
+./setup.sh --no-backup                 # don't back up configs it replaces
 ./setup.sh --tags dotfiles --check     # preview just the dotfiles re-link
 ```
 
-Extra args flow through to `ansible-playbook`. With **`--check`**, `setup.sh` writes
-your answers to a *temp* file (not the real `host_vars`) and only previews — so a
-dry-run changes nothing on the system *or* in the repo.
+`setup.sh`'s own flags are **`--no-backup`** (skip backing up replaced configs —
+i.e. `-e dotfiles_backup=false`) and **`-h`/`--help`**; everything else flows through
+to `ansible-playbook`. With **`--check`** it writes your answers to a *temp* file (not
+the real `host_vars`) and only previews — so a dry-run changes nothing on the system
+*or* in the repo (the destructive-replace notice still shows, since it's a simulation).
 
 > ⚠️ **Destructive on a fresh `$HOME`.** The `dotfiles` role force-replaces existing
 > dotfiles (`~/.bashrc`, `~/.config/*`, …). On the **first deploy only** it copies any

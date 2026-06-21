@@ -7,12 +7,9 @@
 # It (1) installs Ansible if missing, (2) asks a few questions — auto-detecting
 # sensible defaults — and writes your answers to the untracked host_vars file,
 # then (3) runs the playbook. Re-runnable: it pre-fills from your last answers.
-# Extra args are passed straight through to ansible-playbook. Passing `--check`
-# makes it a true DRY-RUN — your answers go to a temp file (the real host_vars is
-# untouched) and ansible only previews, so nothing on the system or in the repo
-# changes. e.g.:
-#   ./setup.sh --check --diff                  # preview everything, change nothing
-#   ./setup.sh --tags dotfiles --check --diff  # preview just the dotfiles re-link
+# Flags: --no-backup (don't back up replaced configs), -h/--help. Any other args
+# pass through to ansible-playbook; `--check` makes it a true DRY-RUN (simulate,
+# change nothing). Run `./setup.sh --help` for details.
 #
 # This is the configurable-installer front-end (docs/repo-structure-design.md §6).
 # Interactive / external follow-ups stay manual — your SSH/GPG identity, the Samba
@@ -23,14 +20,45 @@ set -euo pipefail
 HERE=$(cd -- "$(dirname -- "$0")" && pwd)      # bootstrap/
 HOSTVARS="$HERE/host_vars/localhost.yml"        # gitignored; this host's answers
 
-# `--check` anywhere in the args makes this a true DRY-RUN: answers go to a temp
-# file (the real host_vars is untouched) and ansible runs in --check, so nothing
-# on the system OR in the repo changes. e.g.: ./setup.sh --check --diff
-dry_run=false
-for _a in "$@"; do [ "$_a" = --check ] && dry_run=true; done
+# --- args: separate setup.sh's own flags from ansible-playbook passthrough ----
+usage() {
+    cat <<'EOF'
+estia setup.sh — one-shot bootstrap: install Ansible, gather this host's answers,
+run the playbook. Re-runnable (it pre-fills from your last answers).
 
-# No answers file yet = first run on this machine = the destructive case (a
-# populated $HOME whose dotfiles we're about to replace). Gated harder below.
+Usage:  ./setup.sh [options] [ansible-playbook args...]
+
+Options:
+  --no-backup   Do NOT back up existing config files before replacing them.
+                Default: each replaced file is first copied in place to <file>.bak.
+  -h, --help    Show this help and exit.
+
+Any other arguments pass through to ansible-playbook, e.g.:
+  ./setup.sh --check --diff     Dry-run: simulate everything, change nothing.
+  ./setup.sh --tags dotfiles    Run only the dotfiles role.
+
+On the FIRST run on a machine, setup.sh warns that it replaces existing dotfiles.
+Interactive/external follow-ups (SSH/GPG identity, Samba password, …) stay manual —
+see ../docs/install-runbook.md.
+EOF
+}
+
+no_backup=false
+pass=()                                  # args forwarded to ansible-playbook
+for _a in "$@"; do
+    case "$_a" in
+        -h|--help)   usage; exit 0 ;;
+        --no-backup) no_backup=true ;;
+        *)           pass+=("$_a") ;;
+    esac
+done
+
+# `--check` (forwarded to ansible) makes this a true DRY-RUN: answers go to a temp
+# file, the real host_vars is untouched, ansible only previews. ./setup.sh --check --diff
+dry_run=false
+for _a in "${pass[@]}"; do [ "$_a" = --check ] && dry_run=true; done
+
+# No answers file yet = first run on this machine = the destructive case.
 first_run=false
 [ -f "$HOSTVARS" ] || first_run=true
 
@@ -152,36 +180,41 @@ cat <<EOF
     ssh login key      = ~/.ssh/$ssh_key_file
 EOF
 
-if $first_run && ! $dry_run; then
-    # Fresh machine + real apply: this REPLACES existing dotfiles. Make it unmissable
-    # and require an explicit `yes` (not a bare Enter). Re-runs skip this.
-    cat <<'EOF'
+# First-run notice: this REPLACES existing config files. Minimal + informational,
+# shown for a real apply AND a dry-run (a dry-run simulates the same action).
+if $first_run; then
+    echo
+    echo "  ⚠️  First run: estia REPLACES your existing config files with its own."
+    if $no_backup; then
+        echo "      Backups are OFF (--no-backup) — the files being replaced are NOT saved."
+    else
+        echo "      Each pre-existing file is first copied in place to <file>.bak (reversible)."
+    fi
+fi
 
-  ⚠️  FIRST RUN ON THIS MACHINE
-      estia deploys its configs by symlink/render and will REPLACE existing dotfiles
-      (~/.bashrc, ~/.vimrc, ~/.config/*, ~/.gitconfig, …).
-
-      Backups are ON by default: each pre-existing file is copied to <file>.bak
-      (next to itself) before it's replaced — once, on this first run — so this is
-      reversible. To turn that off, re-run with  -e dotfiles_backup=false  — then
-      the configs being replaced are NOT saved anywhere.
-
-      Preview without changing anything:  ./setup.sh --check --diff
-EOF
-    read -r -p "  Type 'yes' to proceed: " _ack
-    [ "$_ack" = yes ] || { echo "Aborted — nothing written or changed."; exit 0; }
-else
-    askyn _proceed "Proceed?" true
-    [ "$_proceed" = true ] || { echo "Aborted — nothing written or changed."; exit 0; }
+# Gate: a real first-run apply needs an explicit `yes`; a re-run apply a plain
+# Proceed; a dry-run needs no gate (it changes nothing — just runs the preview).
+if ! $dry_run; then
+    if $first_run; then
+        read -r -p "  Type 'yes' to proceed: " _ack
+        [ "$_ack" = yes ] || { echo "Aborted — nothing written or changed."; exit 0; }
+    else
+        askyn _proceed "Proceed?" true
+        [ "$_proceed" = true ] || { echo "Aborted — nothing written or changed."; exit 0; }
+    fi
 fi
 
 # --- 4. Write answers + run ----------------------------------------------------
+# Args we add: sudo prompt, and --no-backup -> `-e dotfiles_backup=false`.
+extra=(--ask-become-pass)
+if $no_backup; then extra+=(-e dotfiles_backup=false); fi
+
 if $dry_run; then
     # DRY-RUN: don't touch the real host_vars; preview the answers via -e (highest
     # precedence, so it overrides the on-disk host_vars for this check only).
     _tmp=$(mktemp); write_answers "$_tmp"
     echo "==> DRY-RUN (--check): not writing $HOSTVARS; previewing your answers via -e."
-    ansible-playbook "$HERE/site.yml" --ask-become-pass -e "@$_tmp" "$@"
+    ansible-playbook "$HERE/site.yml" "${extra[@]}" -e "@$_tmp" "${pass[@]}"
     rm -f "$_tmp"
     echo "==> Dry-run complete — nothing was changed. Re-run without --check to apply."
     exit 0
@@ -191,7 +224,7 @@ mkdir -p "$HERE/host_vars"
 write_answers "$HOSTVARS"
 echo "==> Wrote $HOSTVARS"
 echo "==> Running the bootstrap (sudo for package installs / system roles)…"
-ansible-playbook "$HERE/site.yml" --ask-become-pass "$@"
+ansible-playbook "$HERE/site.yml" "${extra[@]}" "${pass[@]}"
 
 cat <<'EOF'
 

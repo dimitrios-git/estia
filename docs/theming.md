@@ -64,3 +64,28 @@ Legend: ✅ themed · 🟡 partial · ⬜ not yet.
 | Firefox + firefoxpwa PWAs | GTK3 (via `GTK_THEME`) | ✅ | chrome/menus/file chooser follow estia-dark; only in-page web form controls might need `userContent` (if ever) |
 
 Add a row when you start a new app; flip it to ✅ when it passes step 5.
+
+## Next steps (theming backlog)
+
+Where to pick up, in rough priority order:
+
+1. **estia-dark base palette.** The `gtk_theme` role currently bakes only the *accent*
+   (`#ce0056`); adw-gtk3's base/surface greys stay its own (a touch lighter than estia's
+   `#0a0a0a`). Extend the role's sed/replace patches to push `window_bg` / `view_bg` /
+   `headerbar` / borders toward the palette (`#0a0a0a` / `#111111` / `#1e1e1e`, text
+   `#e0e0e0`). Verify on Remmina / GIMP.
+2. **Breeze (Qt apps)** ⬜ — the Qt/KDE companion to Adwaita. Theme Qt apps with a
+   Breeze-dark + the accent (`kdeglobals`, `qt5ct`/`qt6ct`, `QT_QPA_PLATFORMTHEME`).
+   Scope to the Qt apps actually used.
+3. **libadwaita accent** 🟡 — revisit when Debian ships **libadwaita 1.8+**: the
+   `user/gtk/gtk-4.0/gtk.css` `:root` override is already staged, so verify
+   gnome-calculator goes red and flip the status row.
+4. **Firefox web-content form controls** — only if in-page checkboxes/focus rings still
+   look off (chrome is already themed via `GTK_THEME`); a `userContent.css` overlay. Low
+   priority.
+5. **(meta) automated palette render** — the deferred `docs/repo-structure-design.md`
+   §9.3 engine that renders `palette.yml` into configs instead of applying it by hand.
+   Big, optional; `palette.yml` is already shaped to feed it.
+
+Resuming: read this file (status table + this list) and `CLAUDE.md` → "## TODO / planned
+work". Each item is its own small PR via the usual loop (`docs/working-with-claude.md`).

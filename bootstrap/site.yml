@@ -29,6 +29,9 @@
       when: system_hostname is defined
     - role: sway_session  # deploy /usr/local/bin/start-sway launcher (root)
       tags: [system, sway_session]
+    - role: tailscale  # Tailscale mesh VPN from its own apt repo (root); `tailscale up` stays manual
+      tags: [system, tailscale]
+      when: enable_tailscale | default(true) | bool
     - role: samba      # layer-(a) system config: Samba share to /etc (root)
       tags: [system, samba]
       when: enable_samba | default(true) | bool

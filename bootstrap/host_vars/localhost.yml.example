@@ -28,6 +28,13 @@ enable_nvidia: false
 # Find it with: ip -o -4 addr show | awk '{print $4}'
 samba_lan_subnet: "192.0.2.0/24"    # e.g. 192.168.1.0/24
 
+# Install Tailscale (mesh VPN)? On by default — it's the Samba share's remote
+# (off-LAN) transport and general remote reach. When both this and enable_samba
+# are on, smb.conf `hosts allow` also trusts the Tailscale CGNAT range; with it
+# off the share renders LAN-only. The package is installed from Tailscale's apt
+# repo; `sudo tailscale up` (node auth) stays manual. Set false to skip.
+enable_tailscale: true
+
 # Where your music library lives (cmus browser default + the `U` rescan binding).
 # Defaults to ~/Music if unset — override only if your library is elsewhere.
 cmus_music_dir: "/mnt/storage/Music"   # e.g. an external mount

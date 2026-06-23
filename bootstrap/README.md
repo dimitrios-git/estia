@@ -12,8 +12,9 @@ manifest), `fonts` (Nerd Fonts → `~/.local/share/fonts`), `localbin` (pinned p
 release binaries → `~/.local/bin`: bluetuith, hcloud, tofu/OpenTofu, cf-terraforming), `gtk_theme` (the hestia GTK3 theme
 — recoloured adw-gtk3 → `~/.local/share/themes/hestia[-dark]`), `sway_session` (the
 `/usr/local/bin/start-sway` launcher — NVIDIA flags applied only when an NVIDIA GPU is
-live), `samba` (the layer-(a)
-Samba-over-Tailscale share), `claude_user`
+live), `tailscale` (the Tailscale mesh VPN from its own apt repo — `tailscale up` stays
+manual), `samba` (the layer-(a)
+Samba share — adds the Tailscale range to `hosts allow` only when `enable_tailscale` is also on), `claude_user`
 (the dedicated agent user + shared trees + repo ACLs — the *plumbing* of
 docs/claude-user-design.md; identity is a manual step, below), `credentials`
 (the gnome-keyring launcher-untangle for login auto-unlock of SSH + GPG), and the
@@ -37,6 +38,7 @@ bootstrap/
     localbin/           # pinned GitHub-release binaries (bluetuith, hcloud, tofu) into ~/.local/bin (no root)
     gtk_theme/          # hestia GTK3 theme: recoloured adw-gtk3 into ~/.local/share/themes (no root)
     sway_session/       # deploy system/sway-session/start-sway -> /usr/local/bin (become)
+    tailscale/          # Tailscale mesh VPN from its own apt repo (become; `tailscale up` manual)
     samba/              # Samba share: /etc/samba/smb.conf + /srv/smbshare (become)
     claude_user/        # dedicated `claude` agent user + /srv/devshare + repo ACLs (become)
     credentials/        # login auto-unlock: gnome-keyring launcher-untangle (become)
@@ -117,7 +119,8 @@ installer (`../docs/repo-structure-design.md` §6):
 
 | Toggle | Role | Apt group skipped when off | What it sets up |
 |---|---|---|---|
-| `enable_samba` | `samba` | `sharing: [samba]` | Samba-over-Tailscale share (`/etc`, `/srv/smbshare`) |
+| `enable_samba` | `samba` | `sharing: [samba]` | Samba file share (`/etc`, `/srv/smbshare`); allows the Tailscale range when `enable_tailscale` is also on, else LAN-only |
+| `enable_tailscale` | `tailscale` | — (own apt repo, not an apt-group package) | Tailscale mesh VPN — the share's transport + remote reach; `tailscale up` auth stays manual |
 | `enable_claude_user` | `claude_user` | — | dedicated `claude` agent user + shared tree + ACLs |
 | `enable_credentials` | `credentials` | `credentials: [gnome-keyring, libsecret-tools]` | login auto-unlock of SSH + GPG |
 | `enable_libreoffice` | *(none — package-only)* | `office: [libreoffice]` | LibreOffice for vifm's office-doc opener (**default off** — heavy) |
@@ -166,9 +169,10 @@ python3 gen-symlink-table.py
 - **NVM + Node** — installed per-user, not from apt.
 - **vim-plug** + `:PlugInstall`; **Claude Code** native installer.
 - (bluetuith and the Nerd Fonts used to be here — now the `localbin` and `fonts` roles.)
-- **Tailscale** (own apt repo) — the Samba share's remote reach. (Full list:
-  install-runbook §8.) (LibreOffice is no longer manual — it's the opt-in
-  `enable_libreoffice` toggle above, default off.)
+- **`tailscale up`** — only the node auth (interactive SSO / auth-key) is manual; the
+  Tailscale *package* is now installed by the `tailscale` role from its own apt repo
+  (`enable_tailscale`, default on). (Full list: install-runbook §8.) (LibreOffice is no
+  longer manual either — the opt-in `enable_libreoffice` toggle above, default off.)
 - **System configs** under `../system/` — deployed by copy as root (see those
   runbooks); a `system` role will wrap them.
 - **`claude` identity** (the `claude_user` role does the user/group/ACL plumbing;

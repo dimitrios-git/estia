@@ -179,9 +179,10 @@ Not Ansible-managed (vendor, per-user, interactive, or deliberately heavy/option
 - **vim-plug**: `curl -fLo ~/.vim/autoload/plug.vim --create-dirs <url>`, then
   `:PlugInstall` in vim/nvim. (Treesitter parsers compile on first run — the
   needed compiler, `build-essential`, is now an apt dep, so no extra step.)
-- **Tailscale** — for the Samba share's remote (off-LAN) reach. Not apt-native:
-  add its own apt repo (`pkgs.tailscale.com`) or run the install script, then
-  `tailscale up`. (On-LAN Samba works without it.)
+- **Tailscale `up`** — the **`tailscale` role** now installs the package from its
+  own apt repo (`pkgs.tailscale.com`); only the node authentication stays manual:
+  `sudo tailscale up` (interactive SSO / an auth-key). Skip the role with
+  `enable_tailscale=false` (the Samba share then renders LAN-only).
 - **Claude Code** for your own user (native installer) if not already present.
 - Enable services: `sudo systemctl enable --now bluetooth power-profiles-daemon`.
 

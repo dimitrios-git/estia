@@ -1,0 +1,49 @@
+---
+# Install Tailscale from its official signed apt repo (pkgs.tailscale.com) — it is
+# NOT in Debian apt and ships its own per-release repo. Root (become). Tailscale is
+# the Samba share's transport (the `samba` role gates its hosts-allow CGNAT range on
+# enable_tailscale) and general remote reach.
+#
+# This role installs the package and enables the daemon. Bringing the node UP and
+# authenticating — `sudo tailscale up` (interactive SSO / an auth-key) — stays
+# MANUAL and is never stored in the repo, like the smbpasswd step in the samba role.
+
+- name: Detect the Debian codename (Tailscale's repo URL is per-release)
+  ansible.builtin.shell: . /etc/os-release && printf '%s' "$VERSION_CODENAME"
+  register: _ts_codename
+  changed_when: false
+
+- name: Install the Tailscale apt signing key
+  ansible.builtin.get_url:
+    url: "https://pkgs.tailscale.com/stable/debian/{{ _ts_codename.stdout }}.noarmor.gpg"
+    dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+# Written as the canonical one-line source (matching Tailscale's own installer and
+# any pre-existing manual install at the same path → idempotent), signed-by the key
+# above. Plain `copy` avoids a python3-debian dependency for deb822_repository.
+- name: Add the Tailscale apt repository
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/tailscale.list
+    content: "deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/debian {{ _ts_codename.stdout }} main\n"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Install tailscale (refresh the cache so the new repo is seen)
+  ansible.builtin.apt:
+    name: tailscale
+    state: present
+    update_cache: true
+  become: true
+
+- name: Enable + start tailscaled (the node still needs `sudo tailscale up` to authenticate)
+  ansible.builtin.systemd:
+    name: tailscaled
+    enabled: true
+    state: started
+  become: true

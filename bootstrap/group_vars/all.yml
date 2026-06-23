@@ -14,7 +14,10 @@ target_home: "{{ lookup('env', 'HOME') }}"
 # set one false to skip its role — per host in host_vars, or ad-hoc with
 # `-e enable_samba=false`. The eventual installer (docs/repo-structure-design.md
 # §6) just writes these from the user's answers.
-enable_samba: true          # Samba-over-Tailscale share (samba role → /etc, /srv/smbshare)
+enable_samba: true          # Samba file share (samba role → /etc, /srv/smbshare)
+enable_tailscale: true      # Tailscale mesh VPN from its own apt repo (tailscale role); also the
+                            # samba share's transport — when BOTH are on, smb.conf allows the
+                            # Tailscale CGNAT range, otherwise the share is LAN-only
 enable_claude_user: true    # dedicated `claude` agent user + shared tree + ACLs (claude_user role)
 enable_credentials: true    # login auto-unlock of SSH + GPG (credentials role)
 # Default OFF — host-specific (needs an NVIDIA card), pulls non-free, builds a kernel

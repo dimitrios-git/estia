@@ -14,7 +14,7 @@
     mode: "0755"
   loop:
     - "{{ target_home }}/.local/bin"
-    - "{{ target_home }}/.local/state/estia/localbin"
+    - "{{ target_home }}/.local/state/hestia/localbin"
 
 # The play runs with gather_facts: false, so resolve the arch ourselves rather than
 # relying on ansible_architecture.

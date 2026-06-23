@@ -1,4 +1,4 @@
-/* GTK 3 user overlay — loaded on top of the estia-dark theme (recoloured adw-gtk3 from
+/* GTK 3 user overlay — loaded on top of the hestia-dark theme (recoloured adw-gtk3 from
  * the gtk_theme role), which already carries the #ce0056 accent (its baked
  * @accent_bg_color). This file is just a belt-and-suspenders override for any GTK3 widget
  * that still keys off the legacy theme_selected_bg_color, plus a home for future tweaks. */

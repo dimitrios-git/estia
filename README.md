@@ -1,8 +1,8 @@
-# estia
+# hestia
 
 > **Reproducible, themed Debian/Sway workstation-as-code — built collaboratively by a human and an AI-as-user.**
 
-**estia** (Greek **Εστία** — *Hestia*, goddess of the **hearth**) is the hearth of
+**hestia** (Greek **Εστία** — *Hestia*, goddess of the **hearth**) is the hearth of
 one personal machine: a whole **Debian + Sway (Wayland)** workstation captured as
 code and rebuilt from scratch by an **Ansible bootstrap** — not just dotfiles, but
 packages, system (`/etc`) configs, users, ACLs, and services. Two things make it
@@ -66,8 +66,8 @@ sensible defaults), and runs the playbook:
 
 ```sh
 sudo apt install -y git
-git clone git@github.com:dimitrios-git/estia.git ~/Development/estia
-cd ~/Development/estia/bootstrap && ./setup.sh
+git clone git@github.com:dimitrios-git/hestia.git ~/Development/hestia
+cd ~/Development/hestia/bootstrap && ./setup.sh
 ```
 
 `setup.sh` writes your answers (which features to include, LAN subnet, music dir)
@@ -80,7 +80,7 @@ narrative — which role when, with the **interactive/external manual steps**
 
 Roles: `packages` (apt), `dotfiles` (symlinks + templated configs), `fonts` (Nerd
 Fonts), `localbin` (pinned release binaries, e.g. bluetuith), `gtk_theme` (the
-**estia GTK theme** — recoloured adw-gtk3), `sway_session` (the greetd→sway
+**hestia GTK theme** — recoloured adw-gtk3), `sway_session` (the greetd→sway
 launcher), `samba` (the `/etc` system layer), `claude_user` + `credentials` (see
 below), plus opt-in `nvidia`. Each is idempotent — re-run with `--check` to verify.
 Details: [`bootstrap/README.md`](bootstrap/README.md).
@@ -105,7 +105,7 @@ security boundary is the unlocked session + screen lock. Full mechanism:
 
 ## Claude Code as a dedicated user
 
-The distinctive part of estia: Claude Code runs as its own unprivileged,
+The distinctive part of hestia: Claude Code runs as its own unprivileged,
 kernel-isolated **`claude`** Linux user — own SSH key, git identity, and
 passwordless GPG signing, committing and pushing as a separate GitHub **bot
 account** (commits show **Verified**), unable to read this account's secrets.
@@ -131,7 +131,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 
 Copyright (C) 2026 Dimitrios Charalampidis
 
-estia is free software: you can redistribute it and/or modify it under the terms
+hestia is free software: you can redistribute it and/or modify it under the terms
 of the **GNU General Public License v3.0 or later** as published by the Free
 Software Foundation — see [LICENSE](LICENSE). It is distributed in the hope that
 it will be useful, but **without any warranty**; without even the implied

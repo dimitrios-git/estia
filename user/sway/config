@@ -199,7 +199,7 @@ exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DE
 # NOT ~/.config/gtk-3.0/settings.ini:
 #   color-scheme prefer-dark : the Settings-portal value Firefox/libadwaita read for
 #                              dark mode (else they default to light).
-#   gtk-theme estia-dark     : the GTK3 theme (recoloured adw-gtk3 from the gtk_theme
+#   gtk-theme hestia-dark     : the GTK3 theme (recoloured adw-gtk3 from the gtk_theme
 #                              role) — this is what carries the #ce0056 accent to GTK3
 #                              apps (Remmina, GIMP, Firefox's file chooser); the portal
 #                              file chooser reads it from gsettings, not settings.ini.
@@ -207,7 +207,7 @@ exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DE
 # take the accent on Debian's libadwaita 1.7 (the accent is locked) — they're dark but
 # keep the default blue accent until libadwaita 1.8; see docs/theming.md.
 exec gsettings set org.gnome.desktop.interface color-scheme prefer-dark
-exec gsettings set org.gnome.desktop.interface gtk-theme estia-dark
+exec gsettings set org.gnome.desktop.interface gtk-theme hestia-dark
 
 ### Credentials — auto-unlock SSH + GPG from the login keyring
 # pam_gnome_keyring unlocks the gnome-keyring Secret Service at login; this hook

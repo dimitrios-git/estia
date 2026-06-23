@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# estia — one-shot bootstrap. Reach for this right after cloning:
+# hestia — one-shot bootstrap. Reach for this right after cloning:
 #
-#   git clone git@github.com:dimitrios-git/estia.git ~/Development/estia
-#   cd ~/Development/estia/bootstrap && ./setup.sh
+#   git clone git@github.com:dimitrios-git/hestia.git ~/Development/hestia
+#   cd ~/Development/hestia/bootstrap && ./setup.sh
 #
 # It (1) installs Ansible if missing, (2) asks a few questions — auto-detecting
 # sensible defaults — and writes your answers to the untracked host_vars file,
@@ -25,7 +25,7 @@ HOSTVARS="$HERE/host_vars/localhost.yml"        # gitignored; this host's answer
 # --- args: separate setup.sh's own flags from ansible-playbook passthrough ----
 usage() {
     cat <<'EOF'
-estia setup.sh — one-shot bootstrap: install Ansible, gather this host's answers,
+hestia setup.sh — one-shot bootstrap: install Ansible, gather this host's answers,
 run the playbook. Re-runnable (it pre-fills from your last answers).
 
 Usage:  ./setup.sh [options] [ansible-playbook args...]
@@ -170,7 +170,7 @@ run_playbook() {
         ansible-playbook "$HERE/site.yml" "$@"
         return
     fi
-    _become_pwfile=$(mktemp "${XDG_RUNTIME_DIR:-/dev/shm}/estia-become.XXXXXX" 2>/dev/null || mktemp)
+    _become_pwfile=$(mktemp "${XDG_RUNTIME_DIR:-/dev/shm}/hestia-become.XXXXXX" 2>/dev/null || mktemp)
     chmod 600 "$_become_pwfile"
     printf '%s\n' "$BECOME_PW" > "$_become_pwfile"
     ansible-playbook "$HERE/site.yml" "$@" --become-password-file "$_become_pwfile"
@@ -293,7 +293,7 @@ EOF
 # shown for a real apply AND a dry-run (a dry-run simulates the same action).
 if $first_run; then
     echo
-    echo "  ⚠️  First run: estia REPLACES your existing config files with its own."
+    echo "  ⚠️  First run: hestia REPLACES your existing config files with its own."
     if $no_backup; then
         echo "      Backups are OFF (--no-backup) — the files being replaced are NOT saved."
     else

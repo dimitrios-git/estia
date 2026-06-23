@@ -9,8 +9,8 @@ file is the per-role reference.
 
 **Status: growing.** Implemented: `packages` (apt), `dotfiles` (symlinks from the
 manifest), `fonts` (Nerd Fonts → `~/.local/share/fonts`), `localbin` (pinned prebuilt
-release binaries → `~/.local/bin`, e.g. bluetuith), `gtk_theme` (the estia GTK3 theme
-— recoloured adw-gtk3 → `~/.local/share/themes/estia[-dark]`), `sway_session` (the
+release binaries → `~/.local/bin`, e.g. bluetuith), `gtk_theme` (the hestia GTK3 theme
+— recoloured adw-gtk3 → `~/.local/share/themes/hestia[-dark]`), `sway_session` (the
 `/usr/local/bin/start-sway` launcher — NVIDIA flags applied only when an NVIDIA GPU is
 live), `samba` (the layer-(a)
 Samba-over-Tailscale share), `claude_user`
@@ -35,7 +35,7 @@ bootstrap/
     dotfiles/           # symlink plain configs + render templated_configs into $HOME (no root)
     fonts/              # Nerd Fonts (Lilex, BigBlueTerm437) into ~/.local/share/fonts (no root)
     localbin/           # pinned GitHub-release binaries (bluetuith) into ~/.local/bin (no root)
-    gtk_theme/          # estia GTK3 theme: recoloured adw-gtk3 into ~/.local/share/themes (no root)
+    gtk_theme/          # hestia GTK3 theme: recoloured adw-gtk3 into ~/.local/share/themes (no root)
     sway_session/       # deploy system/sway-session/start-sway -> /usr/local/bin (become)
     samba/              # Samba share: /etc/samba/smb.conf + /srv/smbshare (become)
     claude_user/        # dedicated `claude` agent user + /srv/devshare + repo ACLs (become)
@@ -85,7 +85,7 @@ unopenable `pipe:[inode]`). Driving Ansible directly, below, still uses
 > ⚠️ **Destructive on a fresh `$HOME`.** The `dotfiles` role force-replaces existing
 > dotfiles (`~/.bashrc`, `~/.config/*`, …). On the **first deploy only** it copies any
 > pre-existing real config to `<file>.bak` next to it (one per file, ever — marker at
-> `~/.local/state/estia/.dotfiles-backed-up`; `dotfiles_backup=false` to skip), and a
+> `~/.local/state/hestia/.dotfiles-backed-up`; `dotfiles_backup=false` to skip), and a
 > **first run** (no `host_vars`) warns + requires typing `yes`. Preview with `--check --diff`.
 
 Or drive Ansible directly:
@@ -140,7 +140,7 @@ ansible-playbook site.yml -e enable_samba=false --ask-become-pass
 
 ## Personalizing (making it your own system)
 
-Running estia as *your* machine, not dimitrios's? Three layers, none of which touch
+Running hestia as *your* machine, not dimitrios's? Three layers, none of which touch
 `roles/` or `site.yml` (full story: `../docs/personalizing.md`):
 
 1. **host_vars** — flip the toggles above, set your values, or wholesale-override any

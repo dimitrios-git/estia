@@ -38,12 +38,12 @@
 # OPEN — so the next normal run would "back up" our own freshly-rendered configs
 # (.gitconfig, glow.yml, …) to <file>.bak. Closing the window regardless prevents
 # that. Net: exactly one .bak per pre-existing config, and only ever on first deploy.
-- name: Has the one-time pre-estia config backup already run?
+- name: Has the one-time pre-hestia config backup already run?
   ansible.builtin.stat:
-    path: "{{ target_home }}/.local/state/estia/.dotfiles-backed-up"
+    path: "{{ target_home }}/.local/state/hestia/.dotfiles-backed-up"
   register: _backup_marker
 
-- name: One-time pre-estia config backup (first deploy only — marker-gated)
+- name: One-time pre-hestia config backup (first deploy only — marker-gated)
   when: not _backup_marker.stat.exists
   block:
     - name: Stat every config destination
@@ -70,14 +70,14 @@
         - dotfiles_backup | default(true) | bool
         - item.stat.exists and item.stat.isreg and not item.stat.islnk
 
-    - name: Ensure the estia state dir exists (for the marker)
+    - name: Ensure the hestia state dir exists (for the marker)
       ansible.builtin.file:
-        path: "{{ target_home }}/.local/state/estia"
+        path: "{{ target_home }}/.local/state/hestia"
         state: directory
 
     - name: Drop the one-time backup marker (always — even with --no-backup)
       ansible.builtin.file:
-        path: "{{ target_home }}/.local/state/estia/.dotfiles-backed-up"
+        path: "{{ target_home }}/.local/state/hestia/.dotfiles-backed-up"
         state: touch
         mode: "0644"
 

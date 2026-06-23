@@ -12,7 +12,7 @@
     _lb_url: "{{ binary.url | replace('{ver}', binary.version) | replace('{arch}', _lb_arch) }}"
     _lb_asset: "{{ _lb_url | basename }}"
     _lb_sum: "{{ (binary.checksums | default({}))[_lb_arch] | default('') }}"
-    _lb_marker: "{{ target_home }}/.local/state/estia/localbin/{{ binary.name }}-{{ binary.version }}"
+    _lb_marker: "{{ target_home }}/.local/state/hestia/localbin/{{ binary.name }}-{{ binary.version }}"
   block:
     - name: "{{ binary.name }}: unmapped CPU arch -> skip"
       ansible.builtin.debug:
@@ -38,7 +38,7 @@
             - name: "{{ binary.name }}: temp workdir"
               ansible.builtin.tempfile:
                 state: directory
-                suffix: estia-localbin
+                suffix: hestia-localbin
               register: _lb_tmp
 
             - name: "{{ binary.name }}: download the release tarball{{ ' (sha256-verified)' if _lb_sum else '' }}"

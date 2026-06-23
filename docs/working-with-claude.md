@@ -52,7 +52,7 @@ merged it (the audit trail this whole setup exists for). The loop:
    ```
 2. **you** — review the diff on GitHub, or pull it down to actually run it:
    ```sh
-   gh pr checkout <n>                    # in ~/Development/estia
+   gh pr checkout <n>                    # in ~/Development/hestia
    ```
    Need changes? claude pushes more commits to the same branch; the PR updates.
 3. **you** — merge with a **merge commit**, using the admin bypass:
@@ -66,9 +66,9 @@ merged it (the audit trail this whole setup exists for). The loop:
    that is the review gate, and the ruleset enforces it.
 4. **you** — make it live:
    ```sh
-   git checkout main && git pull         # in ~/Development/estia
+   git checkout main && git pull         # in ~/Development/hestia
    ```
-   For **estia** this pull *is the deployment* — it repoints the live symlinked
+   For **hestia** this pull *is the deployment* — it repoints the live symlinked
    configs. Other repos have no deploy step.
 5. delete the merged branch (local + remote).
 
@@ -90,15 +90,15 @@ drives the API (opening PRs), SSH carries the git transport.
 
 ## The dotfiles repo specifically
 
-`estia` is the one repo whose working copy is **live**: its files are
-symlinked into `~`/`~/.config`, so **your clone at `~/Development/estia` is the
+`hestia` is the one repo whose working copy is **live**: its files are
+symlinked into `~`/`~/.config`, so **your clone at `~/Development/hestia` is the
 deployment source** — editing it changes your running system.
 
-So: claude works in its **own** clone under `/srv/devshare/estia`, pushes changes,
+So: claude works in its **own** clone under `/srv/devshare/hestia`, pushes changes,
 and they reach your live system only when **you pull** (i.e. after review). 
 
-> **Keep straight:** the symlinks point at `~/Development/estia` and must stay
-> that way. Never make `/srv/devshare/estia` (claude's clone) the deployment
+> **Keep straight:** the symlinks point at `~/Development/hestia` and must stay
+> that way. Never make `/srv/devshare/hestia` (claude's clone) the deployment
 > source.
 
 ## Isolation (what claude can and can't touch)
@@ -131,6 +131,6 @@ Prefer the clone model; reach for this only when in-place editing is truly neede
 | Enter claude's context | `claude-shell`, then `claude` |
 | Give claude a project | it clones into `/srv/devshare`; you sync via git |
 | Get claude's work | review its pushed branch/PR, merge, `git pull` |
-| Update your live dotfiles | pull into `~/Development/estia` (the symlink source) |
+| Update your live dotfiles | pull into `~/Development/hestia` (the symlink source) |
 | Co-edit a home path (rare) | `claude-access grant <path>` |
 | Confirm isolation holds | `sudo -u claude ls ~` → Permission denied |

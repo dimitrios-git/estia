@@ -29,8 +29,8 @@ Assumed already installed (out of scope for this repo):
 
 ```sh
 sudo apt update && sudo apt install -y git ansible
-git clone git@github.com:dimitrios-git/estia.git ~/Development/estia
-cd ~/Development/estia/bootstrap
+git clone git@github.com:dimitrios-git/hestia.git ~/Development/hestia
+cd ~/Development/hestia/bootstrap
 ```
 
 > Cloning over SSH needs a key on GitHub first; or clone over HTTPS for read-only
@@ -43,7 +43,7 @@ ansible-playbook site.yml --tags packages --ask-become-pass
 ```
 Installs the apt set (Wayland stack, terminal tools, samba, gnome-keyring, …).
 **Not** apt: NVM/Node, Claude Code — see §8. (Nerd Fonts are installed by the `fonts`
-role; **bluetuith** by the `localbin` role; the **estia GTK theme** — recoloured
+role; **bluetuith** by the `localbin` role; the **hestia GTK theme** — recoloured
 adw-gtk3 — by the `gtk_theme` role — all core, no root.) Feature-gated groups
 are skipped when their
 toggle is off (`enable_samba`/`enable_credentials`); **`enable_libreoffice`**
@@ -77,7 +77,7 @@ gates a first run; preview safely with `--check --diff`.)
 >    noise: OS/editor cruft + `.claude/settings.local.json`. It applies on **this
 >    machine only**, so it never travels to clones/collaborators/CI.
 > 2. **committed `.gitignore`** — shared *project* ignores that everyone with the
->    repo should get (e.g. estia's `bootstrap/host_vars/*.yml`).
+>    repo should get (e.g. hestia's `bootstrap/host_vars/*.yml`).
 > 3. **`.git/info/exclude`** — *this clone only*, e.g. keeping your agent's files
 >    out of a repo you don't own (`printf '.claude/\nCLAUDE.md\n' >> .git/info/exclude`).
 >

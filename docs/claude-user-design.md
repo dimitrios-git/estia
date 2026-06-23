@@ -115,8 +115,8 @@ permission model under `/srv`.
   owned `:devshare`, **setgid** (`chmod 2775`) so new files inherit the group,
   plus **default ACLs** (`setfacl -d -m g:devshare:rwx`). New collaborative repos
   live here directly — both users access via the group, no bind mount needed.
-- **`estia`: targeted ACL (decided), left in place.** It stays at
-  `/home/dimitrios/Development/estia`; grant `claude` a minimal path ACL —
+- **`hestia`: targeted ACL (decided), left in place.** It stays at
+  `/home/dimitrios/Development/hestia`; grant `claude` a minimal path ACL —
   *traverse-only* on the chain (`setfacl -m u:claude:x /home/dimitrios` and on
   `Development/`, giving search but **not** read/listing) and `rwX` on the repo
   itself. This punches a single, named hole through the new `750` home without
@@ -184,7 +184,7 @@ claude's minimal dotfiles; tighten `/home/dimitrios` perms.
 2. **GitHub** — dedicated **bot account** (collaborator on the repos it works on). ✅
 3. **Shared-tree path** — **`/srv/devshare`**, modelled on the existing `/srv` SFTP
    convention (§4.3). ✅
-4. **`estia`** — **targeted ACL**, left in place (traverse-only into the
+4. **`hestia`** — **targeted ACL**, left in place (traverse-only into the
    home chain + `rwX` on the repo). ✅
 5. **`/home/dimitrios` `775 → 750`** — tighten (prerequisite). ✅
 
@@ -218,7 +218,7 @@ Executed in phases, each verified before the next.
 `setfacl -m` + `-d -m g:devshare:rwx`. *Verified:* a file claude creates there
 comes out group `devshare`, rw — bidirectional sharing, no ownership tangles.
 
-**Phase 3 — estia in place via ACL.** `setfacl -m u:claude:x` on
+**Phase 3 — hestia in place via ACL.** `setfacl -m u:claude:x` on
 `/home/dimitrios` and `/Development` (traverse-only — claude passes through but
 **cannot list** the home), then the repo itself made a devshare/setgid/default-ACL
 tree. Git multi-user hygiene: `core.sharedRepository=group`, `safe.directory` for

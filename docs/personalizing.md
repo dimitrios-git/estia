@@ -1,9 +1,9 @@
-# Making estia yours
+# Making hestia yours
 
-estia ships **dimitrios's** machine as the working default — goal 1 is to rebuild
+hestia ships **dimitrios's** machine as the working default — goal 1 is to rebuild
 *that* box fast, so his app/font/config lists are the tracked default. But every
 value, list, and config is meant to be overridable **as data**, so someone else can
-run estia as their own system without editing any role or playbook *logic* (goal 2).
+run hestia as their own system without editing any role or playbook *logic* (goal 2).
 
 Three layers, increasing in depth. You never touch `bootstrap/roles/` or `site.yml`.
 

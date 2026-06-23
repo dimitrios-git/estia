@@ -15,7 +15,7 @@
 
 - name: Enable contrib + non-free + non-free-firmware for the driver
   ansible.builtin.deb822_repository:
-    name: estia-nvidia
+    name: hestia-nvidia
     types: [deb]
     uris: "{{ nvidia_mirror_uri }}"
     suites: ["{{ _deb_codename.stdout }}"]

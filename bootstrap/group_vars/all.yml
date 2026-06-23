@@ -3,7 +3,7 @@
 # See docs/repo-structure-design.md (Ansible engine, YAML manifest).
 
 # Repo root, derived from where the playbook lives (bootstrap/ is one level down).
-# Generalises the hardcoded /home/dimitrios/Development/estia — this is the
+# Generalises the hardcoded /home/dimitrios/Development/hestia — this is the
 # path-generalisation the spin needs.
 repo_root: "{{ (playbook_dir + '/..') | realpath }}"
 target_home: "{{ lookup('env', 'HOME') }}"

@@ -110,9 +110,11 @@ dotfiles_backup: true
 # --- Prebuilt binaries from GitHub releases (localbin role -> ~/.local/bin, no root)
 # For tools not in apt. Each entry: name (the command installed), version (pinned),
 # url (template; {ver}/{arch} filled in — {arch} via localbin_arch_map), member (the
-# binary's path inside the tarball), and optional checksums (sha256 of the tarball,
-# keyed by arch token — verified on download). A spin user makes this theirs by
-# editing the list (add an entry / drop one / set [] for none) — data, not logic.
+# binary's path inside the archive), and optional: checksums (sha256 of the archive,
+# keyed by arch token — verified on download); arch_map (per-entry uname->token map,
+# for releases that name x86_64 differently, e.g. `amd64`); bash_completion (true to
+# install `<name> completion bash`). A spin user makes this theirs by editing the
+# list (add an entry / drop one / set [] for none) — data, not logic.
 localbin_binaries:
   - name: bluetuith        # Bluetooth TUI (waybar bluetooth click-handler); not in apt
     version: "0.2.6"
@@ -121,6 +123,25 @@ localbin_binaries:
     checksums:             # sha256 of the tarball, per arch token
       x86_64: "f206731d16c446ade39907dc88f961ed3ef07a12911cf7432a2b768aefa62717"
       arm64: "63af4aae960c1754f8931c9022d926a29e9da6f82269c181d1726aad61312d92"
+
+  - name: hcloud           # Hetzner Cloud CLI (infra provisioning/automation); not in apt
+    version: "1.65.0"
+    url: "https://github.com/hetznercloud/cli/releases/download/v{ver}/hcloud-linux-{arch}.tar.gz"
+    member: hcloud
+    arch_map: { x86_64: amd64, aarch64: arm64 }   # hcloud names x86_64 as `amd64`
+    bash_completion: true
+    checksums:
+      amd64: "f78d2db65b7ab58603d343739cb4397e13acef23182e41692a06e147a8d4c011"
+      arm64: "07de215486050692fe206368905dd677a1f2dd00f9b00af3a389ed301c2cca9b"
+
+  - name: tofu             # OpenTofu (Cloudflare DNS as code — the IaC half of infra); not in apt
+    version: "1.12.3"
+    url: "https://github.com/opentofu/opentofu/releases/download/v{ver}/tofu_{ver}_linux_{arch}.zip"
+    member: tofu
+    arch_map: { x86_64: amd64, aarch64: arm64 }   # opentofu names x86_64 as `amd64`
+    checksums:
+      amd64: "46b48c3438c65cf479fc076c9281422ffa2f493548d1e813d154c835c5986a08"
+      arm64: "b2110d1ce46e366ce861b7f53d293dad99080075629aed7fb50d7328916d91c2"
 
 # --- apt packages, grouped by concern (deps documented across CLAUDE.md) -------
 # Dependency-audited 2026-06-21 (swept every config for invoked binaries). Things

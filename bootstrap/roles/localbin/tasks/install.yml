@@ -4,11 +4,14 @@
 #
 # Each `binary` entry: name (the command in ~/.local/bin), version, url (a template
 # with {ver}/{arch} placeholders), member (the binary's path inside the tarball),
-# and optional checksums (sha256 of the tarball, keyed by arch token).
+# and optional: checksums (sha256 of the tarball, keyed by arch token); arch_map (a
+# per-binary uname->token map, for releases that name x86_64 differently — e.g.
+# `amd64` — overriding the global localbin_arch_map); bash_completion (true to run
+# `<name> completion bash` into ~/.local/share/bash-completion/completions).
 
 - name: "{{ binary.name }}: install from its GitHub release"
   vars:
-    _lb_arch: "{{ localbin_arch_map[_lb_uname.stdout] | default('') }}"
+    _lb_arch: "{{ (binary.arch_map | default(localbin_arch_map))[_lb_uname.stdout] | default('') }}"
     _lb_url: "{{ binary.url | replace('{ver}', binary.version) | replace('{arch}', _lb_arch) }}"
     _lb_asset: "{{ _lb_url | basename }}"
     _lb_sum: "{{ (binary.checksums | default({}))[_lb_arch] | default('') }}"
@@ -60,6 +63,17 @@
                 dest: "{{ target_home }}/.local/bin/{{ binary.name }}"
                 mode: "0755"
                 remote_src: true
+
+            # Cobra-style CLIs (hcloud, …) emit completion via `<name> completion bash`.
+            # Inside the install block, so it refreshes on a version bump and is a no-op
+            # on an unchanged re-run. The dir is bash-completion's XDG user lookup path.
+            - name: "{{ binary.name }}: generate bash completion"
+              ansible.builtin.shell:
+                cmd: >-
+                  {{ target_home }}/.local/bin/{{ binary.name }} completion bash
+                  > {{ target_home }}/.local/share/bash-completion/completions/{{ binary.name }}
+              changed_when: true
+              when: binary.bash_completion | default(false)
 
             - name: "{{ binary.name }}: record v{{ binary.version }} (idempotency marker)"
               ansible.builtin.file:

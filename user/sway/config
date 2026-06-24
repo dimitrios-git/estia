@@ -240,8 +240,16 @@ for_window [app_id="chromium"] inhibit_idle fullscreen
 for_window [app_id="mpv"]      inhibit_idle fullscreen
 for_window [app_id="^FFPWA-"]  inhibit_idle fullscreen
 
+# 30s before the lock, dim *all* outputs to 40% (gammastep software gamma, not
+# backlight — this desktop's external DP monitors expose no /sys/class/backlight,
+# so brightnessctl can't touch them) and raise a persistent red notice. The dim
+# is the unmissable cue across both 32" screens regardless of which one has focus;
+# any input before 300s fires the `resume` and restores full brightness (lock
+# never happens). gammastep -O applies once and exits (-P clears prior ramps);
+# -x resets. Temp 6500 = neutral, so it's a pure brightness drop, no colour shift.
 exec_always pkill swayidle; swayidle -w \
-    timeout 270 'notify-send "Locking in 30 seconds"' \
+    timeout 270 'gammastep -P -O 6500 -b 0.4; notify-send -u critical -t 30000 "Locking in 30 seconds"' \
+        resume 'gammastep -x' \
     timeout 300 'swaylock -f' \
     timeout 600 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' \

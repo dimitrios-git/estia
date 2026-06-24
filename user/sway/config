@@ -244,12 +244,19 @@ for_window [app_id="^FFPWA-"]  inhibit_idle fullscreen
 # backlight — this desktop's external DP monitors expose no /sys/class/backlight,
 # so brightnessctl can't touch them) and raise a persistent red notice. The dim
 # is the unmissable cue across both 32" screens regardless of which one has focus;
-# any input before 300s fires the `resume` and restores full brightness (lock
-# never happens). gammastep -O applies once and exits (-P clears prior ramps);
-# -x resets. Temp 6500 = neutral, so it's a pure brightness drop, no colour shift.
+# any input before 300s fires the `resume`, which kills gammastep and restores
+# full brightness (lock never happens). Temp 6500 = neutral, so it's a pure
+# brightness drop, no colour shift.
+#
+# gammastep MUST be backgrounded (&): on Wayland its -O "one-shot" doesn't exit —
+# wlroots resets the gamma ramp the instant the setting client disconnects, so
+# gammastep stays alive to *hold* the dim. swayidle -w waits for each timeout
+# command to finish, so a foreground gammastep would wedge swayidle forever (no
+# resume, no lock). Backgrounding lets the notify-send return; `resume` then just
+# `pkill`s gammastep and the disconnect restores brightness.
 exec_always pkill swayidle; swayidle -w \
-    timeout 270 'gammastep -P -O 6500 -b 0.4; notify-send -u critical -t 30000 "Locking in 30 seconds"' \
-        resume 'gammastep -x' \
+    timeout 270 'pkill -x gammastep; gammastep -O 6500 -b 0.4 & notify-send -u critical -t 30000 "Locking in 30 seconds"' \
+        resume 'pkill -x gammastep' \
     timeout 300 'swaylock -f' \
     timeout 600 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' \

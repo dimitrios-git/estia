@@ -117,6 +117,7 @@ enable_tailscale: $enable_tailscale
 enable_claude_user: $enable_claude_user
 enable_credentials: $enable_credentials
 enable_libreoffice: $enable_libreoffice
+enable_yaru_icons: $enable_yaru_icons
 enable_nvidia: $enable_nvidia
 samba_lan_subnet: "$samba_lan_subnet"
 cmus_music_dir: "$cmus_music_dir"
@@ -229,6 +230,7 @@ def_tailscale=$(cur enable_tailscale); def_tailscale=${def_tailscale:-true}
 def_claude=$(cur enable_claude_user); def_claude=${def_claude:-true}
 def_creds=$(cur enable_credentials);  def_creds=${def_creds:-true}
 def_office=$(cur enable_libreoffice); def_office=${def_office:-false}
+def_yaruicons=$(cur enable_yaru_icons); def_yaruicons=${def_yaruicons:-false}
 # NVIDIA: detect a card via lspci (pciutils), else the PCI vendor id 0x10de in sysfs.
 det_nvidia=false
 if lspci 2>/dev/null | grep -qi 'nvidia'; then det_nvidia=true
@@ -262,6 +264,7 @@ askyn enable_tailscale   "Install Tailscale? (mesh VPN; the share's remote reach
 askyn enable_claude_user "Create the dedicated 'claude' agent user?" "$def_claude"
 askyn enable_credentials "Enable login auto-unlock of SSH + GPG?"    "$def_creds"
 askyn enable_libreoffice "Install LibreOffice? (heavy — vifm opens office docs)" "$def_office"
+askyn enable_yaru_icons  "Build the #ce0056 Yaru icon theme? (heavy — pulls inkscape, slow render)" "$def_yaruicons"
 askyn enable_nvidia      "Install the NVIDIA proprietary driver? (non-free; needs reboot)" "$def_nvidia"
 ask   cmus_music_dir     "Music library directory (cmus)"           "$def_music"
 

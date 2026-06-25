@@ -40,7 +40,7 @@ bootstrap/
     sway_session/       # deploy system/sway-session/start-sway -> /usr/local/bin (become)
     tailscale/          # Tailscale mesh VPN from its own apt repo (become; `tailscale up` manual)
     samba/              # Samba share: /etc/samba/smb.conf + /srv/smbshare (become)
-    claude_user/        # dedicated `claude` agent user + /srv/devshare + repo ACLs (become)
+    claude_user/        # dedicated `claude` agent user + /srv/devshare + /srv/clipshare + repo ACLs (become)
     credentials/        # login auto-unlock: gnome-keyring launcher-untangle (become)
     nvidia/             # opt-in proprietary NVIDIA driver from non-free (become; default off)
   gen-symlink-table.py  # regenerate CLAUDE.md's symlink + rendered-template tables from the manifest
@@ -121,7 +121,7 @@ installer (`../docs/repo-structure-design.md` §6):
 |---|---|---|---|
 | `enable_samba` | `samba` | `sharing: [samba]` | Samba file share (`/etc`, `/srv/smbshare`); allows the Tailscale range when `enable_tailscale` is also on, else LAN-only |
 | `enable_tailscale` | `tailscale` | — (own apt repo, not an apt-group package) | Tailscale mesh VPN — the share's transport + remote reach; `tailscale up` auth stays manual |
-| `enable_claude_user` | `claude_user` | — | dedicated `claude` agent user + shared tree + ACLs |
+| `enable_claude_user` | `claude_user` | — | dedicated `claude` agent user + shared trees (`/srv/devshare` + `/srv/clipshare` screenshot drop) + ACLs |
 | `enable_credentials` | `credentials` | `credentials: [gnome-keyring, libsecret-tools]` | login auto-unlock of SSH + GPG |
 | `enable_libreoffice` | *(none — package-only)* | `office: [libreoffice]` | LibreOffice for vifm's office-doc opener (**default off** — heavy) |
 | `enable_nvidia` | `nvidia` | — | proprietary NVIDIA driver from non-free (**default off** — host-specific, needs a reboot; setup.sh detects a card) |

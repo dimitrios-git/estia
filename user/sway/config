@@ -184,9 +184,11 @@ bindsym $mod+r mode "resize"
     bindsym XF86AudioPrev exec playerctl previous
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
-    # Print: region screenshot; $mod+Print: full screen
-    bindsym Print exec grim -g "$(slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png
-    bindsym $mod+Print exec grim ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png
+    # Region screenshot: Print saves locally (~/Pictures/Screenshots); $mod+Print
+    # saves to the shared /srv/clipshare so the `claude` agent can Read it (it runs
+    # as a separate user and can't reach this session's clipboard). See screenshot.sh.
+    bindsym Print exec $HOME/.config/sway/scripts/screenshot.sh local
+    bindsym $mod+Print exec $HOME/.config/sway/scripts/screenshot.sh shared
 
 ### D-Bus / portals
 

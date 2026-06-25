@@ -17,3 +17,13 @@
 	excludesfile = ~/.gitignore_global
 	autocrlf = input
 	editor = vim
+{% if enable_claude_user | default(false) %}
+# The shared collaboration tree ({{ claude_shared_tree | default('/srv/devshare') }}) is
+# owned by the `claude` agent user, so git trips "dubious ownership" (CVE-2022-24765
+# protection) when the human operates on those repos. Whitelist the whole tree with the
+# git 2.36+ trailing-wildcard form — one entry covers every repo directly under it.
+# Gated on enable_claude_user: no agent user → no claude-owned tree → nothing to allow.
+# (claude_shared_tree is a claude_user-role default, out of scope here, hence the | default.)
+[safe]
+	directory = {{ claude_shared_tree | default('/srv/devshare') }}/*
+{% endif %}

@@ -56,6 +56,33 @@
     label: "{{ 'default' if item else 'access' }} ACL"
   become: true
 
+# --- Shared screenshot drop /srv/clipshare (same model as /srv/devshare) -------
+# The human's $mod+Print screenshots land here (sway: screenshot.sh shared) so
+# claude can Read them — the supported way to show Claude Code an image, since it
+# runs as a separate user walled off from this session's Wayland clipboard (so a
+# Ctrl+V image paste into Claude Code can't work). Plain Print stays local.
+- name: Create the shared screenshot tree
+  ansible.builtin.file:
+    path: "{{ claude_clipshare_tree }}"
+    state: directory
+    owner: root
+    group: "{{ devshare_group }}"
+    mode: "2770"
+  become: true
+
+- name: ACLs on the shared screenshot tree (access + default, group devshare rwx)
+  ansible.posix.acl:
+    path: "{{ claude_clipshare_tree }}"
+    etype: group
+    entity: "{{ devshare_group }}"
+    permissions: rwx
+    default: "{{ item }}"
+    state: present
+  loop: [false, true]
+  loop_control:
+    label: "{{ 'default' if item else 'access' }} ACL"
+  become: true
+
 # Collaboration is clone-based (claude clones into /srv/devshare, syncs via git), so
 # this role deliberately does NOT touch the human's home — no traverse ACLs, no
 # in-place repo sharing, no shared-working-copy git hygiene. The home stays 0750

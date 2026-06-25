@@ -81,8 +81,10 @@ narrative — which role when, with the **interactive/external manual steps**
 Roles: `packages` (apt), `dotfiles` (symlinks + templated configs), `fonts` (Nerd
 Fonts), `localbin` (pinned release binaries, e.g. bluetuith), `gtk_theme` (the
 **hestia GTK theme** — recoloured adw-gtk3), `sway_session` (the greetd→sway
-launcher), `samba` (the `/etc` system layer), `claude_user` + `credentials` (see
-below), plus opt-in `nvidia`. Each is idempotent — re-run with `--check` to verify.
+launcher), `tailscale` (the mesh VPN), `samba` (the `/etc` system layer),
+`claude_user` + `credentials` (see below), `hostname` (set the machine name, when
+`system_hostname` is given), plus opt-in `yaru_icons` (the `#ce0056` Yaru icon
+theme) and `nvidia`. Each is idempotent — re-run with `--check` to verify.
 Details: [`bootstrap/README.md`](bootstrap/README.md).
 
 Secrets are **not** in this repo — they live in `~/.bash_secrets` (untracked), sourced by `.bashrc`.

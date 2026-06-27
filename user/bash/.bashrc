@@ -96,8 +96,17 @@ if [ -x /usr/bin/dircolors ]; then
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
-    export LESS='-R --use-color -Dd+r$Du+b'
-    export MANPAGER="less -R --use-color -Dd+r -Du+b"
+    # less/man colours on the wildcharm palette (-D <class><colour>; '+' keeps the
+    # original attribute, lowercase=normal, UPPER=bright, two letters=fg+bg):
+    #   d+r  bold      -> accent red  (man section headers / commands)
+    #   u+b  underline -> blue        (man args / options)
+    #   Sky  search    -> black on yellow (highlighter)
+    #   NK   line nums -> grey (when -N is on)
+    #   E+R  errors    -> bright red
+    # (the previous LESS used '-Dd+r$Du+b' — the $ ended the -D arg, silently
+    #  dropping the underline colour in interactive less; unified with MANPAGER.)
+    export LESS='-R --use-color -Dd+r -Du+b -DSky -DNK -DE+R'
+    export MANPAGER="less -R --use-color -Dd+r -Du+b -DSky -DNK -DE+R"
 fi
 
 # ls aliases

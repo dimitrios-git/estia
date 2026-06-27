@@ -72,6 +72,9 @@ _Generated from the bootstrap manifest (`bootstrap/group_vars/all.yml`) — **do
 | `user/zathura/zathurarc` | `~/.config/zathura/zathurarc` |
 | `user/vifm/vifmrc` | `~/.config/vifm/vifmrc` |
 | `user/vifm/colors/wildcharm.vifm` | `~/.config/vifm/colors/wildcharm.vifm` |
+| `user/vifm/scripts/preview.sh` | `~/.config/vifm/scripts/preview.sh` |
+| `user/bat/config` | `~/.config/bat/config` |
+| `user/bat/themes/wildcharm.tmTheme` | `~/.config/bat/themes/wildcharm.tmTheme` |
 | `user/glow/wildcharm.json` | `~/.config/glow/wildcharm.json` |
 | `user/xdg-desktop-portal/sway-portals.conf` | `~/.config/xdg-desktop-portal/sway-portals.conf` |
 | `user/gtk/gtk-3.0/settings.ini` | `~/.config/gtk-3.0/settings.ini` |

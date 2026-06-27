@@ -22,6 +22,11 @@ set nohlsearch
 set incsearch
 set scrolloff=4
 
+" Show a live preview of the selected file in the other (right) pane on startup.
+" `w` (mapped below) toggles it off/on. `view!` is idempotent — it ensures quick
+" view is ON rather than toggling, so it sticks when vifmrc runs at launch.
+view!
+
 " Marks
 
 mark h ~/
@@ -105,6 +110,13 @@ fileviewer {*.zip}
          \ unzip -l %f
 fileviewer {*.7z}
          \ 7z l %f
+
+" Everything else — syntax-highlighted code/text preview via bat (wildcharm
+" theme), with a binary/directory fallback. Catch-all goes LAST so the specific
+" viewers above win (vifm uses the first matching :fileviewer). preview.sh lives
+" in ~/.config/vifm/scripts (on vifm's PATH); %pw/%ph size output to the pane.
+fileviewer {*}
+         \ preview.sh %f %pw %ph
 
 " Key bindings
 

@@ -26,8 +26,8 @@ set $bg      #0a0a0a
 set $surface #111111
 set $border  #1e1e1e
 set $text    #e0e0e0
-set $dim     #555555
-set $accent  #ce0056
+set $dim     #8c8c8c
+set $accent  #d7005f
 
 # Window colors:          border    bg        text    indicator  child_border
 client.focused            $accent   $surface  $text   $accent    $accent
@@ -206,7 +206,7 @@ exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DE
 #   color-scheme prefer-dark : the Settings-portal value Firefox/libadwaita read for
 #                              dark mode (else they default to light).
 #   gtk-theme hestia-dark     : the GTK3 theme (recoloured adw-gtk3 from the gtk_theme
-#                              role) — this is what carries the #ce0056 accent to GTK3
+#                              role) — this is what carries the #d7005f accent to GTK3
 #                              apps (Remmina, GIMP, Firefox's file chooser); the portal
 #                              file chooser reads it from gsettings, not settings.ini.
 # dconf persists both; needs gsettings-desktop-schemas. NOTE: GTK4/libadwaita apps can't
@@ -214,7 +214,7 @@ exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DE
 # keep the default blue accent until libadwaita 1.8; see docs/theming.md.
 exec gsettings set org.gnome.desktop.interface color-scheme prefer-dark
 exec gsettings set org.gnome.desktop.interface gtk-theme hestia-dark
-# Icon theme: the #ce0056-accent Yaru built by the opt-in yaru_icons role (Yaru-hestia).
+# Icon theme: the #d7005f-accent Yaru built by the opt-in yaru_icons role (Yaru-hestia).
 # Guard on the theme actually existing so a spin without that role doesn't force a missing
 # theme (portal/file-chooser read icon-theme from gsettings, like gtk-theme above).
 exec sh -c 'test -d "$HOME/.local/share/icons/Yaru-hestia" && gsettings set org.gnome.desktop.interface icon-theme Yaru-hestia'

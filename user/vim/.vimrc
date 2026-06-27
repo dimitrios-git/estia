@@ -185,9 +185,9 @@ lua << EOF
       heading = { sign = false },
       code = { sign = false, width = 'block' },
     })
-    -- Theme headings to the Debian accent red (#ce0056)
+    -- Theme headings to the wildcharm accent red (#d7005f)
     for i = 1, 6 do
-      vim.api.nvim_set_hl(0, 'RenderMarkdownH' .. i, { fg = '#ce0056', bold = true })
+      vim.api.nvim_set_hl(0, 'RenderMarkdownH' .. i, { fg = '#d7005f', bold = true })
       vim.api.nvim_set_hl(0, 'RenderMarkdownH' .. i .. 'Bg', { bg = '#1a0a12' })
     end
   end

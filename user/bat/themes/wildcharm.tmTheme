@@ -7,7 +7,7 @@
   of truth) — never invent a shade here; add it to palette.yml first, then copy.
 
   Map used:
-    bg  #0a0a0a   text #e0e0e0   dim #555555   muted #888888   accent #ce0056
+    bg  #0a0a0a   text #e0e0e0   dim #8c8c8c   muted #adadad   accent #d7005f
     surface_alt #1a1a1a (line highlight)   border #1e1e1e (selection)
     ANSI: green #00af5f  yellow #d78700  blue #0087d7  magenta #d787d7
           cyan #00afaf  bright_red #ff5f87  bright_yellow #ffaf00
@@ -26,13 +26,13 @@
       <dict>
         <key>background</key>     <string>#0a0a0a</string>
         <key>foreground</key>     <string>#e0e0e0</string>
-        <key>caret</key>          <string>#ce0056</string>
+        <key>caret</key>          <string>#d7005f</string>
         <key>lineHighlight</key>  <string>#1a1a1a</string>
         <key>selection</key>      <string>#1e1e1e</string>
-        <key>invisibles</key>     <string>#555555</string>
+        <key>invisibles</key>     <string>#8c8c8c</string>
         <key>guide</key>          <string>#1e1e1e</string>
-        <key>activeGuide</key>    <string>#555555</string>
-        <key>gutterForeground</key> <string>#555555</string>
+        <key>activeGuide</key>    <string>#8c8c8c</string>
+        <key>gutterForeground</key> <string>#8c8c8c</string>
       </dict>
     </dict>
 
@@ -42,7 +42,7 @@
       <key>scope</key><string>comment, punctuation.definition.comment</string>
       <key>settings</key>
       <dict>
-        <key>foreground</key><string>#555555</string>
+        <key>foreground</key><string>#8c8c8c</string>
         <key>fontStyle</key><string>italic</string>
       </dict>
     </dict>
@@ -81,7 +81,7 @@
       <key>scope</key><string>keyword, keyword.control, keyword.other</string>
       <key>settings</key>
       <dict>
-        <key>foreground</key><string>#ce0056</string>
+        <key>foreground</key><string>#d7005f</string>
         <key>fontStyle</key><string>bold</string>
       </dict>
     </dict>
@@ -96,7 +96,7 @@
       <key>scope</key><string>storage, storage.type, storage.modifier</string>
       <key>settings</key>
       <dict>
-        <key>foreground</key><string>#ce0056</string>
+        <key>foreground</key><string>#d7005f</string>
         <key>fontStyle</key><string>bold</string>
       </dict>
     </dict>
@@ -153,7 +153,7 @@
       <key>name</key><string>Punctuation</string>
       <key>scope</key><string>punctuation, meta.brace, punctuation.separator, punctuation.terminator</string>
       <key>settings</key>
-      <dict><key>foreground</key><string>#888888</string></dict>
+      <dict><key>foreground</key><string>#adadad</string></dict>
     </dict>
 
     <!-- Markup: HTML/XML tags + attributes -->
@@ -161,7 +161,7 @@
       <key>name</key><string>Tag</string>
       <key>scope</key><string>entity.name.tag, punctuation.definition.tag</string>
       <key>settings</key>
-      <dict><key>foreground</key><string>#ce0056</string></dict>
+      <dict><key>foreground</key><string>#d7005f</string></dict>
     </dict>
     <dict>
       <key>name</key><string>Tag attribute</string>
@@ -176,7 +176,7 @@
       <key>scope</key><string>markup.heading, markup.heading entity.name</string>
       <key>settings</key>
       <dict>
-        <key>foreground</key><string>#ce0056</string>
+        <key>foreground</key><string>#d7005f</string>
         <key>fontStyle</key><string>bold</string>
       </dict>
     </dict>

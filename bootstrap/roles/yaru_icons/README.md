@@ -1,8 +1,8 @@
 # yaru_icons role
 
-Installs the prebuilt **Yaru-hestia** icon theme (Debian-red `#ce0056` accent) into
-`~/.local/share/icons` — a sha256-verified **download + extract**, no root and no
-build toolchain on the target (same pull pattern as `localbin`/`fonts`). Opt-in:
+Installs the prebuilt **Yaru-hestia** icon theme into `~/.local/share/icons` — a
+sha256-verified **download + extract**, no root and no build toolchain on the
+target (same pull pattern as `localbin`/`fonts`). Opt-in:
 `enable_yaru_icons` (default off). The active theme is `Yaru-hestia`, selected via
 `gtk-icon-theme-name` in both `user/gtk/*/settings.ini` and a guarded sway `gsettings`
 exec.
@@ -17,7 +17,7 @@ hestia GitHub **release asset**; this role just pulls it.
 
 ## The deliverable
 
-- **Release:** `yaru-hestia-v1` (tag) on `dimitrios-git/hestia`, asset
+- **Release:** `yaru-hestia-v2` (tag) on `dimitrios-git/hestia`, asset
   `Yaru-hestia-icons.tar.gz` (~27 MB).
 - **Contents:** `Yaru/` (base, inherited) + `Yaru-hestia/` (accent overlay;
   `Inherits=Yaru,hicolor`). Self-contained — no apt `yaru-theme-icon` needed.
@@ -38,11 +38,11 @@ ver=26.10.1                                   # pin to the desired Yaru tag
 curl -fsSL -o yaru.tar.gz https://github.com/ubuntu/yaru/archive/refs/tags/$ver.tar.gz
 tar xf yaru.tar.gz && cd yaru-$ver
 
-# 1) Add a `hestia` accent flavour. The icon accent is #c60039 (NOT #ce0056): Yaru
+# 1) Add a `hestia` accent flavour. The icon accent is #d00043 (NOT #d7005f): Yaru
 #    paints the folder front through a ~15% white overlay that lightens it, so a flat
-#    #ce0056 renders pink (#d5266f). #c60039 pre-compensates so the rendered front lands
-#    on true #ce0056 (≈ #ce2657 — R/B exact; green floors at ~38 from the overlay).
-sed -i "s/^    } @else if \$accent_color == 'bark' {/    } @else if \$accent_color == 'hestia' {\n        \$color: #c60039;\n    } @else if \$accent_color == 'bark' {/" common/accent-colors.scss.in
+#    #d7005f renders pink (#dd2677). #d00043 pre-compensates so the rendered front lands
+#    on true #d7005f (≈ #d7265f — R/B exact; green floors at ~38 from the overlay).
+sed -i "s/^    } @else if \$accent_color == 'bark' {/    } @else if \$accent_color == 'hestia' {\n        \$color: #d00043;\n    } @else if \$accent_color == 'bark' {/" common/accent-colors.scss.in
 sed -i "s/^        'bark',/        'hestia',\n        'bark',/" meson_options.txt
 
 # 2) A very dark/saturated accent makes optimize-contrast() unable to self-contrast
@@ -69,12 +69,12 @@ gh release create yaru-hestia-v2 Yaru-hestia-icons.tar.gz --repo dimitrios-git/h
 Then bump `yaru_icons_release` + `yaru_icons_sha256` in `defaults/main.yml`.
 
 **Verify the accent on-target** (the render can't be eyeballed headless): sample a folder
-PNG — `python3 -c "from PIL import Image,…"` — the front should read `#ce2657`-ish.
+PNG — `python3 -c "from PIL import Image,…"` — the front should read `#d7265f`-ish.
 
 ## Gotchas (all learned the hard way)
 
 - `ansible_env` is undefined here (`gather_facts: false`) — use `target_home`.
-- The accent is `#c60039`, deliberately darker than `#ce0056` (overlay compensation).
+- The accent is `#d00043`, deliberately darker than `#d7005f` (overlay compensation).
 - `render-icons` needs `-j1` or inkscape instances race on dbus and a few icons fail.
 - Yaru's dark icon flavour lightens the folder accent — we ship the **light** `Yaru-hestia`
   and use it even on the dark desktop (folders are bg-independent; symbolics recolour via GTK).

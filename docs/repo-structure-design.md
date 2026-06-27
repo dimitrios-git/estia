@@ -224,7 +224,7 @@ sketched because §6 absorbed most of it.
 2. **Manifest — YAML.** ✅ Ansible vars (not TSV) — keeps one config language
    across the stack (Ansible, Docker, etc.).
 3. **`themes/` — build a real theming system, but deferred.** ✅ Intent: a
-   central palette (the wildcharm 16-colour set + `#0a0a0a`/`#ce0056`) defined
+   central palette (the wildcharm 16-colour set + `#0a0a0a`/`#d7005f`) defined
    once and **rendered into each app's config**. It rides the *same* Ansible/
    Jinja2 templating chosen in §4/§5, so it's a natural later extension, not a new
    mechanism. For now `themes/` just organises theme assets; the templated system

@@ -100,13 +100,14 @@ if [ -x /usr/bin/dircolors ]; then
     # original attribute, lowercase=normal, UPPER=bright, two letters=fg+bg):
     #   d+r  bold      -> accent red  (man section headers / commands)
     #   u+b  underline -> blue        (man args / options)
-    #   Sky  search    -> black on yellow (highlighter)
+    #   Sky  search    -> black on yellow (highlighter; matches vim's search)
+    #   PWr  prompt    -> bright-white on accent (the bottom status bar — so it
+    #                     matches vifm/cmus and harmonises with the accent cursor
+    #                     that parks next to it, instead of less's default cyan)
     #   NK   line nums -> grey (when -N is on)
     #   E+R  errors    -> bright red
-    # (the previous LESS used '-Dd+r$Du+b' — the $ ended the -D arg, silently
-    #  dropping the underline colour in interactive less; unified with MANPAGER.)
-    export LESS='-R --use-color -Dd+r -Du+b -DSky -DNK -DE+R'
-    export MANPAGER="less -R --use-color -Dd+r -Du+b -DSky -DNK -DE+R"
+    export LESS='-R --use-color -Dd+r -Du+b -DSky -DPWr -DNK -DE+R'
+    export MANPAGER="less -R --use-color -Dd+r -Du+b -DSky -DPWr -DNK -DE+R"
 fi
 
 # ls aliases
@@ -134,8 +135,14 @@ fi
 # enable vi mode
 set -o vi
 
-# fix docker dark blue color
-export BUILDKIT_COLORS="run=light-blue:error=light-red:cancel=light-cyan:warning=light-red"
+# docker/buildkit build output on the wildcharm palette. BUILDKIT_COLORS takes
+# either colour names or R,G,B triples — pin to exact hex-as-RGB so the build log
+# matches everything else (default buildkit blue is unreadable on near-black):
+#   run     -> blue   #0087d7  (progress / active step)
+#   warning -> yellow #d78700
+#   error   -> accent #d7005f  (attention == accent, as everywhere else)
+#   cancel  -> grey   #767676  (muted)
+export BUILDKIT_COLORS="run=0,135,215:warning=215,135,0:error=215,0,95:cancel=118,118,118"
 
 # Local user binaries (e.g. ~/.local/bin, where bluetuith lives) on PATH.
 # Guarded so it isn't re-prepended when already inherited (the greetd login

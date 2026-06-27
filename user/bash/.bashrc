@@ -191,26 +191,36 @@ claude-shell() {
 # ── hestia apt wrapper: keep the machine reproducible ────────────────────────
 # Installing a package by hand is fine for a quick try, but it won't survive a
 # rebuild. So after `apt install`, any package that ISN'T in the hestia manifest
-# gets a one-line reminder to track it. The wrapper also auto-elevates the
-# root-only sub-commands, so you can drop `sudo` (plain `sudo apt …` still works
-# and simply bypasses the guard). The repo is located from the ~/.bashrc symlink
-# target; override with $HESTIA_DIR if your checkout lives elsewhere.
+# gets a one-line reminder to track it. BOTH `apt …` and `sudo apt …` go through
+# the guard: the latter via a thin sudo wrapper, because a bash function isn't
+# visible to the real sudo and habitual `sudo apt install` would otherwise skip
+# the reminder. The wrapper also auto-elevates the root-only sub-commands, so you
+# can drop `sudo` entirely. The repo is located from the ~/.bashrc symlink target;
+# override with $HESTIA_DIR if your checkout lives elsewhere.
 if command -v apt >/dev/null 2>&1; then
     HESTIA_DIR="${HESTIA_DIR:-$( _b=$(readlink -f ~/.bashrc 2>/dev/null); printf '%s' "${_b%/user/bash/.bashrc}" )}"
 
-    apt() {
+    # Run apt — elevating only the sub-commands that need root — then remind about
+    # any just-installed package that isn't tracked.
+    _hestia_apt() {
         local sub="${1:-}" rc pfx=''
-        [ "$(id -u)" -ne 0 ] && pfx='sudo'
         case "$sub" in
             install|reinstall|remove|purge|autoremove|autopurge|update|upgrade|full-upgrade|dist-upgrade|clean|autoclean|edit-sources)
-                command $pfx apt "$@"; rc=$? ;;
-            *)
-                command apt "$@"; rc=$? ;;
+                [ "$(id -u)" -ne 0 ] && pfx='sudo' ;;
         esac
+        command $pfx apt "$@"; rc=$?
         if [ "$rc" -eq 0 ] && { [ "$sub" = install ] || [ "$sub" = reinstall ]; }; then
             _hestia_apt_untracked "${@:2}"
         fi
         return "$rc"
+    }
+
+    apt() { _hestia_apt "$@"; }
+
+    # Intercept `sudo apt …` (the real sudo can't see the apt function above);
+    # every other sudo invocation passes straight through untouched.
+    sudo() {
+        if [ "${1:-}" = apt ]; then shift; _hestia_apt "$@"; else command sudo "$@"; fi
     }
 
     # Reminder for any just-installed package not listed under apt_packages in the

@@ -1,7 +1,7 @@
 # Theming hestia
 
-hestia has one look: a **dark theme** on near-black `#0a0a0a`, accent **official Debian
-red `#ce0056`**, and a saturated **16-colour palette from the `wildcharm` vim
+hestia has one look: a **dark theme** on near-black `#0a0a0a`, accent **wildcharm
+red `#d7005f`**, and a saturated **16-colour palette from the `wildcharm` vim
 colorscheme**. This doc is the **process** for bringing a new app onto that look. The
 colours themselves live in one place — **`themes/wildcharm/palette.yml`** (the single
 source of truth) — so this doc never repeats hex values; it tells you how to apply them.
@@ -59,10 +59,10 @@ Legend: ✅ themed · 🟡 partial · ⬜ not yet.
 | glow | glamour JSON | ✅ | markdown render theme |
 | vim / nvim | `wildcharm` scheme | ✅ | external plugin + render-markdown accent |
 | zathura | key=value config | ✅ | `user/zathura/zathurarc`; UI chrome + document recolour (dark mode on, `r` toggles) |
-| GTK3 apps (Remmina, GIMP, FF file chooser) | recoloured adw-gtk3 theme | ✅ | `gtk_theme` role builds `hestia-dark` (adw-gtk3 + `#ce0056`); dark + exact red |
+| GTK3 apps (Remmina, GIMP, FF file chooser) | recoloured adw-gtk3 theme | ✅ | `gtk_theme` role builds `hestia-dark` (adw-gtk3 + `#d7005f`); dark + exact red |
 | GTK4 / libadwaita apps (gnome-calculator, nautilus) | libadwaita | 🟡 | dark only — accent **locked on libadwaita 1.7** (trixie is frozen at 1.7.6); libadwaita **≥1.8** accepts an arbitrary-hex `:root { --accent-bg-color }`, which `gtk-4.0/gtk.css` already stages → exact red **auto-activates on the move to Debian 14** (forky/sid carry 1.9.1). Not a Yaru-fixable gap; see CLAUDE.md GTK section |
-| Icons (app / folder / places) | Yaru (Suru) icon theme | ✅ | **`yaru_icons` role** (opt-in `enable_yaru_icons`, default off) installs **`Yaru-hestia`** into `~/.local/share/icons` as a **prebuilt** sha256-verified release artifact (no per-machine build — the `claude` agent renders it once; recipe in the role README). Folder accent **pre-compensated to `#c60039`** so Yaru's white overlay lands the front on true `#ce0056`. Selected via `gtk-icon-theme-name` + the gsettings `icon-theme` key (portal file chooser reads gsettings — set at login by sway, or `gsettings set … icon-theme Yaru-hestia` live). Verified live: deep-red folders in the GTK file chooser |
-| Qt / KDE apps | Kvantum / `kdeglobals` | ⬜ | the Qt companion to Adwaita — **Kvantum** is the custom-`#ce0056`-accent route (or a recoloured Breeze); separate track, later |
+| Icons (app / folder / places) | Yaru (Suru) icon theme | 🟡 | **`yaru_icons` role** (opt-in `enable_yaru_icons`, default off) installs **`Yaru-hestia`** into `~/.local/share/icons` as a **prebuilt** sha256-verified release artifact (no per-machine build — the `claude` agent renders it once; recipe in the role README). **Pending the wildcharm-red move:** the prebuilt artifact is still tinted for the old accent — its folder pre-comp `#c60039` was computed for `#ce0056` and must be **recomputed + the artifact rebuilt** for `#d7005f` (the white-overlay maths in the role README). Opt-in/default-off, so nothing renders wrong today. Selected via `gtk-icon-theme-name` + the gsettings `icon-theme` key. |
+| Qt / KDE apps | Kvantum / `kdeglobals` | ⬜ | the Qt companion to Adwaita — **Kvantum** is the custom-`#d7005f`-accent route (or a recoloured Breeze); separate track, later |
 | Firefox + firefoxpwa PWAs | GTK3 (via `GTK_THEME`) | ✅ | chrome/menus/file chooser follow hestia-dark; only in-page web form controls might need `userContent` (if ever) |
 
 Add a row when you start a new app; flip it to ✅ when it passes step 5.

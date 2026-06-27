@@ -17,9 +17,9 @@ more than a config repo:
   collaborator behind a **kernel-enforced** trust boundary, not a process wearing
   my account. We work through git: it opens pull requests, I review and merge.
 
-Everything sits on one **unified theme**: near-black `#0a0a0a`, accent **official
-Debian red `#ce0056`** (PANTONE Strong Red C), and a saturated 16-colour palette
-from the `wildcharm` vim colorscheme — defined once in `themes/wildcharm/palette.yml`
+Everything sits on one **unified theme**: near-black `#0a0a0a`, accent **wildcharm
+red `#d7005f`**, and a saturated 16-colour palette from the `wildcharm` vim
+colorscheme — defined once in `themes/wildcharm/palette.yml`
 and applied app-by-app via the process in [`docs/theming.md`](docs/theming.md)
 (terminal apps, sway, waybar, swaylock/swaynag, zathura, and a custom GTK theme).
 
@@ -83,7 +83,7 @@ Fonts), `localbin` (pinned release binaries, e.g. bluetuith), `gtk_theme` (the
 **hestia GTK theme** — recoloured adw-gtk3), `sway_session` (the greetd→sway
 launcher), `tailscale` (the mesh VPN), `samba` (the `/etc` system layer),
 `claude_user` + `credentials` (see below), `hostname` (set the machine name, when
-`system_hostname` is given), plus opt-in `yaru_icons` (the `#ce0056` Yaru icon
+`system_hostname` is given), plus opt-in `yaru_icons` (the `#d7005f` Yaru icon
 theme) and `nvidia`. Each is idempotent — re-run with `--check` to verify.
 Details: [`bootstrap/README.md`](bootstrap/README.md).
 

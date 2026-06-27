@@ -1,4 +1,4 @@
-# cava — accent gradient (#ce0056) to match the rest of the system.
+# cava — accent gradient (#d7005f) to match the rest of the system.
 
 [general]
 framerate = 60
@@ -26,7 +26,7 @@ gradient_color_1 = '#3a0019'
 gradient_color_2 = '#5d0027'
 gradient_color_3 = '#88003a'
 gradient_color_4 = '#b3004c'
-gradient_color_5 = '#ce0056'
+gradient_color_5 = '#d7005f'
 gradient_color_6 = '#e6447e'
 gradient_color_7 = '#f4779f'
 gradient_color_8 = '#ffaecb'

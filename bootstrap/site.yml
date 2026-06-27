@@ -24,7 +24,7 @@
       tags: [localbin]
     - role: gtk_theme  # hestia GTK3 theme (recoloured adw-gtk3) into ~/.local/share/themes (no root)
       tags: [gtk_theme]
-    - role: yaru_icons # build + install the #ce0056 Yaru icon theme into ~/.local/share/icons (opt-in, heavy)
+    - role: yaru_icons # build + install the #d7005f Yaru icon theme into ~/.local/share/icons (opt-in, heavy)
       tags: [yaru_icons]
       when: enable_yaru_icons | bool
     - role: hostname   # set the machine hostname (pantheon scheme) — root

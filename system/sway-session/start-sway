@@ -20,7 +20,7 @@ export MOZ_ENABLE_WAYLAND=1
 # source — it overrides gsettings org.gnome.desktop.interface gtk-theme AND
 # ~/.config/gtk-3.0/settings.ini — so in-process GTK3 apps (Remmina, GIMP, etc.) in a
 # non-GNOME sway session pick the theme up from here, not from those files. hestia-dark is
-# the recoloured adw-gtk3 built by the gtk_theme role (#ce0056 accent). libadwaita apps
+# the recoloured adw-gtk3 built by the gtk_theme role (#d7005f accent). libadwaita apps
 # ignore GTK_THEME (their accent is locked on 1.7 — see docs/theming.md).
 export GTK_THEME=hestia-dark
 

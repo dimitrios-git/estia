@@ -24,7 +24,7 @@ separator-color=0a0a0a
 text-color=e0e0e0
 
 # typing: key highlight = accent, backspace = bright_red
-key-hl-color=ce0056
+key-hl-color=d7005f
 bs-hl-color=ff5f87
 
 # verifying (checking password): ring = blue
@@ -41,7 +41,7 @@ text-wrong-color=ffffff
 
 # cleared (input wiped): ring = accent
 inside-clear-color=111111
-ring-clear-color=ce0056
+ring-clear-color=d7005f
 line-clear-color=0a0a0a
 text-clear-color=e0e0e0
 

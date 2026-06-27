@@ -16,19 +16,19 @@
   },
   "heading": {
     "block_suffix": "\n",
-    "color": "#ce0056",
+    "color": "#d7005f",
     "bold": true
   },
   "h1": {
     "prefix": " ",
     "suffix": " ",
     "color": "#ffffff",
-    "background_color": "#ce0056",
+    "background_color": "#d7005f",
     "bold": true
   },
   "h2": {
     "prefix": "## ",
-    "color": "#ce0056",
+    "color": "#d7005f",
     "bold": true
   },
   "h3": {
@@ -61,7 +61,7 @@
     "bold": true
   },
   "hr": {
-    "color": "#ce0056",
+    "color": "#d7005f",
     "format": "\n────────\n"
   },
   "item": {
@@ -75,7 +75,7 @@
     "unticked": "[ ] "
   },
   "link": {
-    "color": "#ce0056",
+    "color": "#d7005f",
     "underline": true
   },
   "link_text": {
@@ -83,7 +83,7 @@
     "bold": true
   },
   "image": {
-    "color": "#ce0056",
+    "color": "#d7005f",
     "underline": true
   },
   "image_text": {
@@ -101,7 +101,7 @@
     "margin": 2,
     "chroma": {
       "text": { "color": "#c4c4c4" },
-      "error": { "color": "#f1f1f1", "background_color": "#ce0056" },
+      "error": { "color": "#f1f1f1", "background_color": "#d7005f" },
       "comment": { "color": "#676767" },
       "comment_preproc": { "color": "#ff875f" },
       "keyword": { "color": "#00aaff" },
@@ -121,7 +121,7 @@
       "literal_number": { "color": "#ff6eb4" },
       "literal_string": { "color": "#22ee99" },
       "literal_string_escape": { "color": "#00aaff" },
-      "generic_deleted": { "color": "#ce0056" },
+      "generic_deleted": { "color": "#d7005f" },
       "generic_emph": { "italic": true },
       "generic_inserted": { "color": "#00d787" },
       "generic_strong": { "bold": true },

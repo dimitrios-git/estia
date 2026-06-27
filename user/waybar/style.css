@@ -20,7 +20,7 @@ window#waybar {
 #workspaces button {
     padding: 0 10px;
     background: transparent;
-    color: #888888;
+    color: #adadad;
     border: none;
     border-top: 2px solid transparent;
     transition: all 0.12s ease-in-out;
@@ -28,15 +28,15 @@ window#waybar {
 
 #workspaces button.focused {
     color: #e0e0e0;
-    border-top: 2px solid #ce0056;
+    border-top: 2px solid #d7005f;
 }
 
 #workspaces button.visible {
-    color: #888888;
+    color: #adadad;
 }
 
 #workspaces button.urgent {
-    background-color: #ce0056;
+    background-color: #d7005f;
     color: #ffffff;
 }
 
@@ -46,7 +46,7 @@ window#waybar {
 }
 
 #mode {
-    background-color: #ce0056;
+    background-color: #d7005f;
     color: #ffffff;
     padding: 0 10px;
     font-weight: bold;
@@ -54,7 +54,7 @@ window#waybar {
 }
 
 #window {
-    color: #888888;
+    color: #adadad;
 }
 
 #tray {
@@ -88,7 +88,7 @@ window#waybar {
 }
 
 #custom-debian {
-    color: #ce0056;
+    color: #d7005f;
     padding-right: 14px;
 }
 
@@ -106,7 +106,7 @@ tooltip {
     font-family: "Lilex Nerd Font Mono";
     font-size: 17px;
     background-color: #0a0a0a;
-    border: 1px solid #ce0056;
+    border: 1px solid #d7005f;
     padding: 6px 10px;
 }
 

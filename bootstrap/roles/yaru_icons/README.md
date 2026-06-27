@@ -1,8 +1,17 @@
 # yaru_icons role
 
-Installs the prebuilt **Yaru-hestia** icon theme (Debian-red `#ce0056` accent) into
-`~/.local/share/icons` — a sha256-verified **download + extract**, no root and no
-build toolchain on the target (same pull pattern as `localbin`/`fonts`). Opt-in:
+Installs the prebuilt **Yaru-hestia** icon theme into `~/.local/share/icons` — a
+sha256-verified **download + extract**, no root and no build toolchain on the
+target (same pull pattern as `localbin`/`fonts`). Opt-in:
+
+> ⚠ **Pending rebuild for the wildcharm-red move.** The accent changed from Debian
+> `#ce0056` to wildcharm `#d7005f`. The currently-shipped artifact and every
+> computed value in the recipe below (the `#c60039` pre-comp, the `#d5266f`
+> rendered sample) were derived for `#ce0056` — they must be **recomputed for
+> `#d7005f`** (re-run the white-overlay maths) and the artifact rebuilt/republished
+> before this matches the rest of the theme. Default-off, so nothing renders wrong
+> in the meantime.
+
 `enable_yaru_icons` (default off). The active theme is `Yaru-hestia`, selected via
 `gtk-icon-theme-name` in both `user/gtk/*/settings.ini` and a guarded sway `gsettings`
 exec.

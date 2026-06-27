@@ -34,14 +34,14 @@ set highlight-active-color "rgba(206, 0, 86, 0.5)"
 set completion-bg           "#111111"
 set completion-fg           "#e0e0e0"
 set completion-group-bg     "#0a0a0a"
-set completion-group-fg     "#ce0056"
-set completion-highlight-bg "#ce0056"
+set completion-group-fg     "#d7005f"
+set completion-highlight-bg "#d7005f"
 set completion-highlight-fg "#ffffff"
 
 # --- index / table of contents ---
 set index-bg        "#0a0a0a"
 set index-fg        "#e0e0e0"
-set index-active-bg "#ce0056"
+set index-active-bg "#d7005f"
 set index-active-fg "#ffffff"
 
 # --- document recolouring (dark mode for the page content itself) ---

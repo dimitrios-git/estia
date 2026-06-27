@@ -27,9 +27,10 @@ Re-run `./setup.sh` (or `--yes` to reuse saved answers) to apply.
 > after `apt install <pkg>`, any package **not** already under `apt_packages:`
 > prints a one-line reminder to add it (so it survives a rebuild) and re-run
 > `./setup.sh --tags packages`. Packages already in the manifest install
-> silently — that's the signal you did it the reproducible way. The wrapper also
-> auto-elevates the root-only sub-commands, so you can drop the `sudo`; a plain
-> `sudo apt …` still works and simply bypasses the reminder.
+> silently — that's the signal you did it the reproducible way. Both `apt …` and
+> `sudo apt …` go through the guard (the latter via a thin `sudo` wrapper, since a
+> shell function isn't visible to the real `sudo`), and it auto-elevates the
+> root-only sub-commands, so you can drop the `sudo` if you like.
 
 ## 2. Install anything else — `bootstrap/local.yml` (untracked)
 

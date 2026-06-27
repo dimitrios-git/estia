@@ -79,6 +79,13 @@ dotfile_links:
   - { src: user/zathura/zathurarc,          dest: "{{ target_home }}/.config/zathura/zathurarc" }
   - { src: user/vifm/vifmrc,                dest: "{{ target_home }}/.config/vifm/vifmrc" }
   - { src: user/vifm/colors/wildcharm.vifm, dest: "{{ target_home }}/.config/vifm/colors/wildcharm.vifm" }
+  # vifm quick-view dispatcher (catch-all fileviewer) — syntax-highlighted code
+  # preview via bat; executable bit comes from the source file.
+  - { src: user/vifm/scripts/preview.sh,    dest: "{{ target_home }}/.config/vifm/scripts/preview.sh" }
+  # bat — config + the wildcharm syntax theme. The theme is compiled into bat's
+  # cache by the dotfiles role (`bat cache --build`) after this link is made.
+  - { src: user/bat/config,                 dest: "{{ target_home }}/.config/bat/config" }
+  - { src: user/bat/themes/wildcharm.tmTheme, dest: "{{ target_home }}/.config/bat/themes/wildcharm.tmTheme" }
   - { src: user/glow/wildcharm.json,        dest: "{{ target_home }}/.config/glow/wildcharm.json" }
   - { src: user/xdg-desktop-portal/sway-portals.conf, dest: "{{ target_home }}/.config/xdg-desktop-portal/sway-portals.conf" }
   - { src: user/gtk/gtk-3.0/settings.ini,   dest: "{{ target_home }}/.config/gtk-3.0/settings.ini" }
@@ -169,7 +176,7 @@ localbin_binaries:
 apt_packages:
   wayland:   [sway, swayidle, swaylock, waybar, mako-notifier, wofi, grim, slurp, wl-clipboard, brightnessctl, gammastep, playerctl, xwayland]   # gammastep: software gamma dim of all outputs as the pre-lock warning cue (no hardware backlight on this desktop)
   portals:   [xdg-desktop-portal, xdg-desktop-portal-wlr, xdg-desktop-portal-gtk, pipewire, pipewire-pulse, wireplumber]
-  terminal:  [kitty, vifm, cmus, cava, glow, imv, zathura, mpv, chafa, poppler-utils, mediainfo, 7zip, unzip, pulsemixer, htop, qalc]
+  terminal:  [kitty, vifm, cmus, cava, glow, imv, zathura, mpv, chafa, bat, poppler-utils, mediainfo, 7zip, unzip, pulsemixer, htop, qalc]   # bat: syntax-highlighted file preview in vifm (Debian installs it as `batcat`)
   editors:   [vim, neovim, build-essential, shellcheck]   # build-essential: nvim treesitter compiles parsers on first run; shellcheck: shell-script linter (neovim shell diagnostics + manual `shellcheck`)
   vcs_gpg:   [git, gnupg, pinentry-tty]
   net_bt:    [network-manager, bluez, rfkill]   # rfkill: waybar bluetooth right-click toggle

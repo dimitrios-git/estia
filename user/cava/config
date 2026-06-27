@@ -1,4 +1,5 @@
-# cava — accent gradient (#d7005f) to match the rest of the system.
+# cava — accent-anchored cool sweep through the wildcharm palette (accent #d7005f
+# → magenta → blue → cyan). The visualiser is the one place the palette plays.
 
 [general]
 framerate = 60
@@ -21,15 +22,16 @@ channels = stereo
 # inherit the terminal (kitty) background
 background = default
 gradient = 1
-gradient_count = 8
-gradient_color_1 = '#3a0019'
-gradient_color_2 = '#5d0027'
-gradient_color_3 = '#88003a'
-gradient_color_4 = '#b3004c'
-gradient_color_5 = '#d7005f'
-gradient_color_6 = '#e6447e'
-gradient_color_7 = '#f4779f'
-gradient_color_8 = '#ffaecb'
+# Accent-anchored cool sweep through adjacent wildcharm hues: dark accent → accent
+# → magenta → blue → cyan, brightening upward. Bottom (low freq) still reads as
+# the system accent; stops are hue-adjacent so cava's interpolation stays clean.
+gradient_count = 6
+gradient_color_1 = '#88003a'
+gradient_color_2 = '#d7005f'
+gradient_color_3 = '#d787d7'
+gradient_color_4 = '#0087d7'
+gradient_color_5 = '#00afff'
+gradient_color_6 = '#00d7d7'
 
 [smoothing]
 # int 0-100 (was 0.77 ≈ no smoothing on this scale); higher = smoother

@@ -96,6 +96,9 @@ filetype {*.7z}
 " Tested: icat renders here, sixel does not, so use kitty's own protocol.
 "   %pd  — command draws graphics directly to the terminal (without it vifm
 "          captures the escape sequence as text and shows nothing).
+"   %N   — keep /dev/tty available; icat talks to kitty over the controlling
+"          terminal, and without this vifm detaches it ("Failed to open
+"          controlling terminal ... /dev/tty").
 "   %pc  — separates the draw command from the CLEAR command run when leaving a
 "          file; kitty images persist (a screen redraw won't remove them), so
 "          `icat --clear` is what wipes the previous preview.
@@ -104,7 +107,7 @@ filetype {*.7z}
 " --transfer-mode memory is the fast local path (shared memory).
 fileviewer {*.jpg,*.jpeg,*.png,*.gif,*.bmp,*.tiff,*.webp,*.avif,*.svg,*.ico}
          \ kitten icat --silent --stdin no --transfer-mode memory --place %pwx%ph@%pxx%py %c %pc
-         \ kitten icat --clear --silent --stdin no --transfer-mode memory %pd
+         \ kitten icat --clear --silent --stdin no --transfer-mode memory %pd %N
 
 " Markdown — rendered preview (requires glow). Explicit -s: glow drops color
 " when piped (preview pane), so force the themed style through the pipe.

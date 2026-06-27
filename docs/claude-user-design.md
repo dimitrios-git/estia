@@ -257,3 +257,15 @@ dimitrios into claude's context (`sudo -iu claude`, starting in `/srv/devshare`)
   supply-chain) — mitigated by review.
 - `machinectl`/proper session is a possible upgrade if claude ever needs its own
   `XDG_RUNTIME_DIR`/dbus (e.g. for GUI app-testing — deliberately out of scope).
+- **TODO — have a dedicated conversation about Claude Code *configuration* and
+  persist it as workstation-as-code.** claude's `~/.claude/settings.json` was
+  hand-edited on the box (a `permissions` block: `defaultMode: acceptEdits` + an
+  allow-list so reads/edits/git/gh/pnpm/etc. stop prompting inside its own repos,
+  with a deny-list keeping `gh pr merge`, any push to `main`, `sudo`, and secrets
+  gated — preserving the PR-review trust boundary). That edit lives only on the
+  machine; it should be **templated into the Ansible bootstrap** like everything
+  else, so a rebuild reproduces claude's whole Claude Code config — `settings.json`
+  (permissions, theme/tui), the user/project `CLAUDE.md`, any MCP config, and the
+  headless-auth bootstrap — not just the OS user. Scope that conversation: what's
+  safe to bake into the repo vs. kept machine-local (tokens/auth never committed),
+  and how the permission allow/deny policy is reviewed as it evolves.

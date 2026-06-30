@@ -140,3 +140,14 @@ nnoremap yf :!echo -n %c:p | wl-copy<cr>
 
 " Open with xdg-open as fallback
 nnoremap o :!xdg-open %f &<cr>
+
+" Custom commands (:name [args])
+
+" git: diff the file(s) under the cursor against a branch, in vimdiff — short
+" for the verbose `git difftool -y -t vimdiff master...HEAD -- <file>`.
+"   :gd        vs the default branch's merge-base with HEAD; base auto-detected
+"              (main, else master) so the same command works in either repo.
+"   :gd <ref>  vs <ref> instead, e.g. :gd origin/main, :gd develop, :gd HEAD~3.
+" %a = the typed argument (empty if none); %f = selected file(s). Foreground —
+" vifm suspends until you :qa out of vimdiff.
+command! gd !b='%a'; [ -z "$b" ] && b="$(git rev-parse -q --verify main >/dev/null 2>&1 && echo main || echo master)"; git difftool -y -t vimdiff "$b"...HEAD -- %f

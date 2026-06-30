@@ -153,7 +153,7 @@ nnoremap yf :!echo -n %c:p | wl-copy<cr>
 " Open with xdg-open as fallback
 nnoremap o :!xdg-open %f &<cr>
 
-" Image-browse (PROTOTYPE) — integrated imv on a tiling WM, via imv-browse.sh.
+" Image-browse — integrated imv on a tiling WM, via imv-browse.sh.
 " First `i`: collapse vifm to one pane + split sway + open imv tiled RIGHT on the
 " folder's images (config-vifm: live cursor sync on j/k, q returns to vifm).
 " Pressing `i` again from vifm doesn't stack a second pane — it jumps the open

@@ -1,4 +1,4 @@
-# imv config for vifm's image-browse key — PROTOTYPE.
+# imv config for vifm's image-browse key (vifm `i` → imv-browse.sh).
 #
 # vifm's `i` (image-browse) launches imv with `imv_config` pointed here, so the
 # normal standalone imv config (user/imv/config) is left untouched. Same
@@ -16,7 +16,7 @@ fullscreen = false
 scaling_mode = shrink
 
 [binds]
-# LIVE cursor sync (perf experiment): each move advances imv, then `exec`s the
+# LIVE cursor sync: each move advances imv, then `exec`s the
 # return script (no arg), which nudges vifm's cursor onto the now-current image
 # (--remote :goto — selects, doesn't open). NOTE the `;` has NO space before it:
 # imv's INI parser strips `<space>;…` as an inline comment, so `next 1 ; exec …`

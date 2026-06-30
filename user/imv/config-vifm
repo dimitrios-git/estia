@@ -30,10 +30,9 @@ L = pan 50 0
 J = pan 0 50
 K = pan 0 -50
 
-# quit -> restore vifm's dual-pane preview, move its cursor onto this image, then
-# close imv. imv's `exec` consumes the WHOLE rest of the line as one shell
-# command (a trailing `; quit` would be handed to the shell, not imv — that's why
-# an earlier `; quit` synced the cursor but never closed imv), so imv is closed
-# from inside the shell command via `imv-msg $imv_pid quit`.
-q = exec vifm --remote -c 'vsplit' -c 'view!' -c "goto '$imv_current_file'" ; imv-msg "$imv_pid" quit
-<Escape> = exec vifm --remote -c 'vsplit' -c 'view!' -c "goto '$imv_current_file'" ; imv-msg "$imv_pid" quit
+# quit -> hand off to the return script (restore vifm panes + sync cursor + close
+# imv). Trivial bind on purpose: imv splits binds on ';' and treats each part as
+# an imv command, so anything fancier than a bare script path gets mis-parsed
+# (an inline shell pipeline never closed imv). $HOME expands via the exec shell.
+q = exec $HOME/.config/imv/imv-vifm-return.sh
+<Escape> = exec $HOME/.config/imv/imv-vifm-return.sh

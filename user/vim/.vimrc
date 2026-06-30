@@ -144,6 +144,17 @@ let g:coc_global_extensions = [
   \ 'coc-git', '@yaegassy/coc-tailwindcss3'
 \ ]
 
+" --- Find / explore ---
+" Live content grep across the project — fuzzy-search by what's *inside* files,
+" the gap CtrlP (<C-p>, search by filename) doesn't cover. Uses coc-lists +
+" ripgrep (both already present): \g opens an interactive grep, type to filter,
+" <CR> jumps to the match.
+nnoremap <silent> <leader>g :CocList grep<CR>
+" NERDTree file sidebar — vifm is the primary navigator, so this is just the
+" occasional in-vim tree; <C-n> toggles it (overrides the rarely-used default
+" normal-mode <C-n> = cursor-down).
+nnoremap <silent> <C-n> :NERDTreeToggle<CR>
+
 " --- CtrlP Configuration ---
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'

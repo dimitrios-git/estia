@@ -138,7 +138,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 ```
 Then open Vim and run `:PlugInstall`. CoC extensions install automatically via `g:coc_global_extensions`. The config targets both Vim and Neovim — some plugins are conditional on `has('nvim')`.
 
-Key plugins: `coc.nvim` (LSP/completion), `ctrlp.vim` (fuzzy finder), `vim-fugitive` (git), `copilot.vim` (requires Vim ≥ 9.0.0185), NERDTree. Theme: `wildcharm` (dark).
+Key plugins: `coc.nvim` (LSP/completion), `ctrlp.vim` (fuzzy finder), `vim-fugitive` (git), `copilot.vim` (requires Vim ≥ 9.0.0185), NERDTree, `vim-devicons` (Nerd Font filetype/folder glyphs in NERDTree/CtrlP). Theme: `wildcharm` (dark). **`vim-devicons` must be the last `Plug`** (it patches the plugins it decorates at load time) and needs `set encoding=UTF-8` + a Nerd Font in the terminal (we have both — Lilex Nerd Font via kitty). Its glyphs are **monochrome**; colour-by-filetype would need a companion plugin (`vim-nerdtree-syntax-highlight`).
 
 **Markdown viewing** — three layers:
 - `:Glow` (or `<leader>md` = `\md`, markdown buffers only) renders the current file in **glow** as a full-screen pager in the **same terminal** (suspends Vim until `q`, like vifm), via `:!glow -p %`. Works in **both Vim and Neovim** — this is the plain-Vim path. Calls `GlowPreview()`; glow gets a real TTY so theming comes from `~/.config/glow/glow.yml` (see Glow section).

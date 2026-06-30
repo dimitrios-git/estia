@@ -38,9 +38,15 @@ mark p ~/Pictures/
 
 " File associations (filextype = Wayland/X11 GUI apps)
 
-" Images — open directory so you can navigate between files; -n jumps to selected
+" Images — Enter/l opens the integrated imv browser (imv-browse.sh): collapse
+" vifm to one pane + tile imv to the RIGHT on the folder's images (config-vifm:
+" live cursor sync on j/k, q returns). Idempotent — opening another image while
+" imv is up just jumps the open imv to it (imv-msg goto) and focuses, instead of
+" stacking a second pane. imv-browse.sh drives vifm's panes via `vifm --remote`,
+" so it works from this shell handler (unlike an in-keybind :only). Full design:
+" CLAUDE.md "vifm↔imv integrated image browsing".
 filextype {*.jpg,*.jpeg,*.png,*.gif,*.bmp,*.tiff,*.tif,*.webp,*.avif,*.ico,*.svg}
-        \ imv-wayland -n %f %d/ 2>/dev/null &
+        \ imv-browse.sh %c:p %d &
 
 " Video
 filextype {*.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
@@ -152,14 +158,6 @@ nnoremap yf :!echo -n %c:p | wl-copy<cr>
 
 " Open with xdg-open as fallback
 nnoremap o :!xdg-open %f &<cr>
-
-" Image-browse — integrated imv on a tiling WM, via imv-browse.sh.
-" First `i`: collapse vifm to one pane + split sway + open imv tiled RIGHT on the
-" folder's images (config-vifm: live cursor sync on j/k, q returns to vifm).
-" Pressing `i` again from vifm doesn't stack a second pane — it jumps the open
-" imv to the cursor image (imv-msg goto) and focuses it. (Not on <cr>: filextype
-" handlers are shell-only and can't drive vifm panes.)
-nnoremap i :!imv-browse.sh %c:p %d &<cr>
 
 " Custom commands (:name [args])
 

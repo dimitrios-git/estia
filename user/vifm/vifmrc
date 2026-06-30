@@ -161,7 +161,9 @@ nnoremap o :!xdg-open %f &<cr>
 " (user/imv/config-vifm). imv takes focus; browse j/k; q makes imv sync vifm's
 " cursor + restore the dual-pane preview, then close itself. (Not on <cr>:
 " filextype handlers are shell-only and can't drive vifm panes.)
-nnoremap i :!sh -c 'vifm --remote -c only; swaymsg split horizontal; exec env imv_config=$HOME/.config/imv/config-vifm imv-wayland -n "$1" "$2/"' _ %c:p %d &<cr>
+" Idempotent: if an imv is already open, just FOCUS it instead of stacking a
+" second pane — so tabbing back to vifm and hitting `i` again can't duplicate it.
+nnoremap i :!sh -c 'if pgrep -x imv-wayland >/dev/null 2>&1; then swaymsg "[app_id=imv] focus" >/dev/null 2>&1; exit; fi; vifm --remote -c only; swaymsg split horizontal; exec env imv_config=$HOME/.config/imv/config-vifm imv-wayland -n "$1" "$2/"' _ %c:p %d &<cr>
 
 " Custom commands (:name [args])
 

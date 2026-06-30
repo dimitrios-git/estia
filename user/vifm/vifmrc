@@ -54,10 +54,12 @@ filetype {*.wav,*.mp3,*.flac,*.ogg,*.m4a,*.opus,*.aac,*.wv}
        \ {mpv (no video)} mpv --no-video %f
 
 " Markdown — render in glow (TUI pager); falls back to editing in vim.
-" -w $(tput cols): glow's built-in default caps word-wrap at 80 cols even on a
-" wide terminal (spurious mid-paragraph breaks), so wrap at the real width.
+" -w wraps at the real terminal width (glow's built-in default caps at 80 cols
+" even on a wide terminal). The -2 is glamour's 2-col document left margin:
+" tables are sized to the wrap width then indented by it, so at exactly
+" $(tput cols) the table border overruns by 2 and wraps — subtract it.
 filetype {*.md,*.markdown}
-       \ {Render in glow} glow -w $(tput cols) -p %f,
+       \ {Render in glow} glow -w $(($(tput cols) - 2)) -p %f,
        \ {Edit in vim} vim %f
 
 " PDF

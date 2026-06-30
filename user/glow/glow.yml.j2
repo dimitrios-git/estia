@@ -10,7 +10,8 @@ mouse: false
 pager: false
 # word-wrap at width — fallback for a bare `glow <file>` only. The two real
 # consumers override it: the full-screen pager (vim :Glow, vifm open) passes
-# -w "$(tput cols)" to wrap at the actual terminal width, and the vifm preview
-# pane passes -w %pw. glow's own built-in default also caps wrapping at 80, so
-# this just makes the bare-invocation width explicit.
+# -w "$(($(tput cols) - 2))" to wrap at the terminal width (the -2 is glamour's
+# document margin, so full-width tables don't overrun and wrap), and the vifm
+# preview pane passes -w %pw. glow's own built-in default also caps wrapping at
+# 80, so this just makes the bare-invocation width explicit.
 width: 80

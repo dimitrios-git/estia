@@ -20,11 +20,15 @@ cur=$1
 dir=$2
 
 # Deterministic image list of $dir, one absolute path per line. Run identically
-# at launch and on re-press so the computed index matches imv's list.
+# at launch and on re-press so the computed index matches imv's list. Ordered to
+# match vifm's view: `sort -V` is natural/numeric ordering (vifm has `set
+# sortnumbers`, so img2 sorts before img10 — a plain byte sort diverged and made
+# the synced cursor hop); dotfiles excluded since vifm hides them by default.
+# (vifm's exact list isn't reachable — expand("%a") is empty over --remote.)
 images() {
-    find "$dir" -maxdepth 1 -type f 2>/dev/null \
+    find "$dir" -maxdepth 1 -type f ! -name '.*' 2>/dev/null \
         | grep -iE '\.(jpe?g|png|gif|bmp|tiff?|webp|avif|ico|svg)$' \
-        | LC_ALL=C sort
+        | sort -V
 }
 
 pid=$(pgrep -x imv-wayland | head -1)

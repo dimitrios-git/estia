@@ -162,6 +162,24 @@ nnoremap <silent> <leader>g :CocList grep<CR>
 " normal-mode <C-n> = cursor-down).
 nnoremap <silent> <C-n> :NERDTreeToggle<CR>
 
+" Colour the vim-devicons folder glyph hestia accent red (#d7005f) to mirror the
+" GTK Yaru-hestia red folders — icon only, the folder name keeps its normal
+" colour (like the GUI). The match is built from devicons' own folder-symbol
+" variables, not a hardcoded codepoint, so it tracks whatever glyph the plugin
+" uses (or you override it to) across versions. ctermfg=161 is the 256-colour
+" cell for #d7005f, so the colour is exact with or without 'termguicolors'.
+function! s:HestiaFolderIconColour() abort
+  let l:syms = get(g:, 'WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol', '')
+        \   . get(g:, 'DevIconsDefaultFolderOpenSymbol', '')
+  if empty(l:syms) | return | endif
+  execute 'syntax match hestiaDevIconFolder /[' . l:syms . ']/ containedin=ALL'
+  highlight hestiaDevIconFolder guifg=#d7005f ctermfg=161
+endfunction
+augroup HestiaNerdTreeFolderIcon
+  autocmd!
+  autocmd FileType nerdtree call s:HestiaFolderIconColour()
+augroup END
+
 " --- CtrlP Configuration ---
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'

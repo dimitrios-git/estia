@@ -2,6 +2,7 @@
 
 " --- Basic Settings ---
 set nocompatible
+set encoding=UTF-8           " required by vim-devicons (Nerd Font filetype glyphs)
 filetype plugin indent on
 syntax on
 
@@ -93,6 +94,12 @@ Plug 'nvim-treesitter/nvim-treesitter', {'branch': 'master', 'do': ':TSUpdate'}
 
 " File explorer
 Plug 'preservim/nerdtree'
+
+" Filetype/folder glyphs (Nerd Font) for NERDTree, CtrlP, etc. MUST be the LAST
+" plugin loaded — it patches the others at load time, so anything it decorates
+" has to already be registered. Monochrome by design; colour-by-filetype would
+" be a separate companion plugin (vim-nerdtree-syntax-highlight).
+Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 

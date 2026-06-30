@@ -26,10 +26,12 @@ scaling_mode = shrink
 j = next 1;exec $HOME/.config/imv/imv-vifm-return.sh
 k = prev 1;exec $HOME/.config/imv/imv-vifm-return.sh
 l = next 1;exec $HOME/.config/imv/imv-vifm-return.sh
-h = prev 1;exec $HOME/.config/imv/imv-vifm-return.sh
 n = next 1;exec $HOME/.config/imv/imv-vifm-return.sh
 N = prev 1;exec $HOME/.config/imv/imv-vifm-return.sh
 p = prev 1;exec $HOME/.config/imv/imv-vifm-return.sh
+# h = up/back, vim-style: close imv and take vifm UP one directory (cursor lands
+# on the folder you were in). j/k/l/n/N/p still cycle images; prev is on k.
+h = exec $HOME/.config/imv/imv-vifm-return.sh up
 
 # pan when zoomed in (no sync — same file)
 H = pan -50 0

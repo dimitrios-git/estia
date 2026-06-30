@@ -153,6 +153,14 @@ nnoremap yf :!echo -n %c:p | wl-copy<cr>
 " Open with xdg-open as fallback
 nnoremap o :!xdg-open %f &<cr>
 
+" Image-browse (PROTOTYPE) — integrated imv on a tiling WM. `i` collapses vifm to
+" one pane (:only), then tiles imv to the RIGHT of the vifm window (sway split)
+" pointed at a dedicated config (user/imv/config-vifm). imv takes focus; browse
+" with j/k; press q and imv tells vifm (via --remote) to put its cursor on the
+" last image and restore the dual-pane preview. (Not on <cr>: filextype handlers
+" run a shell command and can't issue vifm commands like :only — hence a key.)
+nnoremap i :only<bar>!swaymsg split horizontal && imv_config=$HOME/.config/imv/config-vifm imv-wayland -n %c:p %d/ &<cr>
+
 " Custom commands (:name [args])
 
 " git: diff the file under the cursor against a branch, in vimdiff — short for

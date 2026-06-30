@@ -1,0 +1,35 @@
+# imv config for vifm's image-browse key — PROTOTYPE.
+#
+# vifm's `i` (image-browse) launches imv with `imv_config` pointed here, so the
+# normal standalone imv config (user/imv/config) is left untouched. Same
+# navigation binds as that config; the difference is what `q` (and Escape) do on
+# the way out: they talk back to the vifm that spawned imv via `vifm --remote` —
+#   1. restore vifm's panes (the launch collapsed it with :only),
+#   2. move vifm's cursor onto the last image viewed — :goto SELECTS without
+#      opening (plain `vifm --remote <file>` would OPEN it and relaunch imv),
+# then close imv. `vifm --remote` no-ops when no vifm server is running, so this
+# config is harmless if ever used standalone. (Paths are single-quoted for
+# vifm's command parser so spaces in filenames survive.)
+
+[options]
+fullscreen = false
+scaling_mode = shrink
+
+[binds]
+j = next 1
+k = prev 1
+l = next 1
+h = prev 1
+n = next 1
+N = prev 1
+p = prev 1
+
+# pan when zoomed in
+H = pan -50 0
+L = pan 50 0
+J = pan 0 50
+K = pan 0 -50
+
+# quit -> sync vifm's cursor to this image + restore its dual-pane preview
+q = exec vifm --remote -c 'vsplit' -c 'view!' -c "goto '$imv_current_file'" ; quit
+<Escape> = exec vifm --remote -c 'vsplit' -c 'view!' -c "goto '$imv_current_file'" ; quit

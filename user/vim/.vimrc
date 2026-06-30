@@ -165,8 +165,14 @@ let g:vim_markdown_conceal_code_blocks = 0
 " terminal (like vifm), suspending Vim until you quit glow with `q`. glow gets
 " a real TTY so it picks up the themed style from ~/.config/glow/glow.yml.
 " Works in both Vim and Neovim, unlike the in-buffer renderer below.
+" -w wraps at the actual terminal width: glow's built-in default caps word-wrap
+" at 80 cols regardless of terminal size, which on a wide window adds spurious
+" mid-paragraph breaks. Match the viewport instead. The -2 is glamour's 2-col
+" document left margin: a table is sized to the wrap width and then indented by
+" it, so at exactly $(tput cols) the table's right border overruns by 2 and
+" wraps — subtracting the margin keeps full-width tables flush to the edge.
 function! GlowPreview() abort
-  execute '!glow -p ' . shellescape(expand('%:p'))
+  execute '!glow -w "$(($(tput cols) - 2))" -p ' . shellescape(expand('%:p'))
 endfunction
 command! Glow call GlowPreview()
 autocmd FileType markdown nnoremap <buffer> <silent> <leader>md :call GlowPreview()<CR>

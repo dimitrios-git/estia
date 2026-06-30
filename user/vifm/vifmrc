@@ -153,14 +153,15 @@ nnoremap yf :!echo -n %c:p | wl-copy<cr>
 " Open with xdg-open as fallback
 nnoremap o :!xdg-open %f &<cr>
 
-" Image-browse (PROTOTYPE) — integrated imv on a tiling WM. `i` collapses vifm to
-" one pane (<C-w>o, the keypress form of :only — chaining a command with | trips
-" vifm's parser), then tiles imv to the RIGHT of the vifm window (sway split)
-" pointed at a dedicated config (user/imv/config-vifm). imv takes focus; browse
-" with j/k; press q and imv tells vifm (via --remote) to put its cursor on the
-" last image and restore the dual-pane preview. (Not on <cr>: filextype handlers
-" run a shell command and can't issue vifm commands like :only — hence a key.)
-nnoremap i <C-w>o:!swaymsg split horizontal && imv_config=$HOME/.config/imv/config-vifm imv-wayland -n %c:p %d/ &<cr>
+" Image-browse (PROTOTYPE) — integrated imv on a tiling WM. `i` runs one shell
+" command (no vifm-command chaining — | trips the parser, and the <C-w>o keypress
+" didn't collapse reliably): tell vifm to collapse to one pane (vifm --remote -c
+" only — self-remote, the same channel imv uses to talk back), split sway
+" horizontally, then exec imv tiled to the RIGHT pointed at a dedicated config
+" (user/imv/config-vifm). imv takes focus; browse j/k; q makes imv sync vifm's
+" cursor + restore the dual-pane preview, then close itself. (Not on <cr>:
+" filextype handlers are shell-only and can't drive vifm panes.)
+nnoremap i :!sh -c 'vifm --remote -c only; swaymsg split horizontal; exec env imv_config=$HOME/.config/imv/config-vifm imv-wayland -n "$1" "$2/"' _ %c:p %d &<cr>
 
 " Custom commands (:name [args])
 

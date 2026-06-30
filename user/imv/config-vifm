@@ -30,6 +30,10 @@ L = pan 50 0
 J = pan 0 50
 K = pan 0 -50
 
-# quit -> sync vifm's cursor to this image + restore its dual-pane preview
-q = exec vifm --remote -c 'vsplit' -c 'view!' -c "goto '$imv_current_file'" ; quit
-<Escape> = exec vifm --remote -c 'vsplit' -c 'view!' -c "goto '$imv_current_file'" ; quit
+# quit -> restore vifm's dual-pane preview, move its cursor onto this image, then
+# close imv. imv's `exec` consumes the WHOLE rest of the line as one shell
+# command (a trailing `; quit` would be handed to the shell, not imv — that's why
+# an earlier `; quit` synced the cursor but never closed imv), so imv is closed
+# from inside the shell command via `imv-msg $imv_pid quit`.
+q = exec vifm --remote -c 'vsplit' -c 'view!' -c "goto '$imv_current_file'" ; imv-msg "$imv_pid" quit
+<Escape> = exec vifm --remote -c 'vsplit' -c 'view!' -c "goto '$imv_current_file'" ; imv-msg "$imv_pid" quit

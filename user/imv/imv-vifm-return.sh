@@ -49,7 +49,13 @@ case "$1" in
         ;;
     play)
         # Enter: promote a video to mpv (images do nothing — already full-screen).
-        is_video "$orig" && setsid -f mpv -- "$orig" >/dev/null 2>&1
+        # Open mpv UNDER the vifm+imv combo: from imv, focus the parent (the
+        # [vifm|imv] split), wrap it in a vertical split, so the new mpv window
+        # tiles below the pair. mpv detached so it outlives this exec.
+        if is_video "$orig"; then
+            swaymsg 'focus parent, split vertical' >/dev/null 2>&1
+            setsid -f mpv -- "$orig" >/dev/null 2>&1
+        fi
         ;;
     *)
         vifm --remote -c "goto '$orig'"

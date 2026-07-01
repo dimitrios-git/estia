@@ -46,20 +46,24 @@ gen_thumb() {
     [ -s "$t" ] && return
     tmp="$t.$$.jpg"   # .jpg so ffmpeg/ffmpegthumbnailer infer the output format
     if command -v ffmpegthumbnailer >/dev/null 2>&1; then
-        ffmpegthumbnailer -i "$f" -o "$tmp" -s 600 -q 8 2>/dev/null
+        ffmpegthumbnailer -i "$f" -o "$tmp" -s 1280 -q 8 2>/dev/null
     else
         # fallback: a frame ~1s in, else the very first frame (short clips)
         ffmpeg -y -loglevel error -ss 1 -i "$f" -frames:v 1 \
-            -vf "scale='min(600,iw)':-2" "$tmp" </dev/null 2>/dev/null
+            -vf "scale='min(1280,iw)':-2" "$tmp" </dev/null 2>/dev/null
         [ -s "$tmp" ] || ffmpeg -y -loglevel error -i "$f" -frames:v 1 \
-            -vf "scale='min(600,iw)':-2" "$tmp" </dev/null 2>/dev/null
+            -vf "scale='min(1280,iw)':-2" "$tmp" </dev/null 2>/dev/null
     fi
     [ -s "$tmp" ] || { rm -f "$tmp"; return; }
-    # centred ▶ play button so videos are distinguishable from images
+    # centred ▶ play button, ~28% of the poster's height so it scales with the
+    # thumbnail (videos stay distinguishable from images at any size).
+    ph=$(magick identify -format '%h' "$tmp" 2>/dev/null); [ -n "$ph" ] || ph=400
+    d=$((ph * 28 / 100)); [ "$d" -lt 60 ] && d=60
     magick "$tmp" \
-        \( -size 140x140 xc:none \
-           -fill 'rgba(0,0,0,0.45)' -draw 'circle 70,70 70,8' \
-           -fill 'rgba(255,255,255,0.9)' -draw 'polygon 54,42 54,98 104,70' \) \
+        \( -size "${d}x${d}" xc:none \
+           -fill 'rgba(0,0,0,0.45)' -draw "circle $((d/2)),$((d/2)) $((d/2)),$((d/20))" \
+           -fill 'rgba(255,255,255,0.9)' \
+           -draw "polygon $((d*38/100)),$((d*30/100)) $((d*38/100)),$((d*70/100)) $((d*74/100)),$((d/2))" \) \
         -gravity center -compose over -composite "$t" 2>/dev/null || mv "$tmp" "$t"
     rm -f "$tmp"
 }

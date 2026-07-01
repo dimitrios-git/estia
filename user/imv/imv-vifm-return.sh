@@ -19,6 +19,7 @@
 # vifm --remote no-ops if no vifm server is running.
 
 session="${XDG_RUNTIME_DIR:-/tmp}/imv-vifm-session.list"
+mpvlock="${XDG_RUNTIME_DIR:-/tmp}/imv-vifm-mpv.lock"
 orig=$(sed -n "${imv_current_index}p" "$session" 2>/dev/null)
 [ -n "$orig" ] || orig=$imv_current_file   # fallback (images-only / no map)
 
@@ -49,13 +50,21 @@ case "$1" in
         ;;
     play)
         # Enter: promote a video to mpv (images do nothing — already full-screen).
-        # Open mpv UNDER the vifm+imv combo: from imv, focus the parent (the
-        # [vifm|imv] split), wrap it in a vertical split, so the new mpv window
-        # tiles below the pair. mpv detached so it outlives this exec.
-        if is_video "$orig"; then
-            swaymsg 'focus parent, split vertical' >/dev/null 2>&1
-            setsid -f mpv -- "$orig" >/dev/null 2>&1
+        # SINGLE-INSTANCE, or it fork-bombs: whatever re-fires this bind (focus not
+        # landing on mpv, key repeat…) must NOT keep spawning mpv. A lock file,
+        # created synchronously here and removed only when mpv exits, is the gate
+        # — no pgrep race. While it's held, just focus the existing mpv.
+        is_video "$orig" || exit 0
+        if [ -e "$mpvlock" ]; then
+            swaymsg '[app_id="mpv"] focus' >/dev/null 2>&1
+            exit 0
         fi
+        : > "$mpvlock"
+        # Open mpv UNDER the vifm+imv combo: focus the parent ([vifm|imv] split),
+        # wrap it in a vertical split so mpv tiles below the pair. The wrapper
+        # (detached, so it outlives this exec) clears the lock when mpv quits.
+        swaymsg 'focus parent, split vertical' >/dev/null 2>&1
+        setsid -f sh -c 'mpv -- "$1"; rm -f "$2"' _ "$orig" "$mpvlock" >/dev/null 2>&1
         ;;
     *)
         vifm --remote -c "goto '$orig'"

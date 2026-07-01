@@ -60,18 +60,28 @@ case "$1" in
         # PID is dead/absent (mpv was force-killed → the wrapper never cleaned up)
         # the lock is stale — ignore it and relaunch, so Enter never dead-ends.
         if [ -e "$mpvlock" ] && kill -0 "$(cat "$mpvlock" 2>/dev/null)" 2>/dev/null; then
+            touch "$mpvlock" 2>/dev/null    # extend the cooldown (debounce re-fires)
             swaymsg '[app_id="mpv"] focus' >/dev/null 2>&1
             exit 0
         fi
         rm -f "$mpvlock"
         # Open mpv UNDER the vifm+imv combo: focus the parent ([vifm|imv] split),
         # wrap it in a vertical split so mpv tiles below the pair. The wrapper
-        # (detached, so it outlives this exec) records its PID, plays, then holds
-        # the lock through a 1s cooldown after mpv exits — the cooldown swallows
-        # the stray Enter that fires as focus returns to imv on close (which would
-        # otherwise re-launch mpv → q → re-launch …).
+        # (detached, outlives this exec) records its PID, plays, then DEBOUNCES:
+        # after mpv exits it holds the lock until it's been idle ~2s. Each stray
+        # re-fire on close (focus returning to imv → a spurious Enter, sometimes a
+        # train of them) touches the lock and pushes the deadline out, so none
+        # slip through to re-launch mpv → q → re-launch …
         swaymsg 'focus parent, split vertical' >/dev/null 2>&1
-        setsid -f sh -c 'echo $$ > "$2"; mpv -- "$1"; sleep 1; rm -f "$2"' _ "$orig" "$mpvlock" >/dev/null 2>&1
+        setsid -f sh -c '
+            echo $$ > "$2"
+            mpv -- "$1"
+            touch "$2"
+            while [ $(( $(date +%s) - $(stat -c %Y "$2" 2>/dev/null || echo 0) )) -lt 2 ]; do
+                sleep 0.3
+            done
+            rm -f "$2"
+        ' _ "$orig" "$mpvlock" >/dev/null 2>&1
         ;;
     *)
         vifm --remote -c "goto '$orig'"

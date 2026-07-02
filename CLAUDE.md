@@ -102,6 +102,7 @@ _Path-generalised configs (`docs/repo-structure-design.md` §5): rendered from a
 | `user/cmus/rc.j2` | `~/.config/cmus/rc` |
 | `user/gnupg/credential-unlock.sh.j2` | `~/.config/sway/scripts/credential-unlock.sh` |
 | `user/gnupg/keyring-ssh-askpass.sh.j2` | `~/.config/sway/scripts/keyring-ssh-askpass.sh` |
+| `user/claude/settings.json.j2` | `~/.claude/settings.json` |
 <!-- END rendered-templates -->
 
 `user/git/.gitconfig` points the global excludes file at `~/.gitignore_global`.

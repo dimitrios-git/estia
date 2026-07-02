@@ -87,6 +87,7 @@ _Generated from the bootstrap manifest (`bootstrap/group_vars/all.yml`) — **do
 | `user/gtk/gtk-4.0/settings.ini` | `~/.config/gtk-4.0/settings.ini` |
 | `user/gtk/gtk-4.0/gtk.css` | `~/.config/gtk-4.0/gtk.css` |
 | `user/bin/claude-access` | `~/.local/bin/claude-access` |
+| `user/claude/keybindings.json` | `~/.claude/keybindings.json` |
 <!-- END active-symlinks -->
 
 ### Rendered (templated) configs
